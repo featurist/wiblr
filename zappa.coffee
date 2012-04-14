@@ -1,4 +1,3 @@
-httpProxy = require('http-proxy')
 require('zappa') ->
   @enable 'default layout', 'serve jquery',
     'serve sammy', 'minify'
