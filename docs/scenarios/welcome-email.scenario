@@ -1,0 +1,11 @@
+Welcome Email
+
+When a visitor receives the welcome email, they get a link with a secret code to "Activate my proxy". The link includes a unique identifier that is sufficiently difficult to guess.
+
+Clicking the link in the welcome email means that:
+
+- The [visitor becomes a customer]
+
+- The [proxy setup guide] is displayed in their browser
+
+- The [proxy is activated] immediately 

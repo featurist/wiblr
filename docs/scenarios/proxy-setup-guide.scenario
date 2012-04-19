@@ -1,0 +1,7 @@
+Proxy Setup Guide
+
+Setting up an HTTP proxy is not something many people have done before, so it's critical that we reduce the setup process to as few steps as possible.
+
+By parsing the visitor's user agent we can guess their operating system and browser, meaning we can tailor instructions and media to the customer's environment. Since detection is inaccurate, we always include links to instructions for other operating systems.
+
+The setup guide includes a prominent indication of whether or not the proxy is currently in use. This is achieved using a background poll that continuously queries the [proxy status], which is only available when the proxy is correctly configured.

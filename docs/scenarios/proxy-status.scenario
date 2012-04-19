@@ -1,0 +1,7 @@
+Proxy Status
+
+Customers need a really easy way to determine whether their proxy is correctly configured.
+
+The [browser dashboard] offers an overview of proxy status, as well as inputs to toggle proxy behaviour.
+
+The [api proxy status] offers programmatic access to the proxy status. 
