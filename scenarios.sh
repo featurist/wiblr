@@ -1,0 +1,1 @@
+rspec -c docs/automation/*.rb

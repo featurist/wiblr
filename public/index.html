@@ -1,0 +1,40 @@
+<html>
+  <script src='/socket.io/socket.io.js'></script>
+  <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script> 
+  <script type="text/javascript" src="/js/jquery.metadata.js"></script>
+  <script type="text/javascript" src="/js/jquery.tablesorter.js"></script>
+  
+  <link rel="stylesheet" href="/css/tablesorter/themes/blue/style.css" />
+  <link rel="stylesheet" href="/css/table.css" />
+  <body>
+    <table id="captures" class="tablesorter">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Method</th>
+          <th>URL</th>
+          <th>Headers</th>
+        </tr>
+      </thead>
+      <tbody id='captures_rows'>
+        
+      </tbody>
+    </table>
+    <script type="text/javascript">
+      $(function() { 
+        $("#captures").tablesorter();
+      });
+      var socket = io.connect('http://localhost');
+      socket.on('capture', function (data) {
+        var row = '<tr>' +
+                    '<td>' + data.time + '</td>' +
+                    '<td>' + data.method + '</td>' +
+                    '<td>' + data.url + '</td>' +
+                    '<td>' + JSON.stringify(data.headers) + '</td>' +
+                  '</tr>';
+        $('#captures_rows').append(row);
+        $("#captures").trigger("update");
+      });
+    </script>
+  </body>
+</html>
