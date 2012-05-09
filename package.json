@@ -1,0 +1,33 @@
+{
+    "name": "wiblr",
+    "version": "0.0.1",
+    "description": "A cloud-hosted http proxy",
+    "maintainers": [
+        {
+            "name": "Josh Chisholm",
+            "email": "josh@featurist.co.uk",
+            "web": "http://featurist.co.uk/"
+        },
+        {
+            "name": "Adrian Longley",
+            "email": "adrian@featurist.co.uk",
+            "web": "http://featurist.co.uk/"
+        },
+        {
+            "name": "Tim Macfarlane",
+            "email": "tim@featurist.co.uk",
+            "web": "http://featurist.co.uk/"
+        }
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/featurist/wiblr.git"
+    },
+    "devDependencies": {
+        "mocha": "1.0.3"
+    },
+    "dependencies": {
+        "express": "2.5.9",
+        "socket.io": "0.9.6"
+    }
+}
