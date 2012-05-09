@@ -24,7 +24,7 @@
       $(function() { 
         $("#captures").tablesorter();
       });
-      var socket = io.connect('http://localhost');
+      var socket = io.connect();
       socket.on('capture', function (data) {
         var row = '<tr>' +
                     '<td>' + data.time + '</td>' +
