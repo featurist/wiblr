@@ -1,0 +1,8 @@
+Scenario: Rudy Uses His Proxy
+=============================
+
+After creating his account "rudy1987", he wants to use his proxy but he's not sure how. At the end of the account creation process, he's redirected to his home page at http://rudy1987.<app-domain>
+
+When Rudy visits his proxy home page, it detects his Windows 7 operating system and offers a step-by-step proxy setup guide, tailored to his OS. But he created the account to debug an iPad-specific issue. When he visits his proxy home page on his iPad, he sees proxy configuration instructions tailored to the iPad.
+
+After configuring his proxy, Rudy sees the step-by-step guide disappear, to be replaced with a notice explaining that the proxy is correctly configured and recording web traffic.

@@ -1,0 +1,8 @@
+Scenario: Rudy Gets A Free Trial
+================================
+
+Rudy maintains a web app and discovers a bug affecting iPad safari. He can't reproduce it in other browsers, so he searches for "ios safari debugger".
+
+Rudy finds us, signs up for a "Free Trial" and follows a link in the welcome email to create his account. He calls his account "rudy87".
+
+Rudy uses his proxy until the free trial usage limit is reached. After the usage limit is exceeded, any web page he visits is redirected to a page prompting upgrade to a paid account, with instructions for removing the proxy configuration from his system should he wish to.
