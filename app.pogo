@@ -1,8 +1,11 @@
+http = require 'http'
 express = require 'express'
 app = express: create server!
 io = require 'socket.io': listen (app)
 
-http = require 'http'
+app: use (express: static (__dirname + '/public'))
+app: listen 8080
+
 http: create server @(request, response)
   proxy = http: create client (80, request: headers: host)
   io: sockets: emit 'capture' {
@@ -20,6 +23,3 @@ http: create server @(request, response)
   request: add listener 'data' @(chunk) @{ proxy request: write (chunk, 'binary') }
   request: add listener 'end' @{ proxy request: end! }  
 :listen 8081
-
-app: use (express: static (__dirname + '/public'))
-app: listen (8080)
