@@ -27,19 +27,19 @@ forward request (request, response, url: nil, method: 'GET', headers: {}) =
   
   proxy request = proxy.request (method, path, headers)
 
-  proxy request.add listener 'response' @(proxy response)
-    proxy response.add listener 'data' @(chunk)
+  proxy request.on 'response' @(proxy response)
+    proxy response.on 'data' @(chunk)
       response.write (chunk, 'binary')
     
-    proxy response.add listener 'end'
+    proxy response.on 'end'
       response.end ()
         
     response.write head (proxy response.status code, proxy response.headers)
   
-  request.add listener 'data' @(chunk)
+  request.on 'data' @(chunk)
     proxy request.write (chunk, 'binary')
     
-  request.add listener 'end'
+  request.on 'end'
     proxy request.end ()
 
 http.create server @(request, response)

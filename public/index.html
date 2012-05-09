@@ -17,24 +17,16 @@
         </tr>
       </thead>
       <tbody id='captures_rows'>
-        
+        <tr data-bind="foreach: requests">
+          <td data-bind="text: time"></td>
+          <td data-bind="text: method"></td>
+          <td data-bind="text: url"></td>
+          <td data-bind="text: JSON.stringify(headers)"></td>
+        </tr>
       </tbody>
     </table>
-    <script type="text/javascript">
-      $(function() { 
-        $("#captures").tablesorter();
-      });
-      var socket = io.connect();
-      socket.on('capture', function (data) {
-        var row = '<tr>' +
-                    '<td>' + data.time + '</td>' +
-                    '<td>' + data.method + '</td>' +
-                    '<td>' + data.url + '</td>' +
-                    '<td>' + JSON.stringify(data.headers) + '</td>' +
-                  '</tr>';
-        $('#captures_rows').append(row);
-        $("#captures").trigger("update");
-      });
-    </script>
+    <script type="text/javascript" src='js/knockout-2.1.0.js'></script>
+    <script type="text/javascript" src='js/class.js'></script>
+    <script type="text/javascript" src='js/ui.js'></script>
   </body>
 </html>

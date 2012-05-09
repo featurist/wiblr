@@ -24,7 +24,8 @@
         "url": "https://github.com/featurist/wiblr.git"
     },
     "devDependencies": {
-        "mocha": "1.0.3"
+        "mocha": "1.0.3",
+        "should": "0.6.3"
     },
     "dependencies": {
         "express": "2.5.9",
