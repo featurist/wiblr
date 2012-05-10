@@ -1,1 +1,1 @@
-rspec -c docs/automation/*.rb
+bundle exec rspec -c docs/automation/*.rb
