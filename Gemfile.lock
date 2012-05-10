@@ -44,5 +44,6 @@ PLATFORMS
 
 DEPENDENCIES
   capybara
+  childprocess
   rspec
   selenium-webdriver

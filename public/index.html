@@ -1,11 +1,13 @@
 <html>
-  <script src='/socket.io/socket.io.js'></script>
-  <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script> 
-  <script type="text/javascript" src="/js/jquery.metadata.js"></script>
-  <script type="text/javascript" src="/js/jquery.tablesorter.js"></script>
+  <head>
+    <script src='/socket.io/socket.io.js'></script>
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script> 
+    <script type="text/javascript" src="/js/jquery.metadata.js"></script>
+    <script type="text/javascript" src="/js/jquery.tablesorter.js"></script>
   
-  <link rel="stylesheet" href="/css/tablesorter/themes/blue/style.css" />
-  <link rel="stylesheet" href="/css/table.css" />
+    <link rel="stylesheet" href="/css/tablesorter/themes/blue/style.css" />
+    <link rel="stylesheet" href="/css/table.css" />
+  </head>
   <body>
     <table id="captures" class="tablesorter">
       <thead>
@@ -13,15 +15,19 @@
           <th>Time</th>
           <th>Method</th>
           <th>URL</th>
-          <th>Headers</th>
+          <th>Body</th>
+          <th>Request Headers</th>
+          <th>Response Headers</th>
         </tr>
       </thead>
-      <tbody id='captures_rows'>
-        <tr data-bind="foreach: requests">
+      <tbody id='captures_rows' data-bind="foreach: requests">
+        <tr>
           <td data-bind="text: time"></td>
           <td data-bind="text: method"></td>
           <td data-bind="text: url"></td>
-          <td data-bind="text: JSON.stringify(headers)"></td>
+          <td data-bind="text: body"></td>
+          <td data-bind="text: JSON.stringify(requestHeaders)"></td>
+          <td data-bind="text: JSON.stringify(responseHeaders)"></td>
         </tr>
       </tbody>
     </table>
