@@ -24,15 +24,14 @@ describe "proxy"
   last message = {}
   emit (name, data) =
     last message = { name = name, data = data }
-  
-  fake io = {
-    sockets = { emit = emit }
-  }
+
+  fake io = { sockets = { emit = emit } }
   proxy server = proxy.create server(fake io)
   
-  before
+  before @(ready)
     proxy server.listen 9838
     teapot app.listen 9837
+    ready()
   
   after
     proxy server.close ()
@@ -40,9 +39,9 @@ describe "proxy"
   
   it "proxies requests" @(done)
     request via proxy @(response, body)
-      body.should.equal("I'm a teapot\n")
-      response.status code.should.equal(418)
-      response.headers.'content-type'.should.equal("earl/grey")
+      body.should.equal "I'm a teapot\n"
+      response.status code.should.equal 418
+      response.headers.'content-type'.should.equal "earl/grey"
       done()
 
   it "emits socket messages" @(done) =>
@@ -56,6 +55,8 @@ describe "proxy"
     request via proxy @(response, body)
       model.Capture.find one { uuid = last message.data.uuid } @(err, capture)
         if (err) @{ throw (err) }
-        capture.status.should.equal(418)
+        capture.status.should.equal 418
+        capture.content type.should.equal "earl/grey"
+        capture.response headers.'content-type'.should.equal "earl/grey"
         done()
   
