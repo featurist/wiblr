@@ -27,8 +27,9 @@ describe "ui"
     capture.content type = 'text/plain'
     capture.time = '2012-01-01T01:02:03'
     capture.save
-      browser.visit "http://127.0.0.1:7532" =>
-        browser.evaluate "thePage.addRequest(#(JSON.stringify(capture.wire object())));"
+      browser.visit "http://127.0.0.1:7532"
+        request = JSON.stringify(capture.wire object())
+        browser.evaluate "thePage.addRequest(#(request));"
         added()
 
   before @(done)
