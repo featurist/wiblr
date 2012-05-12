@@ -1,5 +1,5 @@
 test : spec/*.pogo
-	mogo spec/*.pogo
+	mogo spec/*.pogo && bundle exec rspec -c docs/automation/*.rb
 
 spec : spec/*.pogo
 	mogo spec/*.pogo
