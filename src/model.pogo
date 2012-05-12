@@ -1,7 +1,7 @@
 mongoose = require "mongoose"
 async = require "async"
 uuid = require "node-uuid"
-_ = require "underscore"
+buffertools = require "buffertools"
 
 host = "http://localhost:8080"
 
@@ -20,6 +20,9 @@ CaptureSchema = new (mongoose. Schema {
   request headers  = {}
   response headers = {}
 } (strict: true))
+
+CaptureSchema.methods.append response body (chunk) =
+  self.response body = buffertools.concat(self.response body, chunk)
 
 CaptureSchema.pre 'save' @(next)
   this.uuid = uuid.v4()

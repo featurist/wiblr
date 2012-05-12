@@ -26,12 +26,23 @@
       
       <div id="selected_request" data-bind="with: selectedRequest">
         <div id="request_panel">
-          <span data-bind="text: method" class="method"></span>
-          <span data-bind="text: host" class="host"></span>
-          <span data-bind="text: path" class="path"></span>
-          <h2>Request Headers</h2>
+          <h2>Request</h2>
+          <p>
+            <span data-bind="text: method" class="method"></span>
+            <span data-bind="text: host" class="host"></span>
+            <span data-bind="text: path" class="path"></span>
+          </p>
+          <table id="request_headers">
+            <tbody id='request_headers_rows' data-bind="foreach: sortedRequestHeaders">
+              <tr class="header">
+                <td class="name" data-bind="text: name"></td>
+                <td class="value" data-bind="text: value"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
         <div id="response_panel">
+          <h2>Response</h2>
           <p>
             <span data-bind="text: contentType" class="content-type"></span>
             <span data-bind="text: status" class="status"></span>
@@ -40,7 +51,14 @@
           <p>
             <iframe data-bind="attr: { 'src' : '/requests/' + uuid + '/html' }" id="response_body"></iframe>
           </p>
-          <h2>Response Headers</h2>
+          <table id="response_headers">
+            <tbody id='response_headers_rows' data-bind="foreach: sortedResponseHeaders">
+              <tr class="header">
+                <td class="name" data-bind="text: name"></td>
+                <td class="value" data-bind="text: value"></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
       

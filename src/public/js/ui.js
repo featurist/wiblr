@@ -13,14 +13,14 @@
     };
     sortedPairsIn = function(object) {
         var pairs;
-        pairs = _.map(object, function(value, key) {
+        pairs = _.map(object, function(value, name) {
             return {
-                key: key,
+                name: name,
                 value: value
             };
         });
         return _.sortBy(pairs, function(pair) {
-            return pair([ 1 ]);
+            return pair.name;
         });
     };
     ko.bindingHandlers.time = {
@@ -70,6 +70,12 @@
                 })(field);
             }
             self.selected = ko.observable(false);
+            self.sortedRequestHeaders = ko.computed(function() {
+                return sortedPairsIn(self.requestHeaders);
+            });
+            self.sortedResponseHeaders = ko.computed(function() {
+                return sortedPairsIn(self.responseHeaders);
+            });
             self.trimmedPath = ko.computed(function() {
                 return trimMiddleOf(self.path, 50);
             });

@@ -23,6 +23,9 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     proxy request.end ()
   
   proxy request.on 'response' @(proxy response)
+  
+    proxy response.on 'data' @(chunk)
+      response.write (chunk, 'binary')
 
     capture = new (model.Capture)
     capture.content type = proxy response.headers.'content-type'
@@ -42,7 +45,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
         delete (capture)
     
     copy response data (chunk) =
-      capture.response body = buffertools.concat(capture.response body, chunk)
+      capture.append response body (chunk)
     
     unzip () =
       gzip data = ''
@@ -54,9 +57,6 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     plain () =
       proxy response.on 'data' (copy response data)
       proxy response.on 'end' (emit capture)
-      
-    proxy response.on 'data' @(chunk)
-      response.write (chunk, 'binary')
     
     if (proxy response.headers.'content-encoding' == 'gzip')
       unzip ()  

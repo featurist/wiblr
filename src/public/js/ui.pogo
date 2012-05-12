@@ -7,11 +7,11 @@ trim middle of (string, length) =
     string
 
 sorted pairs in (object) =
-  pairs = _.map (object) @(value, key)
-    { key = key, value = value }
+  pairs = _.map (object) @(value, name)
+    { name = name, value = value }
   
   _.sort by (pairs) @(pair)
-    pair[1]
+    pair.name
 
 ko.binding handlers.time = {
   update (element, value accessor) =
@@ -50,6 +50,13 @@ Request = $class {
       self.(field) = fields.(field)
     
     self.selected = ko.observable(false)
+    
+    self.sorted request headers = ko.computed
+      sorted pairs in (self.request headers)
+      
+    self.sorted response headers = ko.computed
+      sorted pairs in (self.response headers)
+    
     self.trimmed path = ko.computed
       trim middle of (self.path, 50)
       

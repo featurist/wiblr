@@ -18,6 +18,10 @@ describe "ui"
     app.listen (7532)
     app.on "listening" (listening)
   
+  visit app (done) =
+    browser.visit "http://127.0.0.1:7532"
+      done()
+  
   add some requests (added) =
     capture = new (model.Capture)
     capture.method = 'GET'
@@ -26,16 +30,18 @@ describe "ui"
     capture.path = 'foo/bar'
     capture.content type = 'text/plain'
     capture.time = '2012-01-01T01:02:03'
+    capture.request headers = { a = 'x', b = 'y' }
+    capture.response headers = { c = 's', d = 't' }
     capture.save
-      browser.visit "http://127.0.0.1:7532"
-        request = JSON.stringify(capture.wire object())
-        browser.evaluate "thePage.addRequest(#(request));"
-        added()
+      request = JSON.stringify(capture.wire object())
+      browser.evaluate "thePage.addRequest(#(request));"
+      added()
 
   before @(ready)
     host ui server
-      add some requests
-        ready()
+      visit app
+        add some requests
+          ready()
     
   it "renders the request details"
     browser.text ".method".should.equal "GET"
@@ -56,4 +62,12 @@ describe "ui"
       browser.text '#selected_request .path'.should.equal 'foo/bar'
       browser.text '#selected_request .content-type'.should.equal 'text/plain'
       browser.text '#selected_request .time'.should.equal '2012-01-01T01:02:03.000Z'
+
+    it "renders request headers"
+      browser.text '#request_headers .name:first'.should.equal 'a'
+      browser.text '#request_headers .value:first'.should.equal 'x'
       
+    it "renders response headers"
+      browser.text '#response_headers .name:first'.should.equal 'c'
+      browser.text '#response_headers .value:first'.should.equal 's'
+          
