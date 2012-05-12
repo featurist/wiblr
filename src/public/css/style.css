@@ -1,0 +1,92 @@
+* {
+  font-family: helvetica, sans-serif;
+}
+
+h1 {
+  font-size: 1.4em;
+  margin: 0;
+}
+h2 {
+  font-size: 1.2em;
+  margin: 0;
+}
+
+iframe {
+  width: 99%;
+  height: 150px;
+}
+
+#left_panel, #right_panel {
+  position: absolute;
+  overflow: scroll;
+  height: 100%;
+}
+
+#left_panel {
+  left: 0px;
+  width: 720px;
+}
+#right_panel {
+  right: 0px;
+  left: 720px;
+}
+ 
+#requests {
+  border: 5px solid #ffffff;
+  border-spacing: 0;
+}
+
+#selected_request {
+  padding: 4px;
+  padding-left: 10px;
+  width: 95%;
+}
+#selected_request td.key {
+  width: 100px;
+}
+
+#requests tbody tr:hover {
+  background-color: #efefef;
+  color: #336699;
+  cursor: pointer;
+}
+
+#selected_request td.key {
+  background-color: #efefef;
+  color: #333333;
+}
+
+#requests tr.selected {
+  background-color: #5588AA;
+  color: #ffffff;
+}
+
+#requests th, #requests td.cell, #selected_request td {
+  padding: 5px;
+  vertical-align: top;
+  text-align: left;
+  border: 1px solid #efefef;
+  white-space: nowrap;
+}
+
+#requests th, #requests td.cell, #selected_request td {
+  font-size: 0.8em;
+}
+
+#requests_rows td.cell {
+  overflow: hidden;
+  max-width: 250px;
+}
+
+#requests_rows td.cell.icon {
+  border-right: none;
+}
+
+#requests_rows td.cell.method {
+  border-left: none;
+  border-right: none;
+}
+
+#requests_rows td.cell.path {
+  border-left: none;
+}

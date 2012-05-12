@@ -1,0 +1,57 @@
+<html>
+  <head>
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    
+    <div id="left_panel">
+    
+      <table id="requests">
+        <tbody id='requests_rows' data-bind="foreach: requests">
+          <tr data-bind="attr: { 'data-uuid': uuid }, click: select, css: { selected: selected() }">
+            <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.png' }" /></td>
+            <td class="cell method" data-bind="text: method"></td>
+            <td class="cell path" data-bind="text: trimmedPath"></td>
+            <td class="cell host" data-bind="text: host"></td>
+            <td class="cell status" data-bind="text: status"></td>
+            <td class="cell content-type" data-bind="text: contentType"></td>
+            <td class="cell time" data-bind="time: time"></td>
+          </tr>
+        </tbody>
+      </table>
+      
+    </div>
+    
+    <div id="right_panel">
+      
+      <div id="selected_request" data-bind="with: selectedRequest">
+        <div id="request_panel">
+          <span data-bind="text: method"></span>
+          <span data-bind="text: host"></span>
+          <span data-bind="text: path"></span>
+          <h2>Request Headers</h2>
+        </div>
+        <div id="response_panel">
+          <p>
+            <span data-bind="text: contentType"></span>
+            <span data-bind="text: status"></span>
+          </p>
+          <p>
+            <iframe data-bind="attr: { 'src' : '/requests/' + uuid + '/html' }" id="response_body"></iframe>
+          </p>
+          <h2>Response Headers</h2>
+        </div>
+      </div>
+      
+    </div>
+  
+    
+    <script type="text/javascript" src='/socket.io/socket.io.js'></script>
+    <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
+    <script type="text/javascript" src='/js/knockout-2.1.0.js'></script>
+    <script type="text/javascript" src='/js/class.js'></script>
+    <script type="text/javascript" src='/js/moment.js'></script>
+    <script type="text/javascript" src='/js/underscore.js'></script>
+    <script type="text/javascript" src='/js/ui.js'></script>
+  </body>
+</html>

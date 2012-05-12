@@ -1,3 +1,5 @@
+window = window || global
+
 window.$class (prototype) =
   constructor (args, ...) = =>
     prototype.constructor.apply (self, args)
