@@ -26,15 +26,16 @@
       
       <div id="selected_request" data-bind="with: selectedRequest">
         <div id="request_panel">
-          <span data-bind="text: method"></span>
-          <span data-bind="text: host"></span>
-          <span data-bind="text: path"></span>
+          <span data-bind="text: method" class="method"></span>
+          <span data-bind="text: host" class="host"></span>
+          <span data-bind="text: path" class="path"></span>
           <h2>Request Headers</h2>
         </div>
         <div id="response_panel">
           <p>
-            <span data-bind="text: contentType"></span>
-            <span data-bind="text: status"></span>
+            <span data-bind="text: contentType" class="content-type"></span>
+            <span data-bind="text: status" class="status"></span>
+            <span data-bind="text: time" class="time"></span>
           </p>
           <p>
             <iframe data-bind="attr: { 'src' : '/requests/' + uuid + '/html' }" id="response_body"></iframe>

@@ -1,6 +1,7 @@
 express = require "express"
 request = require "request"
 Browser = require "zombie"
+model = require "../src/model"
 
 describe "ui"
   
@@ -18,18 +19,17 @@ describe "ui"
     app.on "listening" (listening)
   
   add some requests (added) =
-    browser.visit "http://127.0.0.1:7532" =>
-      browser.evaluate "
-        thePage.addRequest({
-          method: 'GET',
-          status: 200,
-          host: '1.2.3.4',
-          path: 'foo/bar',
-          uuid: 'uuid-1',
-          contentType: 'text/plain',
-          time: '2012-01-01T01:02:03'
-        });"
-      added()
+    capture = new (model.Capture)
+    capture.method = 'GET'
+    capture.status = 200
+    capture.host = '1.2.3.4'
+    capture.path = 'foo/bar'
+    capture.content type = 'text/plain'
+    capture.time = '2012-01-01T01:02:03'
+    capture.save
+      browser.visit "http://127.0.0.1:7532" =>
+        browser.evaluate "thePage.addRequest(#(JSON.stringify(capture.wire object())));"
+        added()
 
   before @(done)
     host ui server
@@ -37,10 +37,22 @@ describe "ui"
         done()
     
   it "renders the request details"
-    browser.text(".method").should.equal("GET")
-    browser.text(".status").should.equal("200")
-    browser.text(".host").should.equal("1.2.3.4")
-    browser.text(".path").should.equal("foo/bar")
-    browser.text(".content-type").should.equal("text/plain")
-    browser.text(".time").should.equal("01:02:03")
-
+    browser.text ".method".should.equal "GET"
+    browser.text ".status".should.equal "200"
+    browser.text ".host".should.equal "1.2.3.4"
+    browser.text ".path".should.equal "foo/bar"
+    browser.text ".content-type".should.equal "text/plain"
+    browser.text ".time".should.equal "01:02:03"
+  
+  describe "clicking a row"
+    before
+      browser.evaluate '$(''#requests tr:first'').click();'
+    
+    it "renders detailed request details"
+      browser.text '#selected_request .method'.should.equal 'GET'
+      browser.text '#selected_request .status'.should.equal '200'
+      browser.text '#selected_request .host'.should.equal '1.2.3.4'
+      browser.text '#selected_request .path'.should.equal 'foo/bar'
+      browser.text '#selected_request .content-type'.should.equal 'text/plain'
+      browser.text '#selected_request .time'.should.equal '2012-01-01T01:02:03.000Z'
+      
