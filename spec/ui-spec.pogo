@@ -32,10 +32,10 @@ describe "ui"
         browser.evaluate "thePage.addRequest(#(request));"
         added()
 
-  before @(done)
+  before @(ready)
     host ui server
       add some requests
-        done()
+        ready()
     
   it "renders the request details"
     browser.text ".method".should.equal "GET"
@@ -49,7 +49,7 @@ describe "ui"
     before
       browser.evaluate '$(''#requests tr:first'').click();'
     
-    it "renders detailed request details"
+    it "renders detailed request information"
       browser.text '#selected_request .method'.should.equal 'GET'
       browser.text '#selected_request .status'.should.equal '200'
       browser.text '#selected_request .host'.should.equal '1.2.3.4'
