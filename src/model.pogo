@@ -6,7 +6,9 @@ buffertools = require "buffertools"
 host = "http://localhost:8080"
 
 mongo db = 'mongodb://test:password@localhost:27017/wiblr'
-mongoose.connect (mongo db)
+mongoose.connect (mongo db) @(err)
+  if (err)
+    throw (new (Error("failed to connect to #(mongo db)\n#(err.to string())")))
 
 CaptureSchema = new (mongoose. Schema {
   uuid             = String

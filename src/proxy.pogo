@@ -11,7 +11,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   host = parsed url.hostname
   path = parsed url.path || '/'
   
-  //console.log "forwarding #(method) request to http://#(host):#(port)#(path)"
+  console.log "forwarding #(method) request to http://#(host):#(port)#(path)"
   
   proxy = http.create client (port, host)
   proxy request = proxy.request (method, path, headers)
@@ -40,7 +40,8 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     
     emit capture () =
       response.end ()
-      capture.save
+      capture.save @(error)
+        if (error) @{ console.log (error) }
         io.sockets.emit 'capture' (capture.wire object())
         delete (capture)
     
