@@ -28,7 +28,7 @@
             var self, value, pattern;
             self = this;
             value = ko.utils.unwrapObservable(valueAccessor());
-            pattern = "hh:mm:ss";
+            pattern = "HH:mm:ss";
             return $(element).text(moment(value).format(pattern));
         }
     };
@@ -54,9 +54,13 @@
         }
     });
     contentTypes = {
-        image: new RegExp("image"),
-        code: new RegExp("(html|javascript|css|xml)"),
-        text: new RegExp("text/plain")
+        jpg: new RegExp("jpe?g"),
+        png: new RegExp("png"),
+        gif: new RegExp("gif"),
+        html: new RegExp("html"),
+        css: new RegExp("css"),
+        text: new RegExp("text/plain"),
+        js: new RegExp("javascript")
     };
     Request = $class({
         constructor: function(page, fields) {

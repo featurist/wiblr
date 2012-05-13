@@ -16,7 +16,7 @@ sorted pairs in (object) =
 ko.binding handlers.time = {
   update (element, value accessor) =
     value = ko.utils.unwrap observable (value accessor())
-    pattern = 'hh:mm:ss'
+    pattern = 'HH:mm:ss'
     $(element).text(moment(value).format(pattern))
 }
 
@@ -36,9 +36,13 @@ Page = $class {
 }
 
 content types = {
-  image = new (RegExp "image")
-  code  = new (RegExp "(html|javascript|css|xml)")
+  jpg = new (RegExp ("jpe?g"))
+  png = new (RegExp "png")
+  gif = new (RegExp "gif")
+  html  = new (RegExp "html")
+  css = new (RegExp "css")
   text  = new (RegExp "text/plain")
+  js = new (RegExp "javascript")
 }
 
 Request = $class {

@@ -1,39 +1,96 @@
 * {
   font-family: helvetica, sans-serif;
 }
-
+body {
+  margin: 0;
+  overflow: hidden;
+}
 h1 {
-  font-size: 1.4em;
+  color: #5588AA;
+  font-size: 1.1em;
   margin: 0;
 }
 h2 {
-  font-size: 1.2em;
+  font-size: 0.8em;
+  color: #444444;
   margin: 0;
+  border: 6px solid #efefef;
+  font-weight: normal;
+  background-color: #efefef;
 }
-
 iframe {
   width: 99%;
   height: 150px;
+  border: 2px solid #cccccc;
+}
+table {
+  border-spacing: 0;
+}
+
+#top_panel {
+  width: 100%;
+  position: fixed;
+  background-color: #E0EAF1;
+  height: 45px;
+  border-bottom: 5px solid #ffffff;
+}
+#logo {
+  font-family: Georgia;
+  font-weight: bold;
+  position: absolute;
+  color: #fff;
+  font-size: 3.2em;
+  text-shadow: #cccccc 0px 1px 2px;
+  height: 45px;
+  overflow: hidden;
+  margin-left: 10px;
 }
 
 #left_panel, #right_panel {
   position: absolute;
   overflow: scroll;
-  height: 100%;
+  top: 50px;
+  bottom: 0;
 }
-
 #left_panel {
   left: 0px;
-  width: 720px;
+  width: 750px;
 }
 #right_panel {
+  top: 50px;
   right: 0px;
-  left: 720px;
+  left: 750px;
+  border-left: 2px solid #E0EAF1;
 }
- 
-#requests {
-  border: 5px solid #ffffff;
-  border-spacing: 0;
+
+#request_panel {
+  margin-bottom: 30px;
+  margin-top: 5px;
+}
+
+#response_panel {
+  margin-bottom: 30px;
+}
+
+#request_panel h1, #response_panel h1,
+#request_panel p, #response_panel p,
+{
+  margin: 0;
+  margin-top: 5px;
+  margin-bottom: 5px;  
+  max-width: 100%;
+}
+
+#request_panel .url, #response_panel .url {
+  color: #5588AA;
+}
+
+#request_panel *, #response_panel * {
+  word-wrap: break-word;
+}
+
+#request_panel table, #response_panel table {
+  width: 100%;
 }
 
 #selected_request {
@@ -41,8 +98,20 @@ iframe {
   padding-left: 10px;
   width: 95%;
 }
-#selected_request td.key {
-  width: 100px;
+
+#requests tr.selected {
+  background-color: #5588AA;
+  color: #ffffff;
+}
+
+#request_headers, #response_headers {
+  width: 100%;
+  border-spacing: 0;
+  table-layout:fixed;
+}
+
+.header .name {
+  width: 120px;
 }
 
 #requests tbody tr:hover {
@@ -51,42 +120,39 @@ iframe {
   cursor: pointer;
 }
 
-#selected_request td.key {
-  background-color: #efefef;
-  color: #333333;
+#requests td.cell {
+  white-space: nowrap;
 }
 
-#requests tr.selected {
-  background-color: #5588AA;
-  color: #ffffff;
-}
-
-#requests th, #requests td.cell, #selected_request td {
+#requests td.cell, #selected_request td, #request_headers td, #response_headers td {
   padding: 5px;
   vertical-align: top;
   text-align: left;
   border: 1px solid #efefef;
-  white-space: nowrap;
 }
 
-#requests th, #requests td.cell, #selected_request td {
+#requests td.cell, #selected_request td {
   font-size: 0.8em;
 }
 
-#requests_rows td.cell {
+#requests td.cell {
   overflow: hidden;
   max-width: 250px;
 }
 
-#requests_rows td.cell.icon {
+#requests td.cell.icon {
   border-right: none;
 }
 
-#requests_rows td.cell.method {
+#requests td.cell.icon img {
+  margin-top: 2px;
+}
+
+#requests td.cell.method {
   border-left: none;
   border-right: none;
 }
 
-#requests_rows td.cell.path {
+#requests td.cell.path {
   border-left: none;
 }

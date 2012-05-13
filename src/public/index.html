@@ -4,12 +4,18 @@
   </head>
   <body>
     
+    <div id="top_panel">
+      <div id="logo">
+        Wiblr
+      </div>
+    </div>
+    
     <div id="left_panel">
     
       <table id="requests">
         <tbody id='requests_rows' data-bind="foreach: requests">
           <tr data-bind="attr: { 'data-uuid': uuid }, click: select, css: { selected: selected() }">
-            <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.png' }" /></td>
+            <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /></td>
             <td class="cell method" data-bind="text: method"></td>
             <td class="cell path" data-bind="text: trimmedPath"></td>
             <td class="cell host" data-bind="text: host"></td>
@@ -26,12 +32,14 @@
       
       <div id="selected_request" data-bind="with: selectedRequest">
         <div id="request_panel">
-          <h2>Request</h2>
+          <h1>Request</h1>
           <p>
             <span data-bind="text: method" class="method"></span>
-            <span data-bind="text: host" class="host"></span>
-            <span data-bind="text: path" class="path"></span>
+            <span class="url">
+              <span class="protocol">http://</span><span data-bind="text: host" class="host"></span><span data-bind="text: path" class="path"></span>
+            </span>
           </p>
+          <h2>Request Headers</h2>
           <table id="request_headers">
             <tbody id='request_headers_rows' data-bind="foreach: sortedRequestHeaders">
               <tr class="header">
@@ -42,15 +50,16 @@
           </table>
         </div>
         <div id="response_panel">
-          <h2>Response</h2>
+          <h1>Response</h1>
           <p>
-            <span data-bind="text: contentType" class="content-type"></span>
-            <span data-bind="text: status" class="status"></span>
+            HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: contentType" class="content-type"></span>
+            <br />
             <span data-bind="text: time" class="time"></span>
           </p>
           <p>
             <iframe data-bind="attr: { 'src' : '/requests/' + uuid + '/html' }" id="response_body"></iframe>
           </p>
+          <h2>Response Headers</h2>
           <table id="response_headers">
             <tbody id='response_headers_rows' data-bind="foreach: sortedResponseHeaders">
               <tr class="header">

@@ -19,7 +19,7 @@ exports.mount (app) =
         res.send "
           <html>
             <body style='margin:0; padding: 0'>
-              <textarea style='width: 100%; height:100%'>#(decode base64 as utf8 (capture.response body))</textarea>
+              <textarea style='width: 100%; height:100%;border:0'>#(decode base64 as utf8 (capture.response body))</textarea>
             </body>
           </html>"
       else
