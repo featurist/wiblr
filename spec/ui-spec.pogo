@@ -28,7 +28,7 @@ describe "ui"
     capture.status = 200
     capture.host = '1.2.3.4'
     capture.path = 'foo/bar'
-    capture.content type = 'text/plain'
+    capture.content type = 'text/plain; charset=utf-8'
     capture.time = '2012-01-01T01:02:03'
     capture.request headers = { a = 'x', b = 'y' }
     capture.response headers = { c = 's', d = 't' }

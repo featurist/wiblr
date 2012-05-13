@@ -36,13 +36,14 @@ Page = $class {
 }
 
 content types = {
+  txt = new (RegExp ("text\/plain"))
   jpg = new (RegExp ("jpe?g"))
   png = new (RegExp "png")
   gif = new (RegExp "gif")
   html  = new (RegExp "html")
   css = new (RegExp "css")
-  text  = new (RegExp "text/plain")
   js = new (RegExp "javascript")
+  json = new (RegExp "json")
 }
 
 Request = $class {
@@ -63,6 +64,9 @@ Request = $class {
     
     self.trimmed path = ko.computed
       trim middle of (self.path, 50)
+    
+    self.simplified content type = ko.computed
+      self.content type.split ";".0
       
     self.kind = ko.computed
       kind = "unknown"

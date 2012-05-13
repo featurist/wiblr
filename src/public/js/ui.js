@@ -54,13 +54,14 @@
         }
     });
     contentTypes = {
+        txt: new RegExp("text\\/plain"),
         jpg: new RegExp("jpe?g"),
         png: new RegExp("png"),
         gif: new RegExp("gif"),
         html: new RegExp("html"),
         css: new RegExp("css"),
-        text: new RegExp("text/plain"),
-        js: new RegExp("javascript")
+        js: new RegExp("javascript"),
+        json: new RegExp("json")
     };
     Request = $class({
         constructor: function(page, fields) {
@@ -82,6 +83,9 @@
             });
             self.trimmedPath = ko.computed(function() {
                 return trimMiddleOf(self.path, 50);
+            });
+            self.simplifiedContentType = ko.computed(function() {
+                return self.contentType.split(";")[0];
             });
             return self.kind = ko.computed(function() {
                 var kind, type;

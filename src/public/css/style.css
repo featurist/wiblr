@@ -99,6 +99,11 @@ table {
   width: 95%;
 }
 
+#requests {
+  table-layout:fixed;
+  width: 100%;
+}
+
 #requests tr.selected {
   background-color: #5588AA;
   color: #ffffff;
@@ -122,6 +127,7 @@ table {
 
 #requests td.cell {
   white-space: nowrap;
+  overflow: hidden;
 }
 
 #requests td.cell, #selected_request td, #request_headers td, #response_headers td {
@@ -137,22 +143,41 @@ table {
 
 #requests td.cell {
   overflow: hidden;
-  max-width: 250px;
 }
 
 #requests td.cell.icon {
   border-right: none;
+  width: 26px;
 }
 
 #requests td.cell.icon img {
   margin-top: 2px;
+  width: 21px;
 }
 
 #requests td.cell.method {
   border-left: none;
   border-right: none;
+  width: 35px;
 }
 
 #requests td.cell.path {
   border-left: none;
+  color: #58A;
+}
+
+#requests td.cell.host {
+  width: 170px;
+}
+
+#requests td.content-type {
+  width: 160px;
+}
+
+#requests td.cell.status {
+  width: 35px;
+}
+
+#requests td.cell.time {
+  width: 60px;
 }

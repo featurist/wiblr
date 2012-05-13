@@ -20,7 +20,7 @@
             <td class="cell path" data-bind="text: trimmedPath"></td>
             <td class="cell host" data-bind="text: host"></td>
             <td class="cell status" data-bind="text: status"></td>
-            <td class="cell content-type" data-bind="text: contentType"></td>
+            <td class="cell content-type" data-bind="text: simplifiedContentType"></td>
             <td class="cell time" data-bind="time: time"></td>
           </tr>
         </tbody>
@@ -52,7 +52,7 @@
         <div id="response_panel">
           <h1>Response</h1>
           <p>
-            HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: contentType" class="content-type"></span>
+            HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedContentType" class="content-type"></span>
             <br />
             <span data-bind="text: time" class="time"></span>
           </p>
