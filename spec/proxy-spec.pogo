@@ -9,54 +9,106 @@ describe "proxy"
   teapot app = http.create server @(req, res)
     headers = {}
     headers.'content-type' = "earl/grey"
-    res.write head (418, headers) 
-    res.end "I'm a teapot\n"
+    set
+      res.write head (418, headers) 
+      res.end "I'm a teapot\n"
+    timeout (10)
 
   request via proxy (respond) =
     options = {
-      url = "http://127.0.0.1:9837/"
+      url = "http://127.0.0.1:9837/teapot"
       proxy = "http://127.0.0.1:9838/"
     }
     request (options) @(err, response, body)
       if (err) @{ throw (err) }
       respond(response, body)
-  
-  last message = {}
-  emit (name, data) =
-    last message = { name = name, data = data }
 
-  fake io = { sockets = { emit = emit } }
-  proxy server = proxy.create server(fake io)
+  emit (name, data) =
+    messages.push { name = name, data = data }
+    
+  messages = []  
+  response = null
+  body = null
+  proxy server = null
   
-  before @(ready)
+  beforeEach @(ready)
+    fake io = { sockets = { emit = emit } }
+    proxy server = proxy.create server(fake io)
+    
     proxy server.listen 9838
     teapot app.listen 9837
-    ready()
-  
-  after
+    
+    messages = []
+    response = null
+    body = null
+    
+    request via proxy @(r, b)
+      response = r
+      body = b
+      wait for 2 messages then
+        ready()
+
+  afterEach
     proxy server.close ()
     teapot app.close ()
+
+  time now() =
+    new (Date()).getTime()
+
+  wait for (n) messages then (callback) =
+    wait until 
+      messages.length >= n 
+    then (callback) or timeout after (100)
   
+  wait for (n) messages then (callback) or timeout after (milliseconds) =
+    wait until 
+      messages.length >= n 
+    then (callback) or timeout after (milliseconds)
+   
+  wait until (predicate) then (callback) or timeout after (milliseconds) =
+    wait until (predicate) then (callback) or timeout at (time now())
+
+  wait until (predicate) then (callback) or timeout at (time) = 
+    if (predicate())
+      callback()
+    else
+      if (time now() > time)
+        throw ("Timeout waiting for predicate: " + predicate)
+
+      set
+        wait until (predicate) then (callback) or timeout at (time)
+      timeout (1)
+
   it "proxies requests" @(done)
-    request via proxy @(response, body)
-      body.should.equal "I'm a teapot\n"
-      response.status code.should.equal 418
-      response.headers.'content-type'.should.equal "earl/grey"
+    body.should.equal "I'm a teapot\n"
+    response.status code.should.equal 418
+    response.headers.'content-type'.should.equal "earl/grey"
+    done()
+
+  describe "socket messages"
+
+    the (message) should have request data = 
+      message.name.should.equal("capture")
+      message.data.path.should.equal('/teapot')
+      message.data.method.should.equal('GET')
+
+    it "emits a message as the request is made" @(done)
+      first message = messages.0
+      the (first message) should have request data
+      (first message.data.response headers == undefined).should.equal(true)
       done()
 
-  it "emits socket messages" @(done) =>
-    request via proxy @(response, body)
-      last message.name.should.equal("capture")
-      last message.data.content type.should.equal("earl/grey")
-      last message.data.status.should.equal(418)
+    it "emits a message as the response completes" @(done)
+      second message = messages.1
+      the (second message) should have request data
+      second message.data.status.should.equal 418
+      second message.data.response headers.'content-type'.should.equal "earl/grey"
       done()
 
   it "saves captures" @(done)
-    request via proxy @(response, body)
-      model.Capture.find one { uuid = last message.data.uuid } @(err, capture)
+      model.Capture.find one { uuid = messages.1.data.uuid } @(err, capture)
         if (err) @{ throw (err) }
         capture.status.should.equal 418
         capture.content type.should.equal "earl/grey"
         capture.response headers.'content-type'.should.equal "earl/grey"
         done()
-  
