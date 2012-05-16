@@ -55,11 +55,6 @@ feature "Rudy uses his proxy" do
       Capybara.timeout = 2
       @watcher_browser.should have_content('200')
     end
-    @watcher_browser.execute_script("$('#requests tbody tr:first').click()")    
-    @proxied_browser.should have_content "Hello World"
-    @watcher_browser.within_frame "response_body" do
-      @watcher_browser.should have_css("textarea", :text => "Hello World")
-    end 
   end
   
 end

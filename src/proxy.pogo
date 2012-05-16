@@ -42,8 +42,8 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     proxy request.end ()
  
   proxy request.on 'response' @(proxy response)
-  
-    emit capture complete() =
+
+    request complete() =
       response.end()
       save capture()
 
@@ -53,26 +53,26 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     capture.content type = proxy response.headers.'content-type'
     capture.response headers = proxy response.headers
     capture.status = proxy response.status code
-  
+
     copy response data (chunk) =
       capture.append response body (chunk)
-    
+
     unzip () =
       gzip data = ''
       gunzip = zlib.create unzip ()
       proxy response.pipe (gunzip)
       gunzip.on 'data' (copy response data)
-      gunzip.on 'end' (emit capture complete)
-    
+      gunzip.on 'end' (request complete)
+
     plain () =
       proxy response.on 'data' (copy response data)
-      proxy response.on 'end' (emit capture complete)
-    
+      proxy response.on 'end' (request complete)
+
     if (proxy response.headers.'content-encoding' == 'gzip')
       unzip ()  
     else
       plain ()
-  
+
     response.write head (proxy response.status code, proxy response.headers)
 
 exports.create server(io) =
