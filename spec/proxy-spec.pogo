@@ -59,4 +59,11 @@ describe "proxy"
         capture.content type.should.equal "earl/grey"
         capture.response headers.'content-type'.should.equal "earl/grey"
         done()
-  
+
+  it "stays alive when accessed directly" @(done)
+    request { method = "GET", url = "http://127.0.0.1:9838/" } @(err, response, body)
+      if (err) @{ throw ("Failed to GET " + err.to string()) }
+      body.should.equal("This URL hosts an HTTP proxy")
+      request via proxy @(response, body)
+        body.should.equal "I'm a teapot\n"
+        done()
