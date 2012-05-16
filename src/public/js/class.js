@@ -15,7 +15,7 @@
         constructor.prototype = prototype;
         return constructor;
     };
-    window.$classExtending = function(baseConstructor, prototypeMembers) {
+    window.classExtending = function(baseConstructor, prototypeMembers) {
         var self, prototypeConstructor, prototype, constructor;
         self = this;
         prototypeConstructor = function() {
@@ -35,7 +35,7 @@
             var args, self;
             args = Array.prototype.slice.call(arguments, 0, arguments.length);
             self = this;
-            prototypeMembers.constructor.apply(self, args);
+            prototype.constructor.apply(self, args);
             return void 0;
         };
         constructor.prototype = prototype;
