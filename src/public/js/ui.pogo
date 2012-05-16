@@ -36,14 +36,14 @@ Page = class {
 }
 
 content types = {
-  txt = new (RegExp ("text\/plain"))
-  jpg = new (RegExp ("jpe?g"))
-  png = new (RegExp "png")
-  gif = new (RegExp "gif")
-  html  = new (RegExp "html")
-  css = new (RegExp "css")
-  js = new (RegExp "javascript")
-  json = new (RegExp "json")
+  txt = r/text\/plain/
+  jpg = r/jpe?g/
+  png = r/png/
+  gif = r/gif/
+  html  = r/html/
+  css = r/css/
+  js = r/javascript/
+  json = r/json/
 }
 
 Request = class {
