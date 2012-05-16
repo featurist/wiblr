@@ -14,7 +14,7 @@ exports.mount (app) =
   app.get "/requests/:uuid/html" @(req, res)
     res.content type ("text/html")
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      reg = new (RegExp "(text|css|javascript|json|xml)")
+      reg = r/(text|css|javascript|json|xml)/
       if (capture.content type.match (reg))
         res.send "
           <html>

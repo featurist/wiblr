@@ -26,10 +26,9 @@ describe "proxy"
   emit (name, data) =
     messages.push { name = name, data = data }
     
-  messages = []  
-  response = null
-  body = null
   proxy server = null
+  
+  messages = []
   
   beforeEach @(ready)
     fake io = { sockets = { emit = emit } }
@@ -38,15 +37,7 @@ describe "proxy"
     proxy server.listen 9838
     teapot app.listen 9837
     
-    messages = []
-    response = null
-    body = null
-    
-    request via proxy @(r, b)
-      response = r
-      body = b
-      wait for 2 messages then
-        ready()
+    ready()
 
   afterEach
     proxy server.close ()
@@ -54,11 +45,6 @@ describe "proxy"
 
   time now() =
     new (Date()).getTime()
-
-  wait for (n) messages then (callback) =
-    wait until 
-      messages.length >= n 
-    then (callback) or timeout after (100)
   
   wait for (n) messages then (callback) or timeout after (milliseconds) =
     wait until 
@@ -79,36 +65,60 @@ describe "proxy"
         wait until (predicate) then (callback) or timeout at (time)
       timeout (1)
 
-  it "proxies requests" @(done)
-    body.should.equal "I'm a teapot\n"
-    response.status code.should.equal 418
-    response.headers.'content-type'.should.equal "earl/grey"
-    done()
+  describe "proxying requests"
+    
+    response = null
+    body = null
+  
+    beforeEach @(ready)
+      messages = []
+      response = null
+      body = null
+      request via proxy @(r, b)
+        response = r
+        body = b
+        wait for 2 messages then
+          ready()
+        or timeout after(1000)
 
-  describe "socket messages"
-
-    the (message) should have request data = 
-      message.name.should.equal("capture")
-      message.data.path.should.equal('/teapot')
-      message.data.method.should.equal('GET')
-
-    it "emits a message as the request is made" @(done)
-      first message = messages.0
-      the (first message) should have request data
-      (first message.data.response headers == undefined).should.equal(true)
+    it "proxies requests" @(done)
+      body.should.equal "I'm a teapot\n"
+      response.status code.should.equal 418
+      response.headers.'content-type'.should.equal "earl/grey"
       done()
 
-    it "emits a message as the response completes" @(done)
-      second message = messages.1
-      the (second message) should have request data
-      second message.data.status.should.equal 418
-      second message.data.response headers.'content-type'.should.equal "earl/grey"
-      done()
+    describe "socket messages"
 
-  it "saves captures" @(done)
-      model.Capture.find one { uuid = messages.1.data.uuid } @(err, capture)
-        if (err) @{ throw (err) }
-        capture.status.should.equal 418
-        capture.content type.should.equal "earl/grey"
-        capture.response headers.'content-type'.should.equal "earl/grey"
+      the (message) should have request data = 
+        message.name.should.equal("capture")
+        message.data.path.should.equal('/teapot')
+        message.data.method.should.equal('GET')
+
+      it "emits a message as the request is made" @(done)
+        first message = messages.0
+        the (first message) should have request data
+        (first message.data.response headers == undefined).should.equal(true)
+        done()
+
+      it "emits a message as the response completes" @(done)
+        second message = messages.1
+        the (second message) should have request data
+        second message.data.status.should.equal 418
+        second message.data.response headers.'content-type'.should.equal "earl/grey"
+        done()
+
+      it "saves captures" @(done)
+          model.Capture.find one { uuid = messages.1.data.uuid } @(err, capture)
+            if (err) @{ throw (err) }
+            capture.status.should.equal 418
+            capture.content type.should.equal "earl/grey"
+            capture.response headers.'content-type'.should.equal "earl/grey"
+            done()
+
+  it "stays alive when accessed directly" @(done)
+    request { method = "GET", url = "http://127.0.0.1:9838/" } @(err, response, body)
+      if (err) @{ throw ("Failed to GET " + err.to string()) }
+      body.should.equal("This URL hosts an HTTP proxy")
+      request via proxy @(response, body)
+        body.should.equal "I'm a teapot\n"
         done()

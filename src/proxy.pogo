@@ -78,11 +78,14 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
 exports.create server(io) =
  
   http.create server @(request, response)
-    forward request (
-      io
-      request
-      response
-      url: request.url
-      method: request.method
-      headers: request.headers
-    )
+    if (request.url.match (r/^http/))
+      forward request (
+        io
+        request
+        response
+        url: request.url
+        method: request.method
+        headers: request.headers
+      )
+    else
+      response.end "This URL hosts an HTTP proxy"
