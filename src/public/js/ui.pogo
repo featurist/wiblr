@@ -27,8 +27,21 @@ Page = class {
     self.selected request = ko.observable ()
 
   add request (data) =
-    self.requests.push (new (Request (self, data)))
-  
+    uuids = self.requests().map @(request)
+      request.uuid
+      
+    console.log("looking for: " + data.uuid + " in " + uuids)
+    open request = _.find(self.requests()) @(request)
+      console.log(request.uuid(),data.uuid)
+      request.uuid() == data.uuid
+    
+    if (open request)
+      console.log('found')
+      open request.update(data)
+    else      
+      console.log('not found')
+      self.requests.push (new (Request (self, data)))
+
   deselect request () =
     r = self.selected request()
     if (r) @{ r.selected (false) }
@@ -50,31 +63,49 @@ Request = class {
   
   constructor (page, fields) =
     self.page = page
-    self.response body = ko.observable ()
-    for @(field) in (fields)
-      self.(field) = fields.(field)
+    self.make observable(fields)
+  
+  update(fields) =
+   for @(field) in (fields)
+     self.(field)(fields.(field))
+   
+  make observable(fields) =
+    self.uuid              = ko.observable(fields.uuid)
+    self.content type      = ko.observable(fields.content type)
+    self.time              = ko.observable(fields.time)
+    self.method            = ko.observable(fields.method)
+    self.host              = ko.observable(fields.host)
+    self.path              = ko.observable(fields.path)
+    self.status            = ko.observable(fields.status)
+    self.request headers   = ko.observable(fields.request headers)
+    self.response headers  = ko.observable(fields.response headers)
     
     self.selected = ko.observable(false)
     
     self.sorted request headers = ko.computed
-      sorted pairs in (self.request headers)
+      sorted pairs in (self.request headers())
       
     self.sorted response headers = ko.computed
-      sorted pairs in (self.response headers)
+      sorted pairs in (self.response headers())
     
     self.trimmed path = ko.computed
-      trim middle of (self.path, 50)
+      trim middle of (self.path(), 50)
     
     self.simplified content type = ko.computed
-      self.content type.split ";".0
+      if (self.content type())
+        self.content type().split ";".0
       
     self.kind = ko.computed
-      kind = "unknown"
-      for @(type) in (content types)
-        if (self.content type.match(content types.(type)))
-          kind = type
+      if (!self.content type())
+        kind = ""
+      else 
+        kind = "unknown"
+        for @(type) in (content types)
+          if (self.content type().match(content types.(type)))
+            kind = type
         
       kind
+      
         
   select() =
     self.page.deselect request ()

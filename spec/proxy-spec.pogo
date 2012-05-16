@@ -49,17 +49,15 @@ describe "proxy"
   wait for (n) messages then (callback) or timeout after (milliseconds) =
     wait until 
       messages.length >= n 
-    then (callback) or timeout after (milliseconds)
-   
-  wait until (predicate) then (callback) or timeout after (milliseconds) =
-    wait until (predicate) then (callback) or timeout at (time now())
+    then (callback) or timeout at (time now() + milliseconds)
 
   wait until (predicate) then (callback) or timeout at (time) = 
     if (predicate())
       callback()
     else
       if (time now() > time)
-        throw ("Timeout waiting for predicate: " + predicate)
+        console.log("Timeout waiting for messages")
+        throw "Timeout waiting for messages"
 
       set
         wait until (predicate) then (callback) or timeout at (time)
@@ -79,7 +77,7 @@ describe "proxy"
         body = b
         wait for 2 messages then
           ready()
-        or timeout after(1000)
+        or timeout after(200)
 
     it "proxies requests" @(done)
       body.should.equal "I'm a teapot\n"

@@ -40,9 +40,23 @@
             return self.selectedRequest = ko.observable();
         },
         addRequest: function(data) {
-            var self;
+            var self, uuids, openRequest;
             self = this;
-            return self.requests.push(new Request(self, data));
+            uuids = self.requests().map(function(request) {
+                return request.uuid;
+            });
+            console.log("looking for: " + data.uuid + " in " + uuids);
+            openRequest = _.find(self.requests(), function(request) {
+                console.log(request.uuid(), data.uuid);
+                return request.uuid() === data.uuid;
+            });
+            if (openRequest) {
+                console.log("found");
+                return openRequest.update(data);
+            } else {
+                console.log("not found");
+                return self.requests.push(new Request(self, data));
+            }
         },
         deselectRequest: function() {
             var self, r;
@@ -65,37 +79,61 @@
     };
     Request = $class({
         constructor: function(page, fields) {
-            var self, field;
+            var self;
             self = this;
             self.page = page;
-            self.responseBody = ko.observable();
+            return self.makeObservable(fields);
+        },
+        update: function(fields) {
+            var self, field;
+            self = this;
             for (var field in fields) {
                 (function(field) {
-                    self[field] = fields[field];
+                    self[field](fields[field]);
                 })(field);
             }
+        },
+        makeObservable: function(fields) {
+            var self;
+            self = this;
+            self.uuid = ko.observable(fields.uuid);
+            self.contentType = ko.observable(fields.contentType);
+            self.time = ko.observable(fields.time);
+            self.method = ko.observable(fields.method);
+            self.host = ko.observable(fields.host);
+            self.path = ko.observable(fields.path);
+            self.status = ko.observable(fields.status);
+            self.requestHeaders = ko.observable(fields.requestHeaders);
+            self.responseHeaders = ko.observable(fields.responseHeaders);
             self.selected = ko.observable(false);
             self.sortedRequestHeaders = ko.computed(function() {
-                return sortedPairsIn(self.requestHeaders);
+                return sortedPairsIn(self.requestHeaders());
             });
             self.sortedResponseHeaders = ko.computed(function() {
-                return sortedPairsIn(self.responseHeaders);
+                return sortedPairsIn(self.responseHeaders());
             });
             self.trimmedPath = ko.computed(function() {
-                return trimMiddleOf(self.path, 50);
+                return trimMiddleOf(self.path(), 50);
             });
             self.simplifiedContentType = ko.computed(function() {
-                return self.contentType.split(";")[0];
+                if (self.contentType()) {
+                    return self.contentType().split(";")[0];
+                }
             });
             return self.kind = ko.computed(function() {
-                var kind, type;
-                kind = "unknown";
-                for (var type in contentTypes) {
-                    (function(type) {
-                        if (self.contentType.match(contentTypes[type])) {
-                            kind = type;
-                        }
-                    })(type);
+                if (!self.contentType()) {
+                    var kind;
+                    kind = "";
+                } else {
+                    var type;
+                    kind = "unknown";
+                    for (var type in contentTypes) {
+                        (function(type) {
+                            if (self.contentType().match(contentTypes[type])) {
+                                kind = type;
+                            }
+                        })(type);
+                    }
                 }
                 return kind;
             });
