@@ -1,8 +1,9 @@
 ((function() {
-    var self;
+    var self, window;
     self = this;
+    window = window || global;
     window.$class = function(prototype) {
-        var self;
+        var self, constructor;
         self = this;
         constructor = function() {
             var args, self;
@@ -15,7 +16,7 @@
         return constructor;
     };
     window.$classExtending = function(baseConstructor, prototypeMembers) {
-        var self, prototypeConstructor, prototype;
+        var self, prototypeConstructor, prototype, constructor;
         self = this;
         prototypeConstructor = function() {
             var self, field;
