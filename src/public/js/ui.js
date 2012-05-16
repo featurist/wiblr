@@ -54,14 +54,14 @@
         }
     });
     contentTypes = {
-        txt: new RegExp("text\\/plain"),
-        jpg: new RegExp("jpe?g"),
-        png: new RegExp("png"),
-        gif: new RegExp("gif"),
-        html: new RegExp("html"),
-        css: new RegExp("css"),
-        js: new RegExp("javascript"),
-        json: new RegExp("json")
+        txt: /text\/plain/,
+        jpg: /jpe?g/,
+        png: /png/,
+        gif: /gif/,
+        html: /html/,
+        css: /css/,
+        js: /javascript/,
+        json: /json/
     };
     Request = $class({
         constructor: function(page, fields) {
