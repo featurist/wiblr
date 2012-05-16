@@ -1,7 +1,6 @@
 ((function() {
-    var self, window;
+    var self;
     self = this;
-    window = window || global;
     window.$class = function(prototype) {
         var self, constructor;
         self = this;
