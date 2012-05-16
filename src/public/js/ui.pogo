@@ -27,10 +27,7 @@ Page = class {
     self.selected request = ko.observable ()
 
   add request (data) =
-    uuids = self.requests().map @(request)
-      request.uuid
-      
-    console.log("looking for: " + data.uuid + " in " + uuids)
+
     open request = _.find(self.requests()) @(request)
       console.log(request.uuid(),data.uuid)
       request.uuid() == data.uuid
@@ -70,14 +67,14 @@ Request = class {
      self.(field)(fields.(field))
    
   make observable(fields) =
-    self.uuid              = ko.observable(fields.uuid)
+    self.uuid              = fields.uuid
+    self.time              = fields.time
+    self.method            = fields.method
+    self.host              = fields.host
+    self.path              = fields.path
+    self.request headers   = fields.request headers
     self.content type      = ko.observable(fields.content type)
-    self.time              = ko.observable(fields.time)
-    self.method            = ko.observable(fields.method)
-    self.host              = ko.observable(fields.host)
-    self.path              = ko.observable(fields.path)
     self.status            = ko.observable(fields.status)
-    self.request headers   = ko.observable(fields.request headers)
     self.response headers  = ko.observable(fields.response headers)
     
     self.selected = ko.observable(false)

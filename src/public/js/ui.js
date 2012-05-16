@@ -40,12 +40,8 @@
             return self.selectedRequest = ko.observable();
         },
         addRequest: function(data) {
-            var self, uuids, openRequest;
+            var self, openRequest;
             self = this;
-            uuids = self.requests().map(function(request) {
-                return request.uuid;
-            });
-            console.log("looking for: " + data.uuid + " in " + uuids);
             openRequest = _.find(self.requests(), function(request) {
                 console.log(request.uuid(), data.uuid);
                 return request.uuid() === data.uuid;
@@ -96,14 +92,14 @@
         makeObservable: function(fields) {
             var self;
             self = this;
-            self.uuid = ko.observable(fields.uuid);
+            self.uuid = fields.uuid;
+            self.time = fields.time;
+            self.method = fields.method;
+            self.host = fields.host;
+            self.path = fields.path;
+            self.requestHeaders = fields.requestHeaders;
             self.contentType = ko.observable(fields.contentType);
-            self.time = ko.observable(fields.time);
-            self.method = ko.observable(fields.method);
-            self.host = ko.observable(fields.host);
-            self.path = ko.observable(fields.path);
             self.status = ko.observable(fields.status);
-            self.requestHeaders = ko.observable(fields.requestHeaders);
             self.responseHeaders = ko.observable(fields.responseHeaders);
             self.selected = ko.observable(false);
             self.sortedRequestHeaders = ko.computed(function() {
