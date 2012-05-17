@@ -43,14 +43,11 @@
             var self, openRequest;
             self = this;
             openRequest = _.find(self.requests(), function(request) {
-                console.log(request.uuid(), data.uuid);
-                return request.uuid() === data.uuid;
+                return request.uuid === data.uuid;
             });
             if (openRequest) {
-                console.log("found");
                 return openRequest.update(data);
             } else {
-                console.log("not found");
                 return self.requests.push(new Request(self, data));
             }
         },
@@ -81,13 +78,11 @@
             return self.makeObservable(fields);
         },
         update: function(fields) {
-            var self, field;
+            var self;
             self = this;
-            for (var field in fields) {
-                (function(field) {
-                    self[field](fields[field]);
-                })(field);
-            }
+            self.contentType(fields.contentType);
+            self.status(fields.status);
+            return self.responseHeaders(fields.responseHeaders);
         },
         makeObservable: function(fields) {
             var self;
@@ -103,13 +98,13 @@
             self.responseHeaders = ko.observable(fields.responseHeaders);
             self.selected = ko.observable(false);
             self.sortedRequestHeaders = ko.computed(function() {
-                return sortedPairsIn(self.requestHeaders());
+                return sortedPairsIn(self.requestHeaders);
             });
             self.sortedResponseHeaders = ko.computed(function() {
                 return sortedPairsIn(self.responseHeaders());
             });
             self.trimmedPath = ko.computed(function() {
-                return trimMiddleOf(self.path(), 50);
+                return trimMiddleOf(self.path, 50);
             });
             self.simplifiedContentType = ko.computed(function() {
                 if (self.contentType()) {

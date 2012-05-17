@@ -29,14 +29,11 @@ Page = class {
   add request (data) =
 
     open request = _.find(self.requests()) @(request)
-      console.log(request.uuid(),data.uuid)
-      request.uuid() == data.uuid
+      request.uuid == data.uuid
     
     if (open request)
-      console.log('found')
       open request.update(data)
     else      
-      console.log('not found')
       self.requests.push (new (Request (self, data)))
 
   deselect request () =
@@ -63,8 +60,9 @@ Request = class {
     self.make observable(fields)
   
   update(fields) =
-   for @(field) in (fields)
-     self.(field)(fields.(field))
+    self.content type (fields.content type)
+    self.status (fields.status)
+    self.response headers (fields.response headers)
    
   make observable(fields) =
     self.uuid              = fields.uuid
@@ -80,13 +78,13 @@ Request = class {
     self.selected = ko.observable(false)
     
     self.sorted request headers = ko.computed
-      sorted pairs in (self.request headers())
+      sorted pairs in (self.request headers)
       
     self.sorted response headers = ko.computed
       sorted pairs in (self.response headers())
     
     self.trimmed path = ko.computed
-      trim middle of (self.path(), 50)
+      trim middle of (self.path, 50)
     
     self.simplified content type = ko.computed
       if (self.content type())
