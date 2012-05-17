@@ -17,6 +17,7 @@ feature "Rudy uses his proxy" do
     @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
       
     @rudys_app_process.start
+    @rudys_slow_app_process.start
     @proxy_app_process.start
     
     @proxied_browser = Capybara::Session.new(:firefox_with_proxy)
@@ -48,11 +49,11 @@ feature "Rudy uses his proxy" do
     @watcher_browser.visit "http://127.0.0.1:8080"
     @proxied_browser.visit "http://127.0.0.1:5100"
   
-    @watcher_browser.within('#requests tbody tr') do
-      Capybara.timeout = 0.5
+    @watcher_browser.within(:css, '#requests tbody tr') do
+      Capybara.default_wait_time = 0.5
       @watcher_browser.should_not have_content('200')
       
-      Capybara.timeout = 2
+      Capybara.default_wait_time = 2
       @watcher_browser.should have_content('200')
     end
   end
