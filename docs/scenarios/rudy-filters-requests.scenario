@@ -1,0 +1,8 @@
+Scenario: Rudy Filters Requests
+===============================
+
+Rudy's web application makes lots of network requests but when he's debugging he only cares about a few of them.
+
+Rudy types "GET /poll" into the filter box and the list of requests is filtered to include only requests with the method "GET" and the path "/poll".
+
+Rudy types "404" into the filter box and the list of requests is filtered to include only requests with the response http status code 404.
