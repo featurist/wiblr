@@ -8,5 +8,10 @@ dashboard.mount (app)
 
 io = require 'socket.io'.listen (app)
 
-proxy.create server (io).listen 8081
-app.listen 8080
+proxy port = 8081
+dashboard port = 8080
+
+proxy.create server (io).listen (proxy port)
+app.listen (dashboard port)
+console.log "proxy: http://localhost:#(proxy port)/"
+console.log "dashboard: http://localhost:#(dashboard port)/"
