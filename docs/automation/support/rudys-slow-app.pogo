@@ -7,7 +7,7 @@ http.create server @(req, res)
   set
     res.write head (200, headers) 
     res.end "Hello World\n"
-  timeout (2000)
+  timeout (500)
 .listen 5100 "127.0.0.1"
 
 console.log 'Server running at http://127.0.0.1:5100/'
