@@ -92,7 +92,7 @@ Request = class {
       
     self.kind = ko.computed
       if (!self.content type())
-        kind = ""
+        kind = "pending"
       else 
         kind = "unknown"
         for @(type) in (content types)

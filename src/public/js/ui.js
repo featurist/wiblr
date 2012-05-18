@@ -114,7 +114,7 @@
             return self.kind = ko.computed(function() {
                 if (!self.contentType()) {
                     var kind;
-                    kind = "";
+                    kind = "pending";
                 } else {
                     var type;
                     kind = "unknown";
