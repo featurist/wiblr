@@ -7,7 +7,6 @@ Capybara.register_driver :firefox_with_proxy do |app|
   profile.proxy = Selenium::WebDriver::Proxy.new(:http => "127.0.0.1:8081")
   Capybara::Selenium::Driver.new(app, :profile => profile)
 end
-
 feature "Rudy uses his proxy" do
   background do
     @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
@@ -46,16 +45,16 @@ feature "Rudy uses his proxy" do
   end
   
   scenario "and spies on a long-running request, seeing first the request then the response" do
+    
+    #Dont work
+    
     @watcher_browser.visit "http://127.0.0.1:8080"
     @proxied_browser.visit "http://127.0.0.1:5100"
-  
-    @watcher_browser.within(:css, '#requests tbody tr') do
-      Capybara.default_wait_time = 0.5
-      @watcher_browser.should_not have_content('200')
-      
+      Capybara.default_wait_time = 0
+      @watcher_browser.find('.status').should_not have_content('200')
+
       Capybara.default_wait_time = 2
-      @watcher_browser.should have_content('200')
-    end
+      @watcher_browser.find('.status').should have_content('200')
   end
   
 end

@@ -31,7 +31,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
       delete (capture)
   
   save capture()
-    
+  
   proxy = http.create client (port, host)
   proxy request = proxy.request (method, path, headers)
 
