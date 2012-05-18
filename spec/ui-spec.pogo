@@ -2,6 +2,7 @@ express = require "express"
 request = require "request"
 Browser = require "zombie"
 model = require "../src/model"
+dashboard = require '../src/dashboard'
 
 describe "ui"
   
@@ -15,6 +16,7 @@ describe "ui"
     app = express.create server()
     app.use (express.static (__dirname + '/../src/public'))
     mount stub socket io (app)
+    dashboard.mount (app)
     app.listen (7532)
     app.on "listening" (listening)
   
@@ -22,16 +24,24 @@ describe "ui"
     browser.visit "http://127.0.0.1:7532"
       done()
   
-  add some requests (added) =
+  add request (added, capture properties) =
     capture = new (model.Capture)
+
     capture.method = 'GET'
     capture.status = 200
     capture.host = '1.2.3.4'
     capture.path = 'foo/bar'
     capture.content type = 'text/plain; charset=utf-8'
     capture.time = '2012-01-01T01:02:03'
+    capture.response body = ''
+    capture.request body = ''
     capture.request headers = { a = 'x', b = 'y' }
     capture.response headers = { c = 's', d = 't' }
+    
+    for @(property) in (capture properties)
+      if (capture properties.has own property (property))
+        capture.(property) = capture properties.(property)
+    
     capture.save
       request = JSON.stringify(capture.wire object())
       browser.evaluate "thePage.addRequest(#(request));"
@@ -40,7 +50,7 @@ describe "ui"
   before @(ready)
     host ui server
       visit app
-        add some requests
+        add request
           ready()
     
   it "renders the request details"
@@ -53,7 +63,7 @@ describe "ui"
   
   describe "clicking a row"
     before
-      browser.evaluate '$(''#requests tr:first'').click();'
+      select 1st request
     
     it "renders detailed request information"
       browser.text '#selected_request .method'.should.equal 'GET'
@@ -70,4 +80,54 @@ describe "ui"
     it "renders response headers"
       browser.text '#response_headers .name:first'.should.equal 'c'
       browser.text '#response_headers .value:first'.should.equal 's'
-          
+    
+    escape html (html) =
+      html.replace r/</g '&lt;'.replace r/>/g '&gt;'
+    
+    select (n)th request =
+      browser.evaluate "$('#requests tr:nth-child(#(n))').click();"
+    
+    select st request = select nd request = select th request
+    
+    request body () =
+      browser.query '#response-body'.contentWindow.document.body.innerHTML
+    
+    it 'renders response body' @(finished)
+      expected body = "<html><body><h1>Hi, this is HTML</h1></body></html>"
+      escaped expected body = escape html (expected body)
+      
+      add request (
+        response body: expected body
+        content type: 'text/html'
+        path: '/some.html'
+      ) @{
+        select 2nd request
+        browser.wait
+          actual body = request body ()
+          actual body.should.include (escaped expected body)
+          finished ()
+      }
+
+    it 'renders pretty response body when pretty checkbox is checked' @(finished)
+      request body = "<html><body><h1>Hi, this is HTML</h1></body></html>"
+
+      expected body = "<html>
+                         <body>
+                           <h1>Hi, this is HTML</h1>
+                         </body>
+                       </html>"
+                       
+      escaped expected body = escape html (expected body)
+      
+      add request (
+        response body: expected body
+        content type: 'text/html'
+        path: '/some.html'
+      ) @{
+        select 2nd request
+        browser.check '.pretty-response-body'
+        browser.wait
+          actual body = request body ()
+          actual body.should.include (escaped expected body)
+          finished ()
+      }

@@ -32,7 +32,7 @@ feature "Rudy uses his proxy" do
     @proxied_browser.visit "http://127.0.0.1:1337"
     @watcher_browser.execute_script("$('#requests tbody tr:first').click()")    
     @proxied_browser.should have_content "Hello World"
-    @watcher_browser.within_frame "response_body" do
+    @watcher_browser.within_frame "response-body" do
       @watcher_browser.should have_css("textarea", :text => "Hello World")
     end
     
