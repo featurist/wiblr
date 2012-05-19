@@ -20,7 +20,7 @@ ko.binding handlers.time = {
     $(element).text(moment(value).format(pattern))
 }
 
-Page = class {
+Page = $class {
   
   constructor () =
     self.requests = ko.observable array ()
@@ -53,7 +53,7 @@ content types = {
   json = r/json/
 }
 
-Request = class {
+Request = $class {
   
   constructor (page, fields) =
     self.page = page
