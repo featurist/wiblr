@@ -8,11 +8,9 @@ exports.mount (app) =
 
   app.get "/requests/:uuid" @(req, res)
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      res.content type (capture.content type)
-      res.send (capture.response body)
+      res.send (capture.response body, 'content-type': capture.content type)
 
   app.get "/requests/:uuid/html" @(req, res)
-    res.content type ("text/html")
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
       reg = r/(text|css|javascript|json|xml)/
       if (capture.content type.match (reg))
@@ -21,6 +19,6 @@ exports.mount (app) =
             <body style='margin:0; padding: 0'>
               <textarea style='width: 100%; height:100%;border:0'>#(decode base64 as utf8 (capture.response body))</textarea>
             </body>
-          </html>"
+          </html>" ('content-type': 'text/html')
       else
         res.send "<img src='/requests/#(capture.uuid)' />"
