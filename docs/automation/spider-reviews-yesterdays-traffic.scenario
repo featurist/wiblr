@@ -1,0 +1,28 @@
+Scenario: Spider reviews yesterday's traffic
+
+Spider receives a report of 404s trying to apply a voucher to a purchase
+through his company's API from a client on the US west coast.
+  
+He sees no obvious explanation from the available logs,
+so he sends the client a url to specific to them on his wiblr proxy:  
+  host: usclient.spider.wiblr.com
+  port: 8080
+and asks them to set these proxy settings then recreate the problem that night (uk time)
+while he is in bed but they are all working.
+
+The following morning, he browses to http://spider.wiblr.com, logs in 
+and browses to the usclient proxy logs and sees a graph representing the past 24 hrs' traffic.
+He immediately spots a couple of clear peaks around 1am and 4am when the proxy 
+had been in use.
+
+He zooms into the first peak and scans through the traffic looking for calls to
+the endpoint where the client had been reporting 404s.
+
+There is a lot of chatter and Spider cannot immediately spot the problem
+so he enters, "status: 404" into the filter bar and the list is filtered to show
+only a bunch of calls to favicon.ico and /basket/applyvoocher
+
+He emails his us clients to point out that they had voocher not voucher and while he's at
+he takes a closer look at the favicon.ico request. It turns out that the favicon 404 is
+actually loading a custom 404 page that looks fairly expensive,
+so he fires off an email to the development team to alert them of the problem.
