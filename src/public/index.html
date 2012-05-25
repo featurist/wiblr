@@ -9,9 +9,8 @@
         Wiblr
       </div>
     </div>
-    
+
     <div id="left_panel">
-    
       <table id="requests">
         <tbody id='requests_rows' data-bind="foreach: requests">
           <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status' + status() }, click: select, css: { selected: selected() }">
@@ -25,7 +24,16 @@
           </tr>
         </tbody>
       </table>
-      
+      <label>
+        Scale: 
+        <select id='scale'>
+          <option value="5">5 mins</option>
+          <option value="15">15 mins</option>
+          <option value="60">1 hr</option>
+          <option value="360">6 hrs</option>
+          <option value="1440">24 hrs</option>
+        </select>
+      </label>
     </div>
     
     <div id="right_panel">

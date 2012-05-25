@@ -108,15 +108,14 @@ while he is in bed but they are all working.")
 
     step("and browses to the usclient proxy logs and sees a graph representing the past 24 hrs' traffic.")
 
-    @watcher_browser.select('24hr').from('scale')
+    @watcher_browser.select('24 hrs').from('scale')
 
-    step("He immediately spots a couple of')lear peaks around 1am and 4am when the proxy 
-had been in use.
-
-He zooms into the first peak")
+    step("He immediately spots a peak around 8hrs ago zooms into the that peak")
 
     @watcher_browser.drag('scrubber').to(session_start) # OK, not quite that simple, but should be easy enough
 
+    @watcher_browser.select('15 min').from('scale')
+    
     step("and scans through the traffic looking for calls to
 the endpoint where the client had been reporting 404s.")
 
