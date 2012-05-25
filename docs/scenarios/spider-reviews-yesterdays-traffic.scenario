@@ -2,7 +2,7 @@ Scenario: Spider reviews yesterday's traffic
 
 Spider receives a report of 404s trying to apply a voucher to a purchase
 through his company's API from a client on the US west coast.
-  
+
 He sees no obvious explanation from the available logs,
 so he sends the client a url to specific to them on his wiblr proxy:  
   host: usclient.spider.wiblr.com

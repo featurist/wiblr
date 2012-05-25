@@ -14,12 +14,12 @@
     
       <table id="requests">
         <tbody id='requests_rows' data-bind="foreach: requests">
-          <tr data-bind="attr: { 'data-uuid': uuid }, click: select, css: { selected: selected() }">
+          <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status' + status() }, click: select, css: { selected: selected() }">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
             <td class="cell method" data-bind="text: method"> </td>
             <td class="cell path" data-bind="text: trimmedPath"> </td>
             <td class="cell host" data-bind="text: host"> </td>
-            <td class="cell status" data-bind="text: status"> </td>
+            <td class="cell status" data-bind="text: status()"> </td>
             <td class="cell content-type" data-bind="text: simplifiedContentType"> </td>
             <td class="cell time" data-bind="time: time"> </td>
           </tr>

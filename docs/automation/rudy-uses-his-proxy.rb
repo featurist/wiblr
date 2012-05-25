@@ -13,7 +13,7 @@ def visit_through_proxy (url)
   RestClient.get url
 end 
 
-feature "Spider reviews yesterdays traffic" do
+feature "Rudy uses his proxy" do
   background do
     @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
     @rudys_slow_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-slow-app.pogo")
