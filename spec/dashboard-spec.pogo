@@ -27,12 +27,13 @@ describe "dashboard"
   describe '/requests/:id/pretty, when the content is html'
     it 'renders a textarea, with the html indented' @(done)
       capture = new (model.Capture)
-      capture.response body = new (Buffer "<html><body><h1>hi</h1></body></html>")
+      capture.response body = new (Buffer "<html><head></head><body><h1>hi</h1></body></html>")
       capture.content type = "text/html"
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+        request "http://127.0.0.1:9586/requests/#(capture.uuid)/pretty" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
           body.should.include "<html>
+                                 <head></head>
                                  <body>
                                    <h1>hi</h1>
                                  </body>

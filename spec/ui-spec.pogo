@@ -89,11 +89,11 @@ describe "ui"
     
     select st request = select nd request = select th request
     
-    request body () =
+    response body () =
       browser.query '#response-body'.contentWindow.document.body.innerHTML
     
     it 'renders response body' @(finished)
-      expected body = "<html><body><h1>Hi, this is HTML</h1></body></html>"
+      expected body = "<html><head></head><body><h1>Hi, this is HTML</h1></body></html>"
       escaped expected body = escape html (expected body)
       
       add request (
@@ -103,15 +103,16 @@ describe "ui"
       ) @{
         select 2nd request
         browser.wait
-          actual body = request body ()
+          actual body = response body ()
           actual body.should.include (escaped expected body)
           finished ()
       }
 
-    it 'renders pretty response body when pretty checkbox is checked' @(finished)
-      request body = "<html><body><h1>Hi, this is HTML</h1></body></html>"
+    it 'renders pretty response body when pretty checkbox is checked' @(finished) =>
+      raw response body = "<html><head></head><body><h1>Hi, this is HTML</h1></body></html>"
 
       expected body = "<html>
+                         <head></head>
                          <body>
                            <h1>Hi, this is HTML</h1>
                          </body>
@@ -120,14 +121,15 @@ describe "ui"
       escaped expected body = escape html (expected body)
       
       add request (
-        response body: expected body
+        response body: raw response body
         content type: 'text/html'
         path: '/some.html'
       ) @{
         select 2nd request
         browser.check '.pretty-response-body'
+        times called = 0
         browser.wait
-          actual body = request body ()
+          actual body = response body ()
           actual body.should.include (escaped expected body)
           finished ()
       }

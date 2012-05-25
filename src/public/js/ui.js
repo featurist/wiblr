@@ -87,7 +87,7 @@
             self.simplifiedContentType = ko.computed(function() {
                 return self.contentType.split(";")[0];
             });
-            return self.kind = ko.computed(function() {
+            self.kind = ko.computed(function() {
                 var kind, type;
                 kind = "unknown";
                 for (var type in contentTypes) {
@@ -98,6 +98,16 @@
                     })(type);
                 }
                 return kind;
+            });
+            self.pretty = ko.observable(false);
+            return self.responseUrl = ko.computed(function() {
+                return "/requests/" + self.uuid + "/" + function() {
+                    if (self.pretty()) {
+                        return "pretty";
+                    } else {
+                        return "html";
+                    }
+                }();
             });
         },
         select: function() {
