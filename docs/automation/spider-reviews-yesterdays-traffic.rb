@@ -108,14 +108,16 @@ while he is in bed but they are all working.")
 
     step("and browses to the usclient proxy logs and sees a graph representing the past 24 hrs' traffic.")
 
-    @watcher_browser.select('24 hrs').from('scale')
+    @watcher_browser.select('24 hrs', :from => 'scale')
 
     step("He immediately spots a peak around 8hrs ago zooms into the that peak")
 
-    @watcher_browser.drag('scrubber').to(session_start) # OK, not quite that simple, but should be easy enough
+    destination = @watcher_browser.find(:css, "#graph li[data-time='#{@test_start_time - session_start}']")
+    scrubber = @watcher_browser.find(:css, '#scrubber')
+    scrubber.drag_to(destination) # OK, not quite that simple, but should be easy enough
 
-    @watcher_browser.select('15 min').from('scale')
-    
+    @watcher_browser.select('15 min', :from => 'scale')
+
     step("and scans through the traffic looking for calls to
 the endpoint where the client had been reporting 404s.")
 

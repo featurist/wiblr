@@ -22,9 +22,32 @@ ko.binding handlers.time = {
 
 Page = class {
   
-  constructor () =
+  constructor() =
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
+    self.summary graph = Raphael(10, 100, 640, 480)
+    $("#scale").change
+      self.redraw graph to scale()
+
+  redraw graph to scale() =
+    self.scale = $("#scale").val()
+    $.get("/requests/summary?over=#(self.scale * 60)").done @(data)
+      x = _.map(_.keys(data)) @(key)
+        key
+
+      y = _.map(_.keys(data)) @(key)
+        data.(key).requests
+       
+      if ((x.length <= 0) || (y.length <= 0))
+        x = [0,1]
+        y = [0,0]
+        
+      if (x.length > 800)
+        console.log("Invalid graph data", x,y)
+        return
+      
+      self.summary graph.clear()
+      self.summary graph.linechart(10,10,800,100,x, y, {smooth (true)})
 
   add request (data) =
 
@@ -98,10 +121,9 @@ Request = class {
         for @(type) in (content types)
           if (self.content type().match(content types.(type)))
             kind = type
-        
+
       kind
-      
-        
+
   select() =
     self.page.deselect request ()
     self.page.selected request (self)

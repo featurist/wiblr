@@ -37,7 +37,37 @@
             var self;
             self = this;
             self.requests = ko.observableArray();
-            return self.selectedRequest = ko.observable();
+            self.selectedRequest = ko.observable();
+            self.summaryGraph = Raphael(10, 100, 640, 480);
+            return $("#scale").change(function() {
+                return self.redrawGraphToScale();
+            });
+        },
+        redrawGraphToScale: function() {
+            var self;
+            self = this;
+            self.scale = $("#scale").val();
+            return $.get("/requests/summary?over=" + self.scale * 60).done(function(data) {
+                var x, y;
+                x = _.map(_.keys(data), function(key) {
+                    return key;
+                });
+                y = _.map(_.keys(data), function(key) {
+                    return data[key].requests;
+                });
+                if (x.length <= 0 || y.length <= 0) {
+                    x = [ 0, 1 ];
+                    y = [ 0, 0 ];
+                }
+                if (x.length > 800) {
+                    console.log("Invalid graph data", x, y);
+                    return;
+                }
+                self.summaryGraph.clear();
+                return self.summaryGraph.linechart(10, 10, 800, 100, x, y, {
+                    smooth: true
+                });
+            });
         },
         addRequest: function(data) {
             var self, openRequest;
