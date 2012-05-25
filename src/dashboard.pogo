@@ -31,6 +31,8 @@ exports.mount (app) =
           else
             body
         
-          res.render 'responseBody.html' (pretty body: pretty body, layout: false)
+          res.header 'cache-control' 'max-age=31536000 private'
+          res.render ('responseBody.html', pretty body: pretty body, layout: false)
         else
-          res.send "<img src='/requests/#(capture.uuid)' />"
+          res.header 'cache-control' 'max-age=31536000 private'
+          res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')

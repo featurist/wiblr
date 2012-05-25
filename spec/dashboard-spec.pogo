@@ -34,6 +34,8 @@ describe "dashboard"
       capture.save
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/pretty" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
+          res.headers.'cache-control'.should.equal 'max-age=31536000 private'
+
           body.should.include (escape "<html>
                                          <head></head>
                                          <body>
@@ -52,7 +54,8 @@ describe "dashboard"
       capture.save
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
-          body.should.include("<textarea")
+          res.headers.'cache-control'.should.equal 'max-age=31536000 private'
+
           body.should.include (escape "<html><body><h1>hi</h1></body></html>")
           done()
 
@@ -66,5 +69,7 @@ describe "dashboard"
       capture.save
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
+          res.headers.'cache-control'.should.equal 'max-age=31536000 private'
+
           body.should.include("<img")
           done()
