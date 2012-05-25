@@ -31,11 +31,6 @@ exports.mount (app) =
           else
             body
         
-          res.send "
-            <html>
-              <body style='margin:0; padding: 0'>
-                <textarea style='width: 100%; height:100%;border:0'>#(pretty body)</textarea>
-              </body>
-            </html>" ('content-type': 'text/html')
+          res.render 'responseBody.html' (pretty body: pretty body, layout: false)
         else
           res.send "<img src='/requests/#(capture.uuid)' />"

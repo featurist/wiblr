@@ -7,9 +7,8 @@ describe "dashboard"
 
   before
   
-    app = express.create server ()
+    app = require '../src/app'.create app ()
     app.listen 9586
-    dashboard.mount (app)
 
   describe "/requests/:id"
 
@@ -24,6 +23,9 @@ describe "dashboard"
           body.should.equal("happy days")
           done()
 
+  escape (html) =
+    html.replace r/</g '&lt;'.replace r/>/g '&gt;'
+
   describe '/requests/:id/pretty, when the content is html'
     it 'renders a textarea, with the html indented' @(done)
       capture = new (model.Capture)
@@ -32,12 +34,12 @@ describe "dashboard"
       capture.save
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/pretty" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
-          body.should.include "<html>
-                                 <head></head>
-                                 <body>
-                                   <h1>hi</h1>
-                                 </body>
-                               </html>"
+          body.should.include (escape "<html>
+                                         <head></head>
+                                         <body>
+                                           <h1>hi</h1>
+                                         </body>
+                                       </html>")
           done()
 
   describe "/requests/:id/html, when the content is text"
@@ -51,7 +53,7 @@ describe "dashboard"
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
           body.should.include("<textarea")
-          body.should.include "<html><body><h1>hi</h1></body></html>"
+          body.should.include (escape "<html><body><h1>hi</h1></body></html>")
           done()
 
   describe "/requests/:id/html, when the content is an image"

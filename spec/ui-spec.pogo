@@ -13,10 +13,8 @@ describe "ui"
       res.send "window.io = { connect: { on: function() {} } };"
     
   host ui server (listening) =
-    app = express.create server()
-    app.use (express.static (__dirname + '/../src/public'))
+    app = require '../src/app'.create app ()
     mount stub socket io (app)
-    dashboard.mount (app)
     app.listen (7532)
     app.on "listening" (listening)
   
