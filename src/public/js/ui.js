@@ -37,7 +37,65 @@
             var self;
             self = this;
             self.requests = ko.observableArray();
-            return self.selectedRequest = ko.observable();
+            self.selectedRequest = ko.observable();
+            self.summaryGraph = Raphael(10, 100, 640, 480);
+            $("#scale").change(function() {
+                return self.redrawGraphToScale();
+            });
+            return self.redrawGraphToScale();
+        },
+        roundToNearestSecond: function(time) {
+            var self;
+            self = this;
+            return time - time % 1e3;
+        },
+        redrawGraphToScale: function() {
+            var self, maxX, minX;
+            self = this;
+            self.scale = $("#scale").val();
+            maxX = self.roundToNearestSecond((new Date).getTime());
+            minX = maxX - self.scale * 60 * 1e3;
+            console.log(minX, maxX);
+            return $.get("/requests/summary?over=" + self.scale * 60).done(function(data) {
+                var x, y, times, gen1_items, gen2_i;
+                x = [];
+                y = [];
+                times = _.keys(data);
+                if (times[0] > minX) {
+                    x.push(minX);
+                    y.push(0);
+                }
+                gen1_items = times;
+                for (gen2_i = 0; gen2_i < gen1_items.length; gen2_i++) {
+                    (function(gen2_i) {
+                        var time;
+                        time = gen1_items[gen2_i];
+                        if (time === minX) {
+                            y[0] === data[time].requests;
+                        } else {
+                            x.push(Number(time));
+                            y.push(Number(data[time].requests));
+                        }
+                    })(gen2_i);
+                }
+                if (x[x.length - 1] < maxX) {
+                    x.push(maxX);
+                    y.push(0);
+                }
+                console.log(x, y);
+                if (x.length <= 0 || y.length <= 0) {
+                    x = [ 0, 1 ];
+                    y = [ 0, 0 ];
+                }
+                if (x.length > 800) {
+                    console.log("Invalid graph data", x, y);
+                    return;
+                }
+                self.summaryGraph.clear();
+                return self.summaryGraph.linechart(10, 10, 800, 100, x, y, {
+                    smooth: true
+                });
+            });
         },
         addRequest: function(data) {
             var self, openRequest;

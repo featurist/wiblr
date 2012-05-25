@@ -22,9 +22,55 @@ ko.binding handlers.time = {
 
 Page = class {
   
-  constructor () =
+  constructor() =
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
+    self.summary graph = Raphael(10, 100, 640, 480)
+    $("#scale").change
+      self.redraw graph to scale()
+    
+    self.redraw graph to scale()
+
+  round (time) to nearest second =
+    time - (time % 1000)
+
+  redraw graph to scale() =
+    self.scale = $("#scale").val()
+    max x = self.round (new(Date()).get time()) to nearest second
+    min x = max x - (self.scale * (60 * 1000))
+    console.log(min x, max x)
+    
+    $.get("/requests/summary?over=#(self.scale * 60)").done @(data)
+      x = [], y = []
+      times = _.keys(data)
+      
+      if (times.0 > min x)
+        x.push (min x)
+        y.push (0)
+
+      for each @(time) in (times)
+        if (time == min x)
+          y.0 == data.(time).requests
+        else
+          x.push (Number(time))
+          y.push (Number(data.(time).requests))
+
+      if (x.(x.length - 1) < max x)
+        x.push (max x)
+        y.push (0)
+               
+      console.log(x,y)
+       
+      if ((x.length <= 0) || (y.length <= 0))
+        x = [0,1]
+        y = [0,0]
+        
+      if (x.length > 800)
+        console.log("Invalid graph data", x,y)
+        return
+      
+      self.summary graph.clear()
+      self.summary graph.linechart(10,10,800,100,x, y, {smooth (true)})
 
   add request (data) =
 
@@ -98,10 +144,9 @@ Request = class {
         for @(type) in (content types)
           if (self.content type().match(content types.(type)))
             kind = type
-        
+
       kind
-      
-        
+
   select() =
     self.page.deselect request ()
     self.page.selected request (self)
