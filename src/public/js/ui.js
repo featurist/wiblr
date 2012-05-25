@@ -40,9 +40,16 @@
             return self.selectedRequest = ko.observable();
         },
         addRequest: function(data) {
-            var self;
+            var self, openRequest;
             self = this;
-            return self.requests.push(new Request(self, data));
+            openRequest = _.find(self.requests(), function(request) {
+                return request.uuid === data.uuid;
+            });
+            if (openRequest) {
+                return openRequest.update(data);
+            } else {
+                return self.requests.push(new Request(self, data));
+            }
         },
         deselectRequest: function() {
             var self, r;
@@ -65,37 +72,59 @@
     };
     Request = $class({
         constructor: function(page, fields) {
-            var self, field;
+            var self;
             self = this;
             self.page = page;
-            self.responseBody = ko.observable();
-            for (var field in fields) {
-                (function(field) {
-                    self[field] = fields[field];
-                })(field);
-            }
+            return self.makeObservable(fields);
+        },
+        update: function(fields) {
+            var self;
+            self = this;
+            self.contentType(fields.contentType);
+            self.status(fields.status);
+            return self.responseHeaders(fields.responseHeaders);
+        },
+        makeObservable: function(fields) {
+            var self;
+            self = this;
+            self.uuid = fields.uuid;
+            self.time = fields.time;
+            self.method = fields.method;
+            self.host = fields.host;
+            self.path = fields.path;
+            self.requestHeaders = fields.requestHeaders;
+            self.contentType = ko.observable(fields.contentType);
+            self.status = ko.observable(fields.status);
+            self.responseHeaders = ko.observable(fields.responseHeaders);
             self.selected = ko.observable(false);
             self.sortedRequestHeaders = ko.computed(function() {
                 return sortedPairsIn(self.requestHeaders);
             });
             self.sortedResponseHeaders = ko.computed(function() {
-                return sortedPairsIn(self.responseHeaders);
+                return sortedPairsIn(self.responseHeaders());
             });
             self.trimmedPath = ko.computed(function() {
                 return trimMiddleOf(self.path, 50);
             });
             self.simplifiedContentType = ko.computed(function() {
-                return self.contentType.split(";")[0];
+                if (self.contentType()) {
+                    return self.contentType().split(";")[0];
+                }
             });
             self.kind = ko.computed(function() {
-                var kind, type;
-                kind = "unknown";
-                for (var type in contentTypes) {
-                    (function(type) {
-                        if (self.contentType.match(contentTypes[type])) {
-                            kind = type;
-                        }
-                    })(type);
+                if (!self.contentType()) {
+                    var kind;
+                    kind = "pending";
+                } else {
+                    var type;
+                    kind = "unknown";
+                    for (var type in contentTypes) {
+                        (function(type) {
+                            if (self.contentType().match(contentTypes[type])) {
+                                kind = type;
+                            }
+                        })(type);
+                    }
                 }
                 return kind;
             });

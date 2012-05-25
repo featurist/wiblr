@@ -150,9 +150,12 @@ table {
   width: 26px;
 }
 
-#requests td.cell.icon img {
-  margin-top: 2px;
+#requests td.cell.icon {
   width: 21px;
+}
+#requests td.cell.icon img {
+  margin-top:2px;
+  max-height:14px;
 }
 
 #requests td.cell.method {

@@ -1,40 +1,68 @@
 require 'capybara/rspec'
 require 'selenium-webdriver'
 require 'childprocess'
+require 'rest-client'
 
-Capybara.register_driver :firefox_with_proxy do |app|
-  profile = Selenium::WebDriver::Firefox::Profile.new
-  profile.proxy = Selenium::WebDriver::Proxy.new(:http => "127.0.0.1:8081")
-  Capybara::Selenium::Driver.new(app, :profile => profile)
+Capybara.register_driver :chrome do |app|
+  Capybara::Selenium::Driver.new(app, :browser => :chrome)
 end
+
+def visit_through_proxy (url)
+  RestClient.proxy = "http://127.0.0.1:8081"
+  RestClient.get url
+end 
 
 feature "Rudy uses his proxy" do
   background do
     @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
+    @rudys_slow_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-slow-app.pogo")
     @proxy_app_process = ChildProcess.build("pogo", "src/app.pogo")
     
     @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
       
-    @rudys_app_process.start
-    @proxy_app_process.start
+    @rudys_app_process.start.io.inherit!
+    @rudys_slow_app_process.start.io.inherit!
+    @proxy_app_process.start.io.inherit!
     
-    @proxied_browser = Capybara::Session.new(:firefox_with_proxy)
-    @watcher_browser = Capybara::Session.new(:selenium)
+    @watcher_browser = Capybara::Session.new(:chrome)
   end
   
-  after do
+  after :each do
     @proxy_app_process.stop
     @rudys_app_process.stop
+    @rudys_slow_app_process.stop
+    
+    Capybara.reset_sessions!
   end
 
   scenario "and spies on another browser" do
     @watcher_browser.visit "http://127.0.0.1:8080"
-    @proxied_browser.visit "http://127.0.0.1:1337"
+    proxied_response = visit_through_proxy "http://127.0.0.1:1337"
+    
     @watcher_browser.execute_script("$('#requests tbody tr:first').click()")    
-    @proxied_browser.should have_content "Hello World"
-    @watcher_browser.within_frame "response-body" do
+    proxied_response.should include "Hello World"
+    
+    @watcher_browser.within_frame "response_body" do
       @watcher_browser.should have_css("textarea", :text => "Hello World")
     end
     
   end
+  
+  scenario "and spies on a long-running request, seeing first the request then the response" do
+    @watcher_browser.visit "http://127.0.0.1:8080"
+    
+    proxy_request_thread = Thread.new do
+      visit_through_proxy "http://127.0.0.1:5100"
+    end
+    
+    @watcher_browser.find('.host').should have_content('127.0.0.1')
+    Capybara.default_wait_time = 0
+    @watcher_browser.all('.status').first().should_not have_content('200')
+    
+    Capybara.default_wait_time = 0.5
+    @watcher_browser.find('.status').should have_content('200')
+    
+    proxy_request_thread.join
+  end
+  
 end

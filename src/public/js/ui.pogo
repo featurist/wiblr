@@ -27,8 +27,15 @@ Page = class {
     self.selected request = ko.observable ()
 
   add request (data) =
-    self.requests.push (new (Request (self, data)))
-  
+
+    open request = _.find(self.requests()) @(request)
+      request.uuid == data.uuid
+    
+    if (open request)
+      open request.update(data)
+    else      
+      self.requests.push (new (Request (self, data)))
+
   deselect request () =
     r = self.selected request()
     if (r) @{ r.selected (false) }
@@ -50,9 +57,23 @@ Request = class {
   
   constructor (page, fields) =
     self.page = page
-    self.response body = ko.observable ()
-    for @(field) in (fields)
-      self.(field) = fields.(field)
+    self.make observable(fields)
+  
+  update(fields) =
+    self.content type (fields.content type)
+    self.status (fields.status)
+    self.response headers (fields.response headers)
+   
+  make observable(fields) =
+    self.uuid              = fields.uuid
+    self.time              = fields.time
+    self.method            = fields.method
+    self.host              = fields.host
+    self.path              = fields.path
+    self.request headers   = fields.request headers
+    self.content type      = ko.observable(fields.content type)
+    self.status            = ko.observable(fields.status)
+    self.response headers  = ko.observable(fields.response headers)
     
     self.selected = ko.observable(false)
     
@@ -60,19 +81,23 @@ Request = class {
       sorted pairs in (self.request headers)
       
     self.sorted response headers = ko.computed
-      sorted pairs in (self.response headers)
+      sorted pairs in (self.response headers())
     
     self.trimmed path = ko.computed
       trim middle of (self.path, 50)
     
     self.simplified content type = ko.computed
-      self.content type.split ";".0
+      if (self.content type())
+        self.content type().split ";".0
       
     self.kind = ko.computed
-      kind = "unknown"
-      for @(type) in (content types)
-        if (self.content type.match(content types.(type)))
-          kind = type
+      if (!self.content type())
+        kind = "pending"
+      else 
+        kind = "unknown"
+        for @(type) in (content types)
+          if (self.content type().match(content types.(type)))
+            kind = type
         
       kind
     

@@ -27,7 +27,9 @@ CaptureSchema.methods.append response body (chunk) =
   self.response body = buffertools.concat(self.response body, chunk)
 
 CaptureSchema.pre 'save' @(next)
-  this.uuid = uuid.v4()
+  if (!this.uuid)
+    this.uuid = uuid.v4()
+    
   next()
 
 CaptureSchema.methods.wire object() =

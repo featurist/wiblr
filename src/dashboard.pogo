@@ -19,20 +19,23 @@ exports.mount (app) =
 
   render body (req, res, pretty: false) =
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      reg = r/(text|css|javascript|json|xml)/
-      if (capture.content type.match (reg))
-        body = decode base64 as utf8 (capture.response body)
-      
-        pretty body = if (pretty)
-          prettify (body, content type: capture.content type)
-        else
-          body
-        
-        res.send "
-          <html>
-            <body style='margin:0; padding: 0'>
-              <textarea style='width: 100%; height:100%;border:0'>#(pretty body)</textarea>
-            </body>
-          </html>" ('content-type': 'text/html')
+      if (capture.response body == nil)
+        res.end ('', 'content-type': 'text/plain')
       else
-        res.send "<img src='/requests/#(capture.uuid)' />"
+        reg = r/(text|css|javascript|json|xml)/
+        if (capture.content type.match (reg))
+          body = decode base64 as utf8 (capture.response body)
+      
+          pretty body = if (pretty)
+            prettify (body, content type: capture.content type)
+          else
+            body
+        
+          res.send "
+            <html>
+              <body style='margin:0; padding: 0'>
+                <textarea style='width: 100%; height:100%;border:0'>#(pretty body)</textarea>
+              </body>
+            </html>" ('content-type': 'text/html')
+        else
+          res.send "<img src='/requests/#(capture.uuid)' />"

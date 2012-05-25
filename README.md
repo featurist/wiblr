@@ -9,5 +9,5 @@ Install prerequisites:
 In a mongo shell:
 
 	use wiblr
-	db.auth("test", "password")
+	db.auth("test", "password") 
 
