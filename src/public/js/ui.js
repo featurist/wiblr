@@ -55,14 +55,13 @@
             minX = maxX - self.scale * 60 * 1e3;
             return $.get("/requests/summary?over=" + self.scale * 60).done(function(captures) {
                 var gen1_items, gen2_i;
-                console.log("TODO: Graph", captures);
                 self.requests([]);
                 gen1_items = captures;
                 for (gen2_i = 0; gen2_i < gen1_items.length; gen2_i++) {
                     (function(gen2_i) {
                         var capture;
                         capture = gen1_items[gen2_i];
-                        self.requests.unshift(new Request(self, capture));
+                        self.requests.push(new Request(self, capture));
                     })(gen2_i);
                 }
             });
@@ -140,12 +139,13 @@
                 }
             });
             return self.kind = ko.computed(function() {
-                if (!self.contentType()) {
-                    var kind;
-                    kind = "pending";
-                } else {
+                var kind;
+                kind = "unknown";
+                if (!self.status) {
+                    kind("pending");
+                }
+                if (self.contentType()) {
                     var type;
-                    kind = "unknown";
                     for (var type in contentTypes) {
                         (function(type) {
                             if (self.contentType().match(contentTypes[type])) {

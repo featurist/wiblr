@@ -38,10 +38,9 @@ Page = class {
     min x = max x - (self.scale * (60 * 1000))
     
     $.get("/requests/summary?over=#(self.scale * 60)").done @(captures)
-      console.log("TODO: Graph", captures)
       self.requests([])
       for each @(capture) in (captures)
-        self.requests.unshift (new (Request (self, capture)))
+        self.requests.push (new (Request (self, capture)))
 
   add request (data) =
 
@@ -108,10 +107,11 @@ Request = class {
         self.content type().split ";".0
 
     self.kind = ko.computed
-      if (!self.content type())
-        kind = "pending"
-      else 
-        kind = "unknown"
+      kind = "unknown"
+      if (!self.status)
+        kind "pending"
+
+      if (self.content type())
         for @(type) in (content types)
           if (self.content type().match(content types.(type)))
             kind = type
