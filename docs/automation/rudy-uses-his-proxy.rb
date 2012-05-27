@@ -48,8 +48,8 @@ feature "Rudy uses his proxy" do
     @watcher_browser.find(:css, "#requests tbody tr").click  
     proxied_response.should include "Hello World"
     
-    @watcher_browser.within_frame "response_body" do
-      @watcher_browser.should have_css("textarea", :text => "Hello World")
+    @watcher_browser.within_frame "response-body" do
+      @watcher_browser.should have_css("pre code", :text => "Hello World")
     end
     
   end
@@ -65,7 +65,7 @@ feature "Rudy uses his proxy" do
     begin
       @watcher_browser.find('.host').should have_content('127.0.0.1')
       Capybara.default_wait_time = 0
-      @watcher_browser.all('.status').first().should_not have_content('200')
+      @watcher_browser.all('.status').first.should_not have_content('200')
     
       Capybara.default_wait_time = 0.5
       @watcher_browser.find('.status').should have_content('200')

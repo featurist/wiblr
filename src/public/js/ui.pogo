@@ -117,7 +117,15 @@ Request = class {
             kind = type
 
       kind
-
+    
+    self.pretty = ko.observable (false)
+    
+    self.response url = ko.computed
+      '/requests/' + self.uuid + '/' + if (self.pretty ())
+        'pretty'
+      else
+        'html'
+        
   select() =
     self.page.deselect request ()
     self.page.selected request (self)
