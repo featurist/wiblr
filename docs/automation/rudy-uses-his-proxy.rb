@@ -1,4 +1,3 @@
-
 require 'capybara/rspec'
 require 'selenium-webdriver'
 require 'childprocess'
@@ -12,6 +11,8 @@ def visit_through_proxy (url)
   RestClient.proxy = "http://127.0.0.1:8081"
   RestClient.get url
 end 
+
+include DB
 
 feature "Rudy uses his proxy" do
   background do
@@ -28,6 +29,10 @@ feature "Rudy uses his proxy" do
     @watcher_browser = Capybara::Session.new(:chrome)
   end
   
+  before :each do
+     clear_captures
+  end
+  
   after :each do
     @proxy_app_process.stop
     @rudys_app_process.stop
@@ -40,7 +45,7 @@ feature "Rudy uses his proxy" do
     @watcher_browser.visit "http://127.0.0.1:8080"
     proxied_response = visit_through_proxy "http://127.0.0.1:1337"
     
-    @watcher_browser.execute_script("$('#requests tbody tr:first').click()")    
+    @watcher_browser.find(:css, "#requests tbody tr").click  
     proxied_response.should include "Hello World"
     
     @watcher_browser.within_frame "response_body" do
@@ -56,12 +61,17 @@ feature "Rudy uses his proxy" do
       visit_through_proxy "http://127.0.0.1:5100"
     end
     
-    @watcher_browser.find('.host').should have_content('127.0.0.1')
-    Capybara.default_wait_time = 0
-    @watcher_browser.all('.status').first().should_not have_content('200')
+    original_wait_time = Capybara.default_wait_time
+    begin
+      @watcher_browser.find('.host').should have_content('127.0.0.1')
+      Capybara.default_wait_time = 0
+      @watcher_browser.all('.status').first().should_not have_content('200')
     
-    Capybara.default_wait_time = 0.5
-    @watcher_browser.find('.status').should have_content('200')
+      Capybara.default_wait_time = 0.5
+      @watcher_browser.find('.status').should have_content('200')
+    ensure
+      Capybara.default_wait_time = original_wait_time
+    end
     
     proxy_request_thread.join
   end

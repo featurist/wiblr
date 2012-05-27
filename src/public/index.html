@@ -12,8 +12,7 @@
     <div id="left_panel">
       <div id="graph">
       </div>
-      <label for="scale">
-        Scale: 
+        Load the last  
         <select id="scale">
           <option value="5">5 mins</option>
           <option value="15">15 mins</option>
@@ -21,17 +20,19 @@
           <option value="360">6 hrs</option>
           <option value="1440">24 hrs</option>
         </select>
+        traffic
+        <input id="load" type="button" value="Load" />
       </label>
       <table id="requests">
         <tbody id='requests_rows' data-bind="foreach: requests">
-          <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status' + status() }, click: select, css: { selected: selected() }">
+          <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status-' + status() }, click: select, css: { selected: selected() }">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
             <td class="cell method" data-bind="text: method"> </td>
             <td class="cell path" data-bind="text: trimmedPath"> </td>
             <td class="cell host" data-bind="text: host"> </td>
             <td class="cell status" data-bind="text: status()"> </td>
             <td class="cell content-type" data-bind="text: simplifiedContentType"> </td>
-            <td class="cell time" data-bind="time: time"> </td>
+            <td class="cell time" data-bind="text: time"> </td>
           </tr>
         </tbody>
       </table>
@@ -86,19 +87,10 @@
 
     <script type="text/javascript" src='/socket.io/socket.io.js'></script>
     <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
-    <script src="js/colResizable-1.3.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/raphael.2.1.0.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/g.raphael.0.5.min.js" type="text/javascript" charset="utf-8"></script>
-    <script src="js/g.raphael.0.5.line.min.js" type="text/javascript" charset="utf-8"></script>
     <script type="text/javascript" src='/js/knockout-2.1.0.js'></script>
     <script type="text/javascript" src='/js/class.js'></script>
     <script type="text/javascript" src='/js/moment.js'></script>
     <script type="text/javascript" src='/js/underscore.js'></script>
     <script type="text/javascript" src='/js/ui.js'></script>
-    <script>
-    $(function(){
-      $("table").colResizable();
-    });
-    </script>
   </body>
 </html>

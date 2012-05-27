@@ -11,6 +11,10 @@ describe "dashboard"
     app = express.create server ()
     app.listen 9586
     dashboard.mount (app)
+    
+  before each @(ready)
+    model.Capture.find().remove()
+      ready()
 
   describe "/requests/:id"
 
@@ -50,31 +54,33 @@ describe "dashboard"
 
   describe "/requests/summary?over=:minutes, when there is a spread of historical data"
 
-    save a capture timed (n) minutes in the past (then carry on) =
+    save a capture timed (n) seconds in the past (then carry on) =
       capture = new (model.Capture)
       capture.response body = new (Buffer (0))
       capture.content type = "text/plain"
       capture.time = new(Date())
       capture.time = capture.time.set time(test start time - (n * 1000))
+      captures.push (capture)
       capture.save (then carry on)
 
     save (n) capture timed (m) minutes in the past (then carry on) = 
       save (n) captures timed (m) minutes in the past (then carry on)
 
     save (n) captures timed (m) minutes in the past (then carry on) = 
-      for (i = 0, i < n, i = i + 1)
-        save a capture timed (m) minutes in the past (then carry on)
+      for (i = 1, i <= n, i = i + 1)
+        save a capture timed ((m * 60) + i) seconds in the past (then carry on)
 
     spread captures over five minutes (then carry on) = 
       then carry on when all are saved = _.after(38, then carry on)
 
-      save (3)  captures timed (5) minutes in the past (then carry on when all are saved)
-      save (1)  capture  timed (4) minutes in the past (then carry on when all are saved)
-      save (25) captures timed (3) minutes in the past (then carry on when all are saved)
-      save (0)  captures timed (2) minutes in the past (then carry on when all are saved)
       save (9)  captures timed (1) minutes in the past (then carry on when all are saved)
+      save (0)  captures timed (2) minutes in the past (then carry on when all are saved)
+      save (25) captures timed (3) minutes in the past (then carry on when all are saved)
+      save (1)  capture  timed (4) minutes in the past (then carry on when all are saved)
+      save (3)  captures timed (5) minutes in the past (then carry on when all are saved)
 
     test start time = null
+    captures = []
 
     round (time) to nearest second =
       time - (time % 1000)
@@ -87,15 +93,13 @@ describe "dashboard"
       spread captures over five minutes
         ready()
 
-    it "returns a JSON summary of requests over the specified period" @(done)
-      request "http://127.0.0.1:9586/requests/summary?over=10&now=#(test start time)" @(err, res, body)
-        summary = JSON.parse(body)
-
-        _.keys(summary).length.should.equal(4)
-
-        summary.((5) minutes ago to nearest second).requests.should.equal (3)
-        summary.((4) minutes ago to nearest second).requests.should.equal (1)
-        summary.((3) minutes ago to nearest second).requests.should.equal (25)
-        summary.((1) minutes ago to nearest second).requests.should.equal (9)
+    it "returns all captures over the supplied minutes by time descending" @(done)
+      request "http://127.0.0.1:9586/requests/summary?over=4&now=#(test start time)" @(err, res, body)
+        for each @(capture) in (captures)
+          capture.response body = null
+          
+        captures over range = JSON.parse(body)
+        captures over range.length.should.equal (34)
+        JSON.stringify(captures over range).should.equal(JSON.stringify(_.first(captures,34)))
 
         done()

@@ -6,6 +6,8 @@ require 'mongo'
 require 'date'
 require 'UUID'
 
+include DB
+
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)
 end
@@ -14,25 +16,14 @@ def step(text)
   puts text
 end
 
-def database
-  return @db unless @db.nil?
-
-  connection = Mongo::Connection.new("localhost", 27017)
-  @db = connection.db("wiblr")
-  @db.authenticate("test", "password")
-  @db
-end
-
-def captures_collection
-  database.collection("capture")
-end
 
 def setup_historical_capture(options)
-  captures_collection.insert({"UUID" => UUID.new.to_s, "time" => @test_start_time - options[:seconds_ago], "status" => options[:status]})
+  captures_collection.insert({"UUID" => UUID.new.to_s, "content-type" => 'text/json', "time" => @test_start_time - options[:seconds_ago], "host" => "api.ihazmuzik.com", "path" => options[:path], "status" => options[:status]})
 end
 
 feature "Review historical traffic" do
   background do
+        
     @proxy_app_process = ChildProcess.build("pogo", "src/app.pogo")
     @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
 
@@ -43,12 +34,15 @@ feature "Review historical traffic" do
     @test_start_time = Time.now
   end
 
+  before :each do
+     clear_captures
+  end
+
   after :each do
     Capybara.reset_sessions!
   end
 
   scenario "Spider reviews yesterdays traffic" do
-
 
     step("Spider receives a report of 404s trying to apply a voucher to a purchase
 through his company's API from a client on the US west coast.
@@ -106,32 +100,25 @@ while he is in bed but they are all working.")
 
     @watcher_browser.visit "http://127.0.0.1:8080"
 
-    step("and browses to the usclient proxy logs and sees a graph representing the past 24 hrs' traffic.")
+    step("and browses to the usclient proxy logs.
+He sees no recent traffic in the last 5 minutes")
+
+    step("Spider loads the last 24 hrs traffic")
+    
+    @watcher_browser.should have_no_css("#requests tr")
 
     @watcher_browser.select('24 hrs', :from => 'scale')
-
-    step("He immediately spots a peak around 8hrs ago zooms into the that peak")
-
-    destination = @watcher_browser.find(:css, "#graph li[data-time='#{@test_start_time - session_start}']")
-    scrubber = @watcher_browser.find(:css, '#scrubber')
-    scrubber.drag_to(destination) # OK, not quite that simple, but should be easy enough
-
-    @watcher_browser.select('15 min', :from => 'scale')
-
+    @watcher_browser.click_button('load')
+    
     step("and scans through the traffic looking for calls to
 the endpoint where the client had been reporting 404s.")
-
-    fourOhFours = @watcher_browser.all("#requests tr.status-404")
 
     step("Spider scans through the traffic and spots the some 404s to /basket/applyvoocher
 
 He emails his US clients to point out that they had voocher not voucher.")
 
-    voocher_requests = fourOhFours.find_all do |request_row|
-      request_row.has_content 'voocher'
-    end
-
-    voocher_requests.length.should be(2)
+    fourOhFour = @watcher_browser.find("#requests tr.status-404")
+    fourOhFour.should have_content('voocher')
 
   end
 end

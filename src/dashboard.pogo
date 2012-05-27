@@ -13,7 +13,7 @@ exports.mount (app) =
     date = new(Date())
     date.set time(time)
 
-    n mins ago = date.get time() - (n * 1000)
+    n mins ago = date.get time() - ((n * 60) * 1000)
     time = round (n mins ago) to nearest second
 
     date.set time(time)
@@ -24,18 +24,12 @@ exports.mount (app) =
 
     summary = {}
 
-    model.Capture.find().where('time').gte(from).run  @(err, captures)
+    model.Capture.find().where('time').gte(from).sort('time', -1).run  @(err, captures)
       for each @(capture) in (captures)
-
-        time = round (new (Date(capture.time)).get time()) to nearest second
-
-        if (!summary.(time))
-          summary.(time) = {requests 1}
-        else
-          summary.(time).requests = summary.(time).requests + 1
+        capture.response body = null
 
       res.content type ('application/json')
-      res.send (JSON.stringify(summary))
+      res.send (captures)
 
   app.get "/requests/:uuid" @(req, res)
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
