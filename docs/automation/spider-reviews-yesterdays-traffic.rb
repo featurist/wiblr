@@ -109,9 +109,6 @@ He sees no recent traffic in the last 5 minutes")
 
     @watcher_browser.select('24 hrs', :from => 'scale')
     @watcher_browser.click_button('load')
-    
-    step("and scans through the traffic looking for calls to
-the endpoint where the client had been reporting 404s.")
 
     step("Spider scans through the traffic and spots the some 404s to /basket/applyvoocher
 

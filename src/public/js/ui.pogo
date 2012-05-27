@@ -25,6 +25,7 @@ Page = class {
   constructor() =
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
+
     $("#load").click
       self.reload historical data()
 
