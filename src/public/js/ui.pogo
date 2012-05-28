@@ -37,7 +37,7 @@ Page = class {
     max x = self.round (new(Date()).get time()) to nearest second
     min x = max x - (self.scale * (60 * 1000))
     
-    $.get("/requests/summary?over=#(self.scale * 60)").done @(captures)
+    $.get("/requests/summary?over=#(self.scale)").done @(captures)
       self.requests([])
       for each @(capture) in (captures)
         self.requests.push (new (Request (self, capture)))
@@ -108,8 +108,8 @@ Request = class {
 
     self.kind = ko.computed
       kind = "unknown"
-      if (!self.status)
-        kind "pending"
+      if (!self.status())
+        kind = "pending"
 
       if (self.content type())
         for @(type) in (content types)

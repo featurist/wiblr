@@ -53,7 +53,7 @@
             self.scale = $("#scale").val();
             maxX = self.roundToNearestSecond((new Date).getTime());
             minX = maxX - self.scale * 60 * 1e3;
-            return $.get("/requests/summary?over=" + self.scale * 60).done(function(captures) {
+            return $.get("/requests/summary?over=" + self.scale).done(function(captures) {
                 var gen1_items, gen2_i;
                 self.requests([]);
                 gen1_items = captures;
@@ -141,8 +141,8 @@
             self.kind = ko.computed(function() {
                 var kind;
                 kind = "unknown";
-                if (!self.status) {
-                    kind("pending");
+                if (!self.status()) {
+                    kind = "pending";
                 }
                 if (self.contentType()) {
                     var type;
