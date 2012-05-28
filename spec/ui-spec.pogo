@@ -6,7 +6,8 @@ dashboard = require '../src/dashboard'
 
 describe "ui"
   
-  browser = new (Browser)
+  app = null
+  browser = null
   
   mount stub socket io (app) =
     app.get "/socket.io/socket.io.js" @(req, res)
@@ -19,7 +20,7 @@ describe "ui"
     app.on "listening" (listening)
   
   visit app (done) =
-    browser.visit "http://127.0.0.1:7532"
+    browser.visit ("http://127.0.0.1:7532")
       done()
       
   add request (added, capture properties) =
@@ -39,7 +40,7 @@ describe "ui"
     
     capture.save
       request = JSON.stringify(capture.wire object())
-      browser.evaluate "thePage.addRequest(#(request));"
+      browser.evaluate "thePage.addRequest(#(request)); "
       added()
   
   complete request (capture, added, capture properties) =
@@ -53,16 +54,20 @@ describe "ui"
 
     capture.save
       request = JSON.stringify(capture.wire object())
-      browser.evaluate "thePage.addRequest(#(request));"
+      browser.evaluate "thePage.addRequest(#(request)); "
       added()
 
   capture = null
 
-  before @(ready)
+  before each @(ready)
+    browser = new (Browser)
     host ui server
       visit app
         open request
           ready()
+          
+  after each()
+    app.close()
           
   describe "an open request"
     
@@ -77,11 +82,12 @@ describe "ui"
       
     describe "a complete request"
     
-      before @(ready)
+      before each @(ready)
         complete request(capture)
           ready()
     
       it "updates the row with the response details"
+        console.log (browser.html ('#requests'))
         browser.text ".method".should.equal "GET"
         browser.text ".host".should.equal "1.2.3.4"
         browser.text ".path".should.equal "foo/bar"
@@ -91,7 +97,7 @@ describe "ui"
         browser.text ".content-type".should.equal "text/plain"
   
       describe "clicking a row"
-        before
+        before each
           browser.evaluate '$(''#requests tr:first'').click();'
     
         it "renders detailed request information"
@@ -114,16 +120,22 @@ describe "ui"
     escape html (html) =
       html.replace r/</g '&lt;'.replace r/>/g '&gt;'
 
-    select (n)th request =
-      browser.evaluate "$('#requests tr:nth-child(#(n))').click();"
-
-    select rd request = select st request = select nd request = select th request
+    select latest request() =
+      browser.evaluate "$('#requests tr').eq(0).click();"
 
     response body () =
       browser.query '#response-body'.contentWindow.document.body.innerHTML
+      
+    when (browser) is ready (do this) then (carry on) =
+      browser.wait 
+        try
+          do this ()
+          carry on ()
+        catch @(ex)
+          carry on (ex)
 
     it 'renders response body' @(finished)
-      expected body = "<html><head></head><body><h1>Hi, this is HTML</h1></body></html>"
+      expected body = "<html><head></head><body><h1>Hi, this is HTML that wont be pretty</h1></body></html>"
       escaped expected body = escape html (expected body)
 
       add request (
@@ -131,23 +143,20 @@ describe "ui"
         content type: 'text/html'
         path: '/ugly.html'
       ) @{
-        select 2nd request
-        browser.wait
-          try
-            actual body = response body ()
-            actual body.should.include (escaped expected body)
-            finished ()
-          catch @(ex)
-            console.log (ex)
+        select latest request()
+        when (browser) is ready
+          actual body = response body ()
+          actual body.should.include (escaped expected body)
+        then (finished)
       }
 
     it 'renders pretty response body when pretty checkbox is checked' @(finished) =>
-      raw response body = "<html><head></head><body><h1>Hi, this is HTML</h1></body></html>" 
+      raw response body = "<html><head></head><body><h1>Hi, this is HTML that will be pretty</h1></body></html>" 
 
       expected body = "<html>
                          <head></head>
                          <body>
-                           <h1>Hi, this is HTML</h1>
+                           <h1>Hi, this is HTML that will be pretty</h1>
                          </body>
                        </html>"
                
@@ -158,13 +167,10 @@ describe "ui"
         content type: 'text/html'
         path: '/pretty.html'
       ) @{
-        select 2nd request
+        select latest request()
         browser.check '.pretty-response-body'
-        browser.wait
-          try
-            actual body = response body ()
-            actual body.should.include (escaped expected body)
-            finished ()
-          catch @(ex)
-            console.log (ex)
+        when (browser) is ready
+          actual body = response body ()
+          actual body.should.include (escaped expected body)
+        then (finished)
       }
