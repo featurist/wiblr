@@ -87,7 +87,6 @@ describe "ui"
           ready()
     
       it "updates the row with the response details"
-        console.log (browser.html ('#requests'))
         browser.text ".method".should.equal "GET"
         browser.text ".host".should.equal "1.2.3.4"
         browser.text ".path".should.equal "foo/bar"

@@ -24,7 +24,7 @@ end
 feature "Review historical traffic" do
   background do
         
-    @proxy_app_process = ChildProcess.build("pogo", "src/app.pogo")
+    @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
     @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
 
     @proxy_app_process.start.io.inherit!

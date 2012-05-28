@@ -18,7 +18,7 @@ feature "Rudy uses his proxy" do
   background do
     @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
     @rudys_slow_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-slow-app.pogo")
-    @proxy_app_process = ChildProcess.build("pogo", "src/app.pogo")
+    @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
     
     @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
       
@@ -44,7 +44,7 @@ feature "Rudy uses his proxy" do
   scenario "and spies on another browser" do
     @watcher_browser.visit "http://127.0.0.1:8080"
     proxied_response = visit_through_proxy "http://127.0.0.1:1337"
-    
+  
     @watcher_browser.find(:css, "#requests tbody tr").click  
     proxied_response.should include "Hello World"
     
@@ -58,6 +58,7 @@ feature "Rudy uses his proxy" do
     @watcher_browser.visit "http://127.0.0.1:8080"
     
     proxy_request_thread = Thread.new do
+      sleep(1)
       visit_through_proxy "http://127.0.0.1:5100"
     end
     
