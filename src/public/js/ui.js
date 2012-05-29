@@ -36,11 +36,22 @@
         constructor: function() {
             var self;
             self = this;
+            self.connectionStatus = ko.observable("connecting");
             self.requests = ko.observableArray();
             self.selectedRequest = ko.observable();
             return $("#load").click(function() {
                 return self.reloadHistoricalData();
             });
+        },
+        connected: function() {
+            var self;
+            self = this;
+            return self.connectionStatus("connected");
+        },
+        disconnected: function() {
+            var self;
+            self = this;
+            return self.connectionStatus("connecting");
         },
         roundToNearestSecond: function(time) {
             var self;
@@ -177,10 +188,18 @@
     });
     $(function() {
         var socket;
+        window.capturesReceived = 0;
         window.thePage = new Page;
         ko.applyBindings(window.thePage);
         socket = io.connect();
+        socket.on("connect", function() {
+            return window.thePage.connected();
+        });
+        socket.on("disconnect", function() {
+            return window.thePage.disconnected();
+        });
         return socket.on("capture", function(request) {
+            window.capturesReceived = window.capturesReceived + 1;
             return window.thePage.addRequest(request);
         });
     });

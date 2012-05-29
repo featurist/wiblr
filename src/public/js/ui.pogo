@@ -23,11 +23,18 @@ ko.binding handlers.time = {
 Page = class {
   
   constructor() =
+    self.connection status = ko.observable('connecting')
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
 
     $("#load").click
       self.reload historical data()
+      
+  connected () =
+    self.connection status("connected")
+
+  disconnected () =
+    self.connection status("connecting")
 
   round (time) to nearest second =
     time - (time % 1000)
@@ -133,9 +140,20 @@ Request = class {
 
 }
 
-$ 
+$
+  window.capturesReceived = 0
   window.the page = new (Page ())
   ko.apply bindings (window.the page)
+
   socket = io.connect()
+
+  socket.on 'connect' 
+    window.the page.connected()
+    
+  socket.on 'disconnect'
+    window.the page.disconnected()
+
   socket.on 'capture' @(request)
+    window.capturesReceived = window.capturesReceived + 1
     window.the page.add request (request)
+

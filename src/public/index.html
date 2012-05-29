@@ -23,7 +23,7 @@
         traffic
         <input id="load" type="button" value="Load" />
       </label>
-      <table id="requests">
+      <table id="requests" data-bind="attr: { class: connectionStatus }">
         <tbody id='requests_rows' data-bind="foreach: requests">
           <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status-' + status() }, click: select, css: { selected: selected() }">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
