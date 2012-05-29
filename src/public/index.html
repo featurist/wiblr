@@ -57,7 +57,8 @@
             <span data-bind="text: time" class="time"></span>
           </p>
           <p>
-            <iframe data-bind="attr: { 'src' : '/requests/' + uuid + '/html' }" id="response_body"></iframe>
+            <input class='pretty-response-body' type="checkbox" data-bind='checked: pretty'>pretty<br/>
+            <iframe data-bind="attr: { 'src' : responseUrl }" id="response-body"></iframe>
           </p>
           <h2>Response Headers</h2>
           <table id="response_headers">
