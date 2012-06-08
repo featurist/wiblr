@@ -204,7 +204,7 @@ table {
   position: relative;
   top: -1px;
 }
-#requests .connecting-message {
+.connecting-message {
   background:url('../images/icons/pending.gif') no-repeat;
   background-position: 5px center;
   padding:6px 10px 6px 35px;
@@ -217,11 +217,11 @@ table {
 
 }
 
-#requests .connecting-message,
-#requests.connecting .connecting-message {
+.connecting-message,
+.connecting .connecting-message {
   top:35px;
 }
-#requests.connected .connecting-message {
+.connected .connecting-message {
   top:0px;
 }
 

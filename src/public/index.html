@@ -2,10 +2,8 @@
   <head>
     <link rel="stylesheet" href="css/boilerplate.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="/css/style.css" />
-    <script src="js/modernizr.js" type="text/javascript" charset="utf-8"></script>
   </head>
-  <body>
-    
+  <body data-bind="attr: { class: connectionStatus }">
     <div id="top_panel">
       <div id="logo">
         Wiblr
@@ -24,11 +22,11 @@
         traffic
         <input id="load" type="button" value="Load" />
       </div>
-      <table id="requests" data-bind="attr: { class: connectionStatus }">
-        <tbody class="connecting-message">
-          <tr><td>Connecting</td></tr>
-        </tbody>
-        <tbody id='requests_rows' data-bind="foreach: requests">
+      <div class="connecting-message">
+        Connecting
+      </div>
+      <table id="requests">
+        <tbody data-bind="foreach: requests">
           <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status-' + status() }, click: select, css: { selected: selected() }">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
             <td class="cell method" data-bind="text: method"> </td>

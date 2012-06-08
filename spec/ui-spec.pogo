@@ -97,8 +97,8 @@ describe "ui"
 
     it "shows connecting status"
       //TOOD: What is the right way to do this asserton? Cannot get .exists() to work.
-      css ('#requests.connected') should not exist
-      css ('#requests.connecting') should exist
+      css ('body.connected') should not exist
+      css ('body.connecting') should exist
 
   describe "disconnected"
 
@@ -106,8 +106,8 @@ describe "ui"
       visit app (ready)
 
     it "shows connecting status"
-      css ('#requests.connected') should not exist
-      css ('#requests.connecting') should exist
+      css ('body.connected') should not exist
+      css ('body.connecting') should exist
 
   describe "connected"
 
@@ -116,8 +116,8 @@ describe "ui"
         set timeout (ready,100)
 
     it "shows connected status"
-      css ('#requests.connected') should exist
-      css ('#requests.connecting') should not exist
+      css ('body.connected') should exist
+      css ('body.connecting') should not exist
 
     describe "an open request"
 
@@ -149,7 +149,7 @@ describe "ui"
 
         describe "clicking a row"
           before each
-            browser.evaluate '$(''#requests tr:first'').click();'
+            browser.evaluate '$(''#requests tr'').click();'
 
           it "renders detailed request information"
             browser.text '#selected_request .method'.should.equal 'GET'
