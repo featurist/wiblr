@@ -106,17 +106,9 @@ table {
 }
 
 #requests{
-  margin-top:60px;
-  -webkit-transition: margin-top 0.5s;
+  margin-top:30px;
 }
 
-#requests.connecting{
-  margin-top:60px;
-}
-
-#requests.connected{
-  margin-top:27px;
-}
 #requests tr.selected {
   background-color: #5588AA;
   color: #ffffff;
@@ -216,8 +208,20 @@ table {
   background:url('../images/icons/pending.gif') no-repeat;
   background-position: 5px center;
   padding:6px 10px 6px 35px;
-  margin:-27px 0 0;
-  position:fixed;
-  display:block;
+  margin:-33px 0 0;
+  position:relative;
+  display:inline-block;
   z-index:1;
+  background-color:white;
+  -webkit-transition: top 0.5s;
+
 }
+
+#requests .connecting-message,
+#requests.connecting .connecting-message {
+  top:35px;
+}
+#requests.connected .connecting-message {
+  top:0px;
+}
+
