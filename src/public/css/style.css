@@ -102,11 +102,7 @@ table {
 #requests {
   table-layout:fixed;
   width: 100%;
-  margin-top:37px;
-}
-
-#requests{
-  margin-top:30px;
+  margin-top:33px;
 }
 
 #requests tr.selected {
@@ -190,7 +186,7 @@ table {
   width: 150px;
 }
 
-#historical-controls, #requests .connecting-message {
+#historical-controls, .connecting-message {
   padding:8px 8px 6px 8px;
   position:fixed;
   background-color:white;
@@ -208,20 +204,21 @@ table {
   background:url('../images/icons/pending.gif') no-repeat;
   background-position: 5px center;
   padding:6px 10px 6px 35px;
-  margin:-33px 0 0;
-  position:relative;
+  margin:0px 0 0;
+  position:fixed;
   display:inline-block;
   z-index:1;
   background-color:white;
+  top:50px;
   -webkit-transition: top 0.5s;
 
 }
 
 .connecting-message,
 .connecting .connecting-message {
-  top:35px;
+  top:79px;
 }
 .connected .connecting-message {
-  top:0px;
+  top:50px;
 }
 
