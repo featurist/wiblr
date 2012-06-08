@@ -137,7 +137,6 @@ Request = $class {
     self.page.deselect request ()
     self.page.selected request (self)
     self.selected (true)
-
 }
 
 $

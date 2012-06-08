@@ -32,7 +32,6 @@ table {
   position: fixed;
   background-color: #E0EAF1;
   height: 45px;
-  border-bottom: 5px solid #ffffff;
 }
 #logo {
   font-family: Georgia;
@@ -49,7 +48,7 @@ table {
 #left_panel, #right_panel {
   position: absolute;
   overflow: scroll;
-  top: 50px;
+  top: 45px;
   bottom: 0;
 }
 #left_panel {
@@ -61,6 +60,7 @@ table {
   right: 0px;
   left: 750px;
   border-left: 2px solid #E0EAF1;
+  font-size:1.1em;
 }
 
 #request_panel {
@@ -102,8 +102,21 @@ table {
 #requests {
   table-layout:fixed;
   width: 100%;
+  margin-top:37px;
 }
 
+#requests{
+  margin-top:60px;
+  -webkit-transition: margin-top 0.5s;
+}
+
+#requests.connecting{
+  margin-top:60px;
+}
+
+#requests.connected{
+  margin-top:27px;
+}
 #requests tr.selected {
   background-color: #5588AA;
   color: #ffffff;
@@ -183,4 +196,28 @@ table {
 
 #requests td.cell.time {
   width: 150px;
+}
+
+#historical-controls, #requests .connecting-message {
+  padding:8px 8px 6px 8px;
+  position:fixed;
+  background-color:white;
+  border-bottom:2px solid #E0EAF1;
+  border-right:2px solid #E0EAF1;
+  border-radius:0 0 5px 0;
+  z-index:2;
+}
+#historical-controls select,
+#historical-controls input {
+  position: relative;
+  top: -1px;
+}
+#requests .connecting-message {
+  background:url('../images/icons/pending.gif') no-repeat;
+  background-position: 5px center;
+  padding:6px 10px 6px 35px;
+  margin:-27px 0 0;
+  position:fixed;
+  display:block;
+  z-index:1;
 }
