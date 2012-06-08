@@ -39,6 +39,8 @@
             self.connectionStatus = ko.observable("connecting");
             self.requests = ko.observableArray();
             self.selectedRequest = ko.observable();
+            self.largeBody = ko.observable(false);
+            self.pretty = ko.observable(false);
             return $("#load").click(function() {
                 return self.reloadHistoricalData();
             });
@@ -167,10 +169,9 @@
                 }
                 return kind;
             });
-            self.pretty = ko.observable(false);
             return self.responseUrl = ko.computed(function() {
                 return "/requests/" + self.uuid + "/" + function() {
-                    if (self.pretty()) {
+                    if (self.page.pretty()) {
                         return "pretty";
                     } else {
                         return "html";

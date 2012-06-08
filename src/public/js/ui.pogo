@@ -26,10 +26,12 @@ Page = $class {
     self.connection status = ko.observable('connecting')
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
-
+    self.large body = ko.observable (false)
+    self.pretty = ko.observable (false)
+    
     $("#load").click
       self.reload historical data()
-      
+
   connected () =
     self.connection status("connected")
 
@@ -125,10 +127,9 @@ Request = $class {
 
       kind
     
-    self.pretty = ko.observable (false)
     
     self.response url = ko.computed
-      '/requests/' + self.uuid + '/' + if (self.pretty ())
+      '/requests/' + self.uuid + '/' + if (self.page.pretty ())
         'pretty'
       else
         'html'

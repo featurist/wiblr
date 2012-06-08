@@ -20,9 +20,16 @@ h2 {
 }
 iframe {
   width: 99%;
-  height: 150px;
+  height: 20%;
   border: 2px solid #cccccc;
+  -webkit-transition: height 0.5s;
 }
+
+.large-body-true iframe{
+  height:80%;
+  width:99%;
+}
+
 table {
   border-spacing: 0;
 }
@@ -72,6 +79,10 @@ table {
   margin-bottom: 30px;
 }
 
+.large-body-true h1,.large-body-true h2,.large-body-true table, .large-body-true .message-details {
+  display:none;
+}
+
 #request_panel h1, #response_panel h1,
 #request_panel p, #response_panel p,
 {
@@ -114,6 +125,7 @@ table {
   width: 100%;
   border-spacing: 0;
   table-layout:fixed;
+  -webkit-transition: height 0.5s;
 }
 
 .header .name {

@@ -43,9 +43,9 @@
     <div id="right_panel">
       
       <div id="selected_request" data-bind="with: selectedRequest">
-        <div id="request_panel">
+        <div id="request_panel" data-bind="attr: {'class': 'large-body-' + $parent.largeBody() }">
           <h1>Request</h1>
-          <p>
+          <p class="message-details">
             <span data-bind="text: method" class="method"></span>
             <span class="url">
               <span class="protocol">http://</span><span data-bind="text: host" class="host"></span><span data-bind="text: path" class="path"></span>
@@ -61,16 +61,12 @@
             </tbody>
           </table>
         </div>
-        <div id="response_panel">
+        <div id="response_panel" data-bind="attr: {'class': 'large-body-' + $parent.largeBody() }">
           <h1>Response</h1>
-          <p>
+          <p class="message-details">
             HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedContentType" class="content-type"></span>
             <br />
             <span data-bind="text: time" class="time"></span>
-          </p>
-          <p>
-            <input class='pretty-response-body' type="checkbox" data-bind='checked: pretty'>pretty<br/>
-            <iframe data-bind="attr: { 'src' : responseUrl }" id="response-body"></iframe>
           </p>
           <h2>Response Headers</h2>
           <table id="response_headers">
@@ -81,6 +77,12 @@
               </tr>
             </tbody>
           </table>
+          <p>
+            <input class='pretty-response-body' type="checkbox" data-bind='checked: $parent.pretty'>pretty<br/>
+            <input class='large-response-body' type="checkbox" data-bind='checked: $parent.largeBody'>larger<br/>
+            <iframe data-bind="attr: { 'src' : responseUrl}" id="response-body"></iframe>
+          </p>
+
         </div>
       </div>
       
