@@ -23,6 +23,9 @@ CaptureSchema = new (mongoose. Schema {
   response headers = {}
 } (strict: true))
 
+CaptureSchema.statics.since (from date) (callback) =
+  this.find().where('time').gte(from date).sort('time', -1).exclude('responseBody').run (callback)
+
 CaptureSchema.methods.append response body (chunk) =
   self.response body = buffertools.concat(self.response body, chunk)
 

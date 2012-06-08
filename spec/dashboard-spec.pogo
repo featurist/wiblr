@@ -83,7 +83,6 @@ describe "dashboard"
 
     save a capture timed (n) seconds in the past (then carry on) =
       capture = new (model.Capture)
-      capture.response body = new (Buffer (0))
       capture.content type = "text/plain"
       capture.time = new(Date())
       capture.time = capture.time.set time(test start time - (n * 1000))
@@ -122,9 +121,6 @@ describe "dashboard"
 
     it "returns all captures over the supplied minutes by time descending" @(done)
       request "http://127.0.0.1:9586/requests/summary?over=4&now=#(test start time)" @(err, res, body)
-        for each @(capture) in (captures)
-          capture.response body = null
-          
         captures over range = JSON.parse(body)
         captures over range.length.should.equal (34)
         JSON.stringify(captures over range).should.equal(JSON.stringify(_.first(captures,34)))

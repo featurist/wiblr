@@ -25,10 +25,7 @@ exports.mount (app) =
 
     summary = {}
 
-    model.Capture.find().where('time').gte(from).sort('time', -1).run  @(err, captures)
-      for each @(capture) in (captures)
-        capture.response body = null
-
+    model.Capture.since (from) @(err, captures)
       res.content type ('application/json')
       res.send (captures)
 
