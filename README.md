@@ -9,7 +9,7 @@ Install prerequisites:
 In a mongo shell:
 
     use wiblr
-    db.auth("test", "password") 
+    db.addUser("test", "password") 
 
 Running it:
 
