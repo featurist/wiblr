@@ -98,4 +98,4 @@ exports.create server(io) =
         headers: request.headers
       )
     else
-      response.end "This URL hosts an HTTP proxy"
+      response.end "Coming soon!"
