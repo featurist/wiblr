@@ -78,6 +78,18 @@ describe "dashboard"
 
           body.should.include("<img")
           done()
+  
+  describe "/requests/:id/html, when the response resulted in an error"
+    
+    it "renders a generic [no response body] message" @(done)
+      capture = new (model.Capture)
+      capture.content type = "text/html"
+      capture.status = -1
+      capture.save
+        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+          body.should.include("[no response body]")
+          done()
+  
 
   describe "/requests/summary?over=:minutes, when there is a spread of historical data"
 

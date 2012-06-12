@@ -31,7 +31,10 @@ exports.mount (app) =
 
   app.get "/requests/:uuid" @(req, res)
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      res.send (capture.response body, 'content-type': capture.content type)
+      if (err)
+        res.send (err.to string())
+      else
+        res.send (capture.response body, 'content-type': capture.content type)
 
   app.get "/requests/:uuid/html" @(req, res)
     render body (req, res)
@@ -41,20 +44,23 @@ exports.mount (app) =
 
   render body (req, res, pretty: false) =
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      if (capture.response body == nil)
-        res.end ('', 'content-type': 'text/plain')
+      if (capture.was error())
+        res.end '[no response body]'
       else
-        reg = r/(text|css|javascript|json|xml)/
-        if (capture.content type.match (reg))
-          body = decode base64 as utf8 (capture.response body)
-      
-          pretty body = if (pretty)
-            prettify (body, content type: capture.content type)
-          else
-            body
-        
-          res.header 'cache-control' 'max-age=31536000 private'
-          res.render ('responseBody.html', body: pretty body, pretty: pretty, layout: false)
+        if (capture.response body == nil)
+          res.end ('', 'content-type': 'text/plain')
         else
-          res.header 'cache-control' 'max-age=31536000 private'
-          res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
+          reg = r/(text|css|javascript|json|xml)/
+          if (capture.content type.match (reg))
+            body = decode base64 as utf8 (capture.response body)
+      
+            pretty body = if (pretty)
+              prettify (body, content type: capture.content type)
+            else
+              body
+        
+            res.header 'cache-control' 'max-age=31536000 private'
+            res.render ('responseBody.html', body: pretty body, pretty: pretty, layout: false)
+          else
+            res.header 'cache-control' 'max-age=31536000 private'
+            res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
