@@ -1,1 +1,1 @@
-forever stop src/serve.pogo
+forever stop /usr/bin/pogo src/serve.pogo
