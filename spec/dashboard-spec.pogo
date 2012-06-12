@@ -67,7 +67,6 @@ describe "dashboard"
   describe "/requests/:id/html, when the content is an image"
 
     it "renders an img" @(done)
-
       capture = new (model.Capture)
       capture.response body = new (Buffer (0))
       capture.content type = "image/png"
@@ -81,15 +80,24 @@ describe "dashboard"
   
   describe "/requests/:id/html, when the response resulted in an error"
     
-    it "renders a generic [no response body] message" @(done)
+    it "renders a generic [no response] message" @(done)
       capture = new (model.Capture)
       capture.content type = "text/html"
       capture.status = -1
       capture.save
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
-          body.should.include("[no response body]")
+          body.should.equal('[no response]')
           done()
   
+  describe "/requests/:id/html, when no response has yet been recorded"
+    
+    it "renders a generic [no response] message" @(done)
+      capture = new (model.Capture)
+      capture.content type = "text/html"
+      capture.save
+        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+          body.should.include("[no response]")
+          done()
 
   describe "/requests/summary?over=:minutes, when there is a spread of historical data"
 

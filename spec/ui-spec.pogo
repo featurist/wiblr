@@ -18,7 +18,7 @@ describe "ui"
     app.on "listening" (listening)
 
   visit app (done) =
-    browser.visit ("http://127.0.0.1:7532") @(errors,browser,status)
+    browser.visit ("http://127.0.0.1:7532") @(errors, browser, status)
       if (status != 200)
         console.log("Status: #(status)")
       
@@ -82,7 +82,8 @@ describe "ui"
 
   after each()
     if (app)
-      app.close()
+      io.server.close()
+        app.close()
 
   css (selector) should exist =
     (browser.query(selector) == undefined).should.equal(false)
@@ -96,7 +97,7 @@ describe "ui"
       visit app (ready)
 
     it "shows connecting status"
-      //TOOD: What is the right way to do this asserton? Cannot get .exists() to work.
+      //TODO: What is the right way to do this assertion? Cannot get .exists() to work.
       css ('body.connected') should not exist
       css ('body.connecting') should exist
 

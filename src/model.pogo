@@ -29,8 +29,8 @@ CaptureSchema.statics.since (from date) (callback) =
 CaptureSchema.methods.append response body (chunk) =
   self.response body = buffertools.concat(self.response body, chunk)
 
-CaptureSchema.methods.was error () =
-  self.status <= 0
+CaptureSchema.methods.has response body () =
+  (self.status != -1) && (self.response body != nil)
 
 CaptureSchema.pre 'save' @(next)
   if (!this.uuid)

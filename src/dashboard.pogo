@@ -41,26 +41,26 @@ exports.mount (app) =
 
   app.get "/requests/:uuid/pretty" @(req, res)
     render body (req, res, pretty: true)
-
+  
+  render placeholder body for (capture, res) or (otherwise) =
+    if (capture.has response body())
+      otherwise()
+    else
+      res.send ('[no response]', 'content-type': 'text/plain')
+  
   render body (req, res, pretty: false) =
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      if (capture.was error())
-        res.end '[no response body]'
-      else
-        if (capture.response body == nil)
-          res.end ('', 'content-type': 'text/plain')
-        else
-          reg = r/(text|css|javascript|json|xml)/
-          if (capture.content type.match (reg))
-            body = decode base64 as utf8 (capture.response body)
-      
-            pretty body = if (pretty)
-              prettify (body, content type: capture.content type)
-            else
-              body
-        
-            res.header 'cache-control' 'max-age=31536000 private'
-            res.render ('responseBody.html', body: pretty body, pretty: pretty, layout: false)
+      render placeholder body for (capture, res) or
+        reg = r/(text|css|javascript|json|xml)/
+        if (capture.content type.match (reg))
+          body = decode base64 as utf8 (capture.response body)
+          pretty body = if (pretty)
+            prettify (body, content type: capture.content type)
           else
-            res.header 'cache-control' 'max-age=31536000 private'
-            res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
+            body
+
+          res.header 'cache-control' 'max-age=31536000 private'
+          res.render ('responseBody.html', body: pretty body, pretty: pretty, layout: false)
+        else
+          res.header 'cache-control' 'max-age=31536000 private'
+          res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
