@@ -99,8 +99,12 @@ Request = $class {
     self.content type      = ko.observable(fields.content type)
     self.status            = ko.observable(fields.status)
     self.response headers  = ko.observable(fields.response headers)
+    self.scheme = 'http'
     
     self.selected = ko.observable(false)
+    self.over = ko.observable(false)
+    self.toggle over() = 
+      self.over(!self.over())
     
     self.sorted request headers = ko.computed
       sorted pairs in (self.request headers)
@@ -126,14 +130,19 @@ Request = $class {
             kind = type
 
       kind
-    
-    
+
+    self.colspan = ko.computed
+      if (self.over())
+        5
+      else
+        1
+
     self.response url = ko.computed
       '/requests/' + self.uuid + '/' + if (self.page.pretty ())
         'pretty'
       else
         'html'
-        
+
   select() =
     self.page.deselect request ()
     self.page.selected request (self)

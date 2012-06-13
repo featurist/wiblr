@@ -136,7 +136,14 @@
             self.contentType = ko.observable(fields.contentType);
             self.status = ko.observable(fields.status);
             self.responseHeaders = ko.observable(fields.responseHeaders);
+            self.scheme = "http";
             self.selected = ko.observable(false);
+            self.over = ko.observable(false);
+            self.toggleOver = function() {
+                var self;
+                self = this;
+                return self.over(!self.over());
+            };
             self.sortedRequestHeaders = ko.computed(function() {
                 return sortedPairsIn(self.requestHeaders);
             });
@@ -168,6 +175,13 @@
                     }
                 }
                 return kind;
+            });
+            self.colspan = ko.computed(function() {
+                if (self.over()) {
+                    return 5;
+                } else {
+                    return 1;
+                }
             });
             return self.responseUrl = ko.computed(function() {
                 return "/requests/" + self.uuid + "/" + function() {
