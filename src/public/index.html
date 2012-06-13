@@ -2,11 +2,20 @@
   <head>
     <link rel="stylesheet" href="css/boilerplate.css" type="text/css" media="screen" title="no title" charset="utf-8">
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/list.css" />
+    <link rel="stylesheet" href="/css/split.css" />
+    <link rel="stylesheet" href="/css/detail.css" />
   </head>
-  <body data-bind="attr: { class: connectionStatus }">
+  <body data-bind="attr: { class: connectionStatus() + ' ' + layout() }" class="split">
     <div id="top_panel">
       <div id="logo">
         Wiblr
+      </div>
+      <div id="layout_controls">
+        Layout:
+        <a class="button layout" id="detail_layout" href="#layout=detail" data-layout="detail">detail</a> |
+        <a class="button layout" id="split_layout" href="#layout=split" data-layout="split">split</a> |
+        <a class="button layout" id="list_layout" href="#layout=list" data-layout="list">list</a>
       </div>
     </div>
     <div id="left_panel">
@@ -14,7 +23,7 @@
         Connecting
       </div>
       <div id="historical-controls">
-        Load the last  
+        Load the last
         <select id="scale">
           <option value="5">5 mins</option>
           <option value="15">15 mins</option>
@@ -26,17 +35,19 @@
         <input id="load" type="button" value="Load" />
       </div>
       <table id="requests">
-        <tr>
-          <th class="cell icon"> </td>
-          <th class="cell method"> </td>
-          <th class="cell path" > </td>
-          <th class="cell host"> </td>
-          <th class="cell status"> </td>
-          <th class="cell content-type" > </td>
-          <th class="cell time"> </td>
-        </tr>
+        <thead>
+          <tr>
+            <th class="cell icon"> </td>
+            <th class="cell method"> </td>
+            <th class="cell path" > </td>
+            <th class="cell host"> </td>
+            <th class="cell status"> </td>
+            <th class="cell content-type" > </td>
+            <th class="cell time"> </td>
+          </tr>
+        </thead>
         <tbody data-bind="foreach: requests">
-          <tr data-bind="event: { mouseover: toggleOver, mouseout: toggleOver }, attr: { 'data-uuid': uuid}, click: select, css: { selected: selected(), status: 'status-' + status()}">
+          <tr data-bind="event: { mouseover: toggleOver, mouseout: toggleOver }, attr: { 'data-uuid': uuid, class: statusClasses}, click: select, css: { selected: selected()}">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
             <td class="cell method" data-bind="text: method"> </td>
             <td class="cell path" data-bind="attr: {colspan: colspan()}" >
@@ -45,7 +56,7 @@
             </td>
             <td class="cell host" data-bind="text: host"> </td>
             <td class="cell status" data-bind="text: status()"> </td>
-            <td class="cell content-type" data-bind="text: simplifiedContentType"> </td>
+            <td class="cell content-type" data-bind="text: simplifiedContentType()"> </td>
             <td class="cell time" data-bind="text: time"> </td>
           </tr>
         </tbody>
@@ -55,7 +66,7 @@
     <div id="right_panel">
       
       <div id="selected_request" data-bind="with: selectedRequest">
-        <div data-bind="css: {'large-body': $parent.largeBody() }">
+        <div>
           <div id="request_panel">
             <h1>Request</h1>
             <p class="message-details">
@@ -92,7 +103,6 @@
             </table>
             <p>
               <input class='pretty-response-body' type="checkbox" data-bind='checked: $parent.pretty'>pretty<br/>
-              <input class='large-response-body' type="checkbox" data-bind='checked: $parent.largeBody'>larger<br/>
               <iframe data-bind="attr: { 'src' : responseUrl}" id="response-body"></iframe>
             </p>
 

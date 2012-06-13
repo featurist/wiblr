@@ -1,0 +1,8 @@
+.detail #left_panel {
+  width:5%;
+}
+.detail #right_panel {
+  width:95%;
+  left:5%;
+}
+

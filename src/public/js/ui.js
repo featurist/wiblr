@@ -39,11 +39,20 @@
             self.connectionStatus = ko.observable("connecting");
             self.requests = ko.observableArray();
             self.selectedRequest = ko.observable();
-            self.largeBody = ko.observable(false);
+            self.layout = ko.observable("split");
             self.pretty = ko.observable(false);
-            return $("#load").click(function() {
+            $("#load").click(function() {
                 return self.reloadHistoricalData();
             });
+            return $(".layout.button").click(function(e) {
+                return self.change_layout(e);
+            });
+        },
+        change_layout: function(e) {
+            var self;
+            self = this;
+            self.layout($(e.currentTarget).attr("data-layout"));
+            return false;
         },
         connected: function() {
             var self;
@@ -158,6 +167,7 @@
                     return self.contentType().split(";")[0];
                 }
             });
+            self.statusClasses = "status-" + (self.status() + "")[[ 0 ]] + "xx status-" + self.status();
             self.kind = ko.computed(function() {
                 var kind;
                 kind = "unknown";

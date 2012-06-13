@@ -34,6 +34,11 @@ table {
   border-spacing: 0;
 }
 
+#layout_controls {
+  float:right;
+  margin:1em;
+}
+
 #top_panel {
   width: 100%;
   position: fixed;
@@ -52,20 +57,20 @@ table {
   margin-left: 10px;
 }
 
-#left_panel, #right_panel {
+#left_panel,
+#right_panel {
   position: absolute;
   overflow: scroll;
   top: 45px;
   bottom: 0;
+  -webkit-transition: width 0.5s, left 0.5s;
 }
-#left_panel {
+.#left_panel {
   left: 0px;
-  width: 750px;
 }
 #right_panel {
   top: 50px;
   right: 0px;
-  left: 750px;
   border-left: 2px solid #E0EAF1;
   font-size:1.1em;
 }
@@ -113,7 +118,7 @@ table {
 #requests {
   table-layout:fixed;
   width: 100%;
-  margin-top:-2px;
+  margin-top:23px;
 }
 
 #requests tr.selected{
@@ -125,7 +130,7 @@ table {
   color: #ffffff;
 }
 
-#requests tr:nth-child(1) {
+#requests thead tr:nth-child(1) {
   visibility:hidden;
 }
 

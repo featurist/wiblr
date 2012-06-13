@@ -1,0 +1,7 @@
+.list #left_panel {
+  width:100%;
+}
+.list #right_panel {
+  width:0%;
+  left:100%;
+}
