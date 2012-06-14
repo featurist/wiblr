@@ -38,24 +38,26 @@ exports.mount (app) =
   app.get "/requests/:uuid/pretty" @(req, res)
     render body (req, res, pretty: true)
   
-  render placeholder body for (capture, res) or (otherwise) =
-    if (capture.has response body())
-      otherwise()
-    else
-      res.send ('[no response]', 'content-type': 'text/plain')
-  
   render body (req, res, pretty: false) =
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
-      render placeholder body for (capture, res) or
+      if (capture.has response body())
+        res.header 'cache-control' 'max-age=31536000 private'
         if (capture.has text content type())
-          body = capture.read response body()
-          pretty body = if (pretty)
-            prettify (body, content type: capture.content type)
-          else
-            body
-
-          res.header 'cache-control' 'max-age=31536000 private'
-          res.render ('responseBody.html', body: pretty body, pretty: pretty, layout: false)
+          render text body (res, capture, pretty)
         else
-          res.header 'cache-control' 'max-age=31536000 private'
-          res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
+          render image body (res, capture)
+      else
+        render missing body (res)
+
+  render text body (res, capture, pretty) =
+    body = capture.read response body()
+    if (pretty)
+      body = prettify (body, content type: capture.content type)
+
+    res.render ('responseBody.html', body: body, pretty: pretty, layout: false)
+
+  render image body (res, capture) =
+    res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
+
+  render missing body (res) =
+    res.send ('[no response]', 'content-type': 'text/plain')
