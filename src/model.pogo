@@ -32,6 +32,13 @@ CaptureSchema.methods.append response body (chunk) =
 CaptureSchema.methods.has response body () =
   (self.status != -1) && (self.response body != nil)
 
+CaptureSchema.methods.read response body () =
+  decode base64 as utf8 (base64) =
+    buffer = new (Buffer (base64, 'base64'))
+    buffer.to string('utf-8')
+
+  decode base64 as utf8 (self.response body)
+
 CaptureSchema.pre 'save' @(next)
   if (!this.uuid)
     this.uuid = uuid.v4()

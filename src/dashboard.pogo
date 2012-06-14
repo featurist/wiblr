@@ -3,10 +3,6 @@ prettify = require './pretty'.prettify
 
 exports.mount (app) =
 
-  decode base64 as utf8 (base64) =
-    buffer = new (Buffer (base64, 'base64'))
-    buffer.to string('utf-8')
-
   round (time) to nearest second =
     time - (time % 1000)
 
@@ -53,7 +49,7 @@ exports.mount (app) =
       render placeholder body for (capture, res) or
         reg = r/(text|css|javascript|json|xml)/
         if (capture.content type.match (reg))
-          body = decode base64 as utf8 (capture.response body)
+          body = capture.read response body()
           pretty body = if (pretty)
             prettify (body, content type: capture.content type)
           else
