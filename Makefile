@@ -8,5 +8,8 @@ js :
 scenarios : js
 	bundle exec rspec -c docs/automation/*.rb
 
+serve :
+	pogo src/serve.pogo
+
 all : spec scenarios
   
