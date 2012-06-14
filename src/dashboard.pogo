@@ -47,8 +47,7 @@ exports.mount (app) =
   render body (req, res, pretty: false) =
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
       render placeholder body for (capture, res) or
-        reg = r/(text|css|javascript|json|xml)/
-        if (capture.content type.match (reg))
+        if (capture.has text content type())
           body = capture.read response body()
           pretty body = if (pretty)
             prettify (body, content type: capture.content type)

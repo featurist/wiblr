@@ -39,6 +39,9 @@ CaptureSchema.methods.read response body () =
 
   decode base64 as utf8 (self.response body)
 
+CaptureSchema.methods.has text content type() =
+  self.content type.match (r/(text|css|javascript|json|xml)/)
+
 CaptureSchema.pre 'save' @(next)
   if (!this.uuid)
     this.uuid = uuid.v4()
