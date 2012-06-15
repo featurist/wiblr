@@ -32,12 +32,10 @@
             return $(element).text(moment(value).format(pattern));
         }
     };
-    ko.bindingHandlers.radioClick = {
+    ko.bindingHandlers.groupToggle = {
         init: function(element, valueAccessor) {
-            var self, cycle;
+            var self;
             self = this;
-            console.log("init");
-            cycle = [ "stuff", "boats" ];
             return $(element).find(".btn").click(function() {
                 var self, value;
                 self = this;
@@ -49,6 +47,7 @@
             var self, value;
             self = this;
             value = ko.utils.unwrapObservable(valueAccessor());
+            $(element).find(".btn[value!=" + value + "]").removeClass("active");
             return $(element).find(".btn[value=" + value + "]").addClass("active");
         }
     };
@@ -246,6 +245,7 @@
         window.capturesReceived = 0;
         window.thePage = new Page;
         ko.applyBindings(window.thePage);
+        $(".btn-group").button();
         socket = io.connect();
         socket.on("connect", function() {
             return window.thePage.connected();

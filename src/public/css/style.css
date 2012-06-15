@@ -32,8 +32,10 @@ table {
   border-spacing: 0;
 }
 #layout_controls {
-  float: right;
-  margin: 1em;
+  position: absolute;
+  margin: 0.7em;
+  right: 0;
+  width: 140px;
 }
 #top_panel {
   width: 100%;

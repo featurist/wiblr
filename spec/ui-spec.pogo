@@ -69,8 +69,8 @@ describe "ui"
       catch @(ex)
         carry on (ex)
 
-  click link (selector) and check (assertions) on failure (fail) on success (succeed) =
-    browser.click link (selector)
+  click button (name) and check (assertions) on failure (fail) on success (succeed) =
+    browser.press button ("button:contains(#(name))")
       try
         assertions()
         succeed ()
@@ -87,8 +87,7 @@ describe "ui"
 
   after each()
     if (app)
-      io.server.close()
-        app.close()
+      app.close()
 
   css (selector) should exist =
     (browser.query(selector) == undefined).should.equal(false, "Expected to find CSS selector: #(selector)")
@@ -109,15 +108,15 @@ describe "ui"
 
       it 'switches layout class on the body' @(done)
 
-        click link ('list') and check
+        click button ('list') and check
           css 'body.list' should exist
           css 'body.split, body.detail' should not exist
         on failure (done) on success
-          click link ('split') and check
+          click button ('split') and check
             css 'body.split' should exist
             css 'body.detail, body.list' should not exist
           on failure (done) on success
-            click link ('detail') and check
+            click button ('detail') and check
               css 'body.detail' should exist
               css 'body.split, body.list' should not exist
             on failure (done) on success (done)
@@ -208,8 +207,9 @@ describe "ui"
           describe "in list layout"
 
             before each @(ready)
-              browser.click link ('list', ready)
-              click the first row()
+              browser.press button 'button:contains(list)' @(err)
+                click the first row()
+                ready (err)
 
             it "switches to split layout"
               css 'body.split' should exist
@@ -218,8 +218,9 @@ describe "ui"
           describe "in split layout"
 
             before each @(ready)
-              browser.click link ('split', ready)
-              click the first row()
+              browser.press button ('button:contains(split)') @(err)
+                click the first row()
+                ready (err)
 
             it "switches to list layout"
               css 'body.list' should exist

@@ -5,17 +5,17 @@
     <link rel="stylesheet" href="/css/list.css" />
     <link rel="stylesheet" href="/css/split.css" />
     <link rel="stylesheet" href="/css/detail.css" />
+    <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css" />
   </head>
   <body data-bind="attr: { class: connectionStatus() + ' ' + layout() }" class="split">
     <div id="top_panel">
       <div id="logo">
         Wiblr
       </div>
-      <div id="layout_controls">
-        Layout:
-        <a class="button layout" id="detail_layout" href="#layout=detail" data-layout="detail">detail</a> |
-        <a class="button layout" id="split_layout" href="#layout=split" data-layout="split">split</a> |
-        <a class="button layout" id="list_layout" href="#layout=list" data-layout="list">list</a>
+      <div id="layout_controls" class="btn-group" data-toggle="buttons-radio" data-bind="groupToggle: layout">
+      	<button class="btn" value="detail">detail</button>
+      	<button class="btn" value="split">split</button>
+      	<button class="btn" value="list">list</button>
       </div>
     </div>
     <div id="left_panel">
@@ -111,6 +111,7 @@
     <script type="text/javascript" src='/socket.io/socket.io.js'></script>
     <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src='/js/knockout-2.1.0.js'></script>
+    <script type="text/javascript" src='/bootstrap/js/bootstrap.min.js'></script>
     <script type="text/javascript" src='/js/class.js'></script>
     <script type="text/javascript" src='/js/moment.js'></script>
     <script type="text/javascript" src='/js/underscore.js'></script>

@@ -20,16 +20,15 @@ ko.binding handlers.time = {
     $(element).text(moment(value).format(pattern))
 }
 
-ko.binding handlers.radio click = {
+ko.binding handlers.group toggle = {
   init (element, value accessor) =
-    console.log 'init'
-    cycle = ['stuff', 'boats']
     $(element).find '.btn'.click =>
       value = $(self).val ()
       (value accessor ()) (value)
 
   update (element, value accessor) =
     value = ko.utils.unwrap observable (value accessor ())
+    $(element).find ".btn[value!=#(value)]".remove class 'active'
     $(element).find ".btn[value=#(value)]".add class 'active'
 }
 
@@ -181,6 +180,8 @@ $
   window.capturesReceived = 0
   window.the page = new (Page ())
   ko.apply bindings (window.the page)
+
+  $'.btn-group'.button()
   
   socket = io.connect()
 

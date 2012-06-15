@@ -60,4 +60,4 @@ exports.mount (app) =
     res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
 
   render missing body (res) =
-    res.send ('[no response]', 'content-type': 'text/plain')
+    res.send ('<html><body><p>[no response]</p></body></html>', 'content-type': 'text/html')

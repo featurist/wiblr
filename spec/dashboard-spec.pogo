@@ -86,7 +86,7 @@ describe "dashboard"
       capture.status = -1
       capture.save
         request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
-          body.should.equal('[no response]')
+          body.should.equal('<html><body><p>[no response]</p></body></html>')
           done()
   
   describe "/requests/:id/html, when no response has yet been recorded"
