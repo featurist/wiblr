@@ -166,13 +166,45 @@ Request = $class {
         'html'
 
   select() =
+    was selected = self.selected()
     self.page.deselect request ()
     self.page.selected request (self)
     self.selected (true)
-    if (self.page.layout() == 'split')
-      self.page.layout('list')
+
+    if (self.recently selected)
+      clear timeout (self.click timeout)
+      action() =
+        self.double click(was selected)
     else
+      action() =
+        self.single click(was selected)
+
+    self.recently selected = true
+    self.click timeout = set timeout
+      self.recently selected = false
+      action()
+    250
+
+  single click(was selected) =
+    if ((self.page.layout() == 'split') && (was selected))
+      self.page.layout('list')
+      return
+
+    if ((self.page.layout() == 'detail') && (was selected))
       self.page.layout('split')
+      return
+
+    if (self.page.layout() == 'list')
+      self.page.layout('split')
+      return
+
+
+  double click(was selected) =
+    if ((self.page.layout() == 'detail') && (was selected))
+      self.page.layout('split')
+    else
+      self.page.layout('detail')
+
 }
 
 $
