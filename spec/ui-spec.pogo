@@ -270,7 +270,7 @@ describe "ui"
 
             before each @(ready)
               browser.press button ('button:contains(split)') @(err)
-                click the first row()
+                double click the first row()
                 browser.wait
                   ready (err)
 
