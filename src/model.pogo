@@ -10,7 +10,7 @@ mongoose.connect (mongo db) @(err)
   if (err)
     throw (new (Error("failed to connect to #(mongo db)\n#(err.to string())")))
 
-CaptureSchema = new (mongoose. Schema {
+CaptureSchema = new (mongoose.Schema {
   uuid             = String
   response body    = Buffer
   content type     = String

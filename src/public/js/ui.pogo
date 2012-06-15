@@ -42,11 +42,6 @@ Page = class {
     self.layout = ko.observable ('split')
     self.pretty = ko.observable (false)
 
-    self.layout = ko.observable ('exchange-list-layout')
-
-    self.body class = ko.computed
-      self.connection status () + ' ' + self.layout ()
-
     $("#load").click
       self.reload historical data()
 
@@ -182,8 +177,6 @@ $
   window.the page = new (Page ())
   ko.apply bindings (window.the page)
   
-  $'.btn-group'.button()
-
   socket = io.connect()
 
   socket.on 'connect'

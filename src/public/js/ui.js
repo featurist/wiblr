@@ -61,10 +61,6 @@
             self.selectedRequest = ko.observable();
             self.layout = ko.observable("split");
             self.pretty = ko.observable(false);
-            self.layout = ko.observable("exchange-list-layout");
-            self.bodyClass = ko.computed(function() {
-                return self.connectionStatus() + " " + self.layout();
-            });
             $("#load").click(function() {
                 return self.reloadHistoricalData();
             });
@@ -244,7 +240,6 @@
         window.capturesReceived = 0;
         window.thePage = new Page;
         ko.applyBindings(window.thePage);
-        $(".btn-group").button();
         socket = io.connect();
         socket.on("connect", function() {
             return window.thePage.connected();
