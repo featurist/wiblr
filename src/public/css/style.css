@@ -236,6 +236,20 @@ table {
   width: 150px;
 }
 
+
+#historical-controls {
+  width:151px;
+  line-height:1.65;
+  overflow:hidden;
+  height:20px;
+  -webkit-transition: width 0.2s;
+  white-space:nowrap;
+}
+#historical-controls:hover {
+  width:250px;
+  -webkit-transition: width 0.2s;
+}
+
 #historical-controls, .connecting-message {
   padding:8px 8px 6px 8px;
   position:fixed;
@@ -269,6 +283,7 @@ table {
 }
 .connected .connecting-message {
   top:50px;
+  overflow:hidden;
   -webkit-transition: top 0.5s;
 }
 #everything_but_the_body,
