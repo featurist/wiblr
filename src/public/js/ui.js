@@ -80,11 +80,15 @@
                 self.requests([]);
                 gen1_items = captures;
                 for (gen2_i = 0; gen2_i < gen1_items.length; gen2_i++) {
-                    (function(gen2_i) {
+                    var gen3_forResult;
+                    gen3_forResult = void 0;
+                    if (function(gen2_i) {
                         var capture;
                         capture = gen1_items[gen2_i];
                         self.requests.push(new Request(self, capture));
-                    })(gen2_i);
+                    }(gen2_i)) {
+                        return gen3_forResult;
+                    }
                 }
             });
         },
