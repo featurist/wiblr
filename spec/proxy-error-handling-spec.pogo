@@ -3,13 +3,14 @@ model = require "../src/model"
 
 request = require "request"
 http = require 'http'
+should = require 'should'
 
 describe "proxy"
 
   request (url) via proxy (respond) =
     options = {
       url = url
-      proxy = "http://127.0.0.1:9848/"
+      proxy = "http://featurist:cats@127.0.0.1:9848/"
     }
     request (options) @(err, response, body)
       if (err)
@@ -36,4 +37,5 @@ describe "proxy"
     
     it "stays alive" @(done)
       request "http://this-test-will-eventually-fail.com" via proxy @(response, body)
+        should.not.exist(body)
         done()

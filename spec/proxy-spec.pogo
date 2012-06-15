@@ -1,5 +1,6 @@
 proxy = require "../src/proxy"
 model = require "../src/model"
+should = require "should"
 
 request = require "request"
 http = require 'http'
@@ -17,7 +18,7 @@ describe "proxy"
   request via proxy (respond) =
     options = {
       url = "http://127.0.0.1:9837/teapot"
-      proxy = "http://127.0.0.1:9838/"
+      proxy = "http://featurist:cats@127.0.0.1:9838/"
     }
     request (options) @(err, response, body)
       if (err) @{ throw (err) }
@@ -57,7 +58,7 @@ describe "proxy"
     else
       if (time now() > time)
         console.log("Timeout waiting for messages")
-        throw "Timeout waiting for messages"
+        throw (new (Error "Timeout waiting for messages"))
 
       set
         wait until (predicate) then (callback) or timeout at (time)
@@ -114,7 +115,7 @@ describe "proxy"
           done()
 
   it "stays alive when accessed directly" @(done)
-    request { method = "GET", url = "http://127.0.0.1:9838/" } @(err, response, body)
+    request { method = "GET", url = "http://127.0.0.1:9838/", proxy = "http://featurist:cats@127.0.0.1:9838/" } @(err, response, body)
       if (err) @{ throw ("Failed to GET " + err.to string()) }
       body.should.equal("Coming soon!")
       request via proxy @(response, body)
