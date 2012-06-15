@@ -2,13 +2,14 @@ require 'capybara/rspec'
 require 'selenium-webdriver'
 require 'childprocess'
 require 'rest-client'
+require File.join(File.dirname(__FILE__), "db")
 
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)
 end
 
 def visit_through_proxy (url)
-  RestClient.proxy = "http://127.0.0.1:8081"
+  RestClient.proxy = "http://featurist:cats@127.0.0.1:8081"
   RestClient.get url
 end 
 
