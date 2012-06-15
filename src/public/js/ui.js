@@ -59,13 +59,24 @@
             self.connectionStatus = ko.observable("connecting");
             self.requests = ko.observableArray();
             self.selectedRequest = ko.observable();
+            self.layout = ko.observable("split");
+            self.pretty = ko.observable(false);
             self.layout = ko.observable("exchange-list-layout");
             self.bodyClass = ko.computed(function() {
                 return self.connectionStatus() + " " + self.layout();
             });
-            return $("#load").click(function() {
+            $("#load").click(function() {
                 return self.reloadHistoricalData();
             });
+            return $(".layout.button").click(function(e) {
+                return self.change_layout(e);
+            });
+        },
+        change_layout: function(e) {
+            var self;
+            self = this;
+            self.layout($(e.currentTarget).attr("data-layout"));
+            return false;
         },
         connected: function() {
             var self;
@@ -162,7 +173,14 @@
             self.contentType = ko.observable(fields.contentType);
             self.status = ko.observable(fields.status);
             self.responseHeaders = ko.observable(fields.responseHeaders);
+            self.scheme = "http";
             self.selected = ko.observable(false);
+            self.over = ko.observable(false);
+            self.toggleOver = function() {
+                var self;
+                self = this;
+                return self.over(!self.over());
+            };
             self.sortedRequestHeaders = ko.computed(function() {
                 return sortedPairsIn(self.requestHeaders);
             });
@@ -177,6 +195,7 @@
                     return self.contentType().split(";")[0];
                 }
             });
+            self.statusClasses = "status-" + (self.status() + "")[[ 0 ]] + "xx status-" + self.status();
             self.kind = ko.computed(function() {
                 var kind;
                 kind = "unknown";
@@ -195,10 +214,16 @@
                 }
                 return kind;
             });
-            self.pretty = ko.observable(false);
+            self.colspan = ko.computed(function() {
+                if (self.over()) {
+                    return 5;
+                } else {
+                    return 1;
+                }
+            });
             return self.responseUrl = ko.computed(function() {
                 return "/requests/" + self.uuid + "/" + function() {
-                    if (self.pretty()) {
+                    if (self.page.pretty()) {
                         return "pretty";
                     } else {
                         return "html";

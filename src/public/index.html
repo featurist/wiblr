@@ -1,19 +1,29 @@
 <html>
   <head>
     <link rel="stylesheet" href="css/boilerplate.css" type="text/css" media="screen" title="no title" charset="utf-8">
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/list.css" />
+    <link rel="stylesheet" href="/css/split.css" />
+    <link rel="stylesheet" href="/css/detail.css" />
   </head>
-  <body data-bind="attr: { class: bodyClass }">
+  <body data-bind="attr: { class: connectionStatus() + ' ' + layout() }" class="split">
     <div id="top_panel">
       <div id="logo">
         Wiblr
       </div>
+      <div id="layout_controls">
+        Layout:
+        <a class="button layout" id="detail_layout" href="#layout=detail" data-layout="detail">detail</a> |
+        <a class="button layout" id="split_layout" href="#layout=split" data-layout="split">split</a> |
+        <a class="button layout" id="list_layout" href="#layout=list" data-layout="list">list</a>
+      </div>
     </div>
     <div id="left_panel">
+      <div class="connecting-message connected">
+        Connecting
+      </div>
       <div id="historical-controls">
-        Load the last  
+        Load the last
         <select id="scale">
           <option value="5">5 mins</option>
           <option value="15">15 mins</option>
@@ -24,78 +34,84 @@
         traffic
         <input id="load" type="button" value="Load" />
       </div>
-      <div class="connecting-message">
-        Connecting
-      </div>
       <table id="requests">
+        <thead>
+          <tr>
+            <th class="cell icon"> </td>
+            <th class="cell method"> </td>
+            <th class="cell path" > </td>
+            <th class="cell host"> </td>
+            <th class="cell status"> </td>
+            <th class="cell content-type" > </td>
+            <th class="cell time"> </td>
+          </tr>
+        </thead>
         <tbody data-bind="foreach: requests">
-          <tr data-bind="attr: { 'data-uuid': uuid, 'class': 'status-' + status() }, click: select, css: { selected: selected() }">
+          <tr data-bind="event: { mouseover: toggleOver, mouseout: toggleOver }, attr: { 'data-uuid': uuid, class: statusClasses}, click: select, css: { selected: selected()}">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
             <td class="cell method" data-bind="text: method"> </td>
-            <td class="cell path" data-bind="text: trimmedPath"> </td>
+            <td class="cell path" data-bind="attr: {colspan: colspan()}" >
+              <span class="trimmed" data-bind="text: trimmedPath"></span>
+              <span class="full" data-bind="text: scheme + '://' + host + path "></span>
+            </td>
             <td class="cell host" data-bind="text: host"> </td>
             <td class="cell status" data-bind="text: status()"> </td>
-            <td class="cell content-type" data-bind="text: simplifiedContentType"> </td>
+            <td class="cell content-type" data-bind="text: simplifiedContentType()"> </td>
             <td class="cell time" data-bind="text: time"> </td>
           </tr>
         </tbody>
       </table>
     </div>
-    
     <div id="right_panel">
-      <div class="btn-group" data-toggle="buttons-radio" data-bind="radioClick: layout">
-        <button class="btn" value="exchange-list-layout">Small</button>
-        <button class="btn" value="exchange-detail-layout">Large</button>
-      </div>
-
       <div id="selected_request" data-bind="with: selectedRequest, visible: selectedRequest" style="display:none">
-        <div id="request_panel">
-          <h1>Request</h1>
-          <p>
-            <span data-bind="text: method" class="method"></span>
-            <span class="url">
-              <span class="protocol">http://</span><span data-bind="text: host" class="host"></span><span data-bind="text: path" class="path"></span>
-            </span>
-          </p>
-          <h2>Request Headers</h2>
-          <table id="request_headers">
-            <tbody id='request_headers_rows' data-bind="foreach: sortedRequestHeaders">
-              <tr class="header">
-                <td class="name" data-bind="text: name"></td>
-                <td class="value" data-bind="text: value"></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div id="response_panel">
-          <h1>Response</h1>
-          <p>
-            HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedContentType" class="content-type"></span>
-            <br />
-            <span data-bind="text: time" class="time"></span>
-          </p>
-          <p>
-            <input class='pretty-response-body' type="checkbox" data-bind='checked: pretty'>pretty<br/>
-            <iframe data-bind="attr: { 'src' : responseUrl }" id="response-body"></iframe>
-          </p>
-          <h2>Response Headers</h2>
-          <table id="response_headers">
-            <tbody id='response_headers_rows' data-bind="foreach: sortedResponseHeaders">
-              <tr class="header">
-                <td class="name" data-bind="text: name"></td>
-                <td class="value" data-bind="text: value"></td>
-              </tr>
-            </tbody>
-          </table>
+        <div>
+          <div id="request_panel">
+            <h1>Request</h1>
+            <p class="message-details">
+              <span data-bind="text: method" class="method"></span>
+              <span class="url">
+                <span class="protocol">http://</span><span data-bind="text: host" class="host"></span><span data-bind="text: path" class="path"></span>
+              </span>
+            </p>
+            <h2>Request Headers</h2>
+            <table id="request_headers">
+              <tbody id='request_headers_rows' data-bind="foreach: sortedRequestHeaders">
+                <tr class="header">
+                  <td class="name" data-bind="text: name"></td>
+                  <td class="value" data-bind="text: value"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="response_panel" >
+            <h1>Response</h1>
+            <p class="message-details">
+              HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedContentType" class="content-type"></span>
+              <br />
+              <span data-bind="text: time" class="time"></span>
+            </p>
+            <h2>Response Headers</h2>
+            <table id="response_headers">
+              <tbody id='response_headers_rows' data-bind="foreach: sortedResponseHeaders">
+                <tr class="header">
+                  <td class="name" data-bind="text: name"></td>
+                  <td class="value" data-bind="text: value"></td>
+                </tr>
+              </tbody>
+            </table>
+            <p>
+              <input class='pretty-response-body' type="checkbox" data-bind='checked: $parent.pretty'>pretty<br/>
+              <iframe data-bind="attr: { 'src' : responseUrl}" id="response-body"></iframe>
+            </p>
+
+          </div>
         </div>
       </div>
-      
     </div>
 
     <script type="text/javascript" src='/socket.io/socket.io.js'></script>
     <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src='/js/knockout-2.1.0.js'></script>
-    <script type="text/javascript" src='bootstrap/js/bootstrap.min.js'></script>
     <script type="text/javascript" src='/js/class.js'></script>
     <script type="text/javascript" src='/js/moment.js'></script>
     <script type="text/javascript" src='/js/underscore.js'></script>

@@ -13,7 +13,7 @@ describe "ui"
   host ui server (listening) =
     app = require '../src/app'.create app ()
     io = require 'socket.io'.listen (app, {log = false})
-    
+
     app.listen (7532)
     app.on "listening" (listening)
 
@@ -21,21 +21,18 @@ describe "ui"
     browser.visit ("http://127.0.0.1:7532") @(errors, browser, status)
       if (status != 200)
         console.log("Status: #(status)")
-      
+
       if (errors && (errors != []))
         console.log(errors)
-        
+
       io.on 'connection'
         done()
 
-  add request (added, capture properties) =
-    open request (added, capture properties)
-  
   update (capture) with (capture properties) =
     for @(property) in (capture properties)
       if (capture properties.has own property (property))
         capture.(property) = capture properties.(property)
-    
+
   save and emit (capture) then (carry on) =
     capture.save
       io.sockets.emit 'capture' (capture.wire object())
@@ -43,16 +40,16 @@ describe "ui"
         carry on()
       100
 
-  open request (added, capture properties) =
+  add request (capture properties) then (carry on) =
     capture = new (model.Capture)
     capture.method = 'GET'
     capture.host = '1.2.3.4'
     capture.path = 'foo/bar'
     capture.time = '2012-01-01T01:02:03'
     capture.request headers = { a  = 'x', b = 'y' }
-    
+
     update (capture) with (capture properties)
-    save and emit (capture) then (added)
+    save and emit (capture) then (carry on)
 
   complete request (capture, added, capture properties) =
     capture.status = 200
@@ -63,7 +60,7 @@ describe "ui"
     save and emit (capture) then (added)
 
   capture = null
-  
+
   when (browser) is ready (do this) then (carry on) =
     browser.wait
       try
@@ -72,12 +69,20 @@ describe "ui"
       catch @(ex)
         carry on (ex)
 
-  before each @(ready)  
+  click link (selector) and check (assertions) on failure (fail) on success (succeed) =
+    browser.click link (selector)
+      try
+        assertions()
+        succeed ()
+      catch @(ex)
+        fail (ex)
+
+  before each @(ready)
     host ui server
       browser = new (Browser)
       browser.on("error") @(error)
         console.error(error)
-        
+
       ready()
 
   after each()
@@ -86,10 +91,36 @@ describe "ui"
         app.close()
 
   css (selector) should exist =
-    (browser.query(selector) == undefined).should.equal(false)
+    (browser.query(selector) == undefined).should.equal(false, "Expected to find CSS selector: #(selector)")
 
   css (selector) should not exist =
-    (browser.query(selector) == undefined).should.equal(true)
+    (browser.query(selector) == undefined).should.equal(true, "Expected NOT to find CSS selector: #(selector)")
+
+  describe 'layout'
+
+    before each @(ready)
+      visit app (ready)
+
+    it 'defaults to split layout'
+      css 'body.split' should exist
+      css 'body.detail, body.list' should not exist
+
+    describe 'changed by user'
+
+      it 'switches layout class on the body' @(done)
+
+        click link ('list') and check
+          css 'body.list' should exist
+          css 'body.split, body.detail' should not exist
+        on failure (done) on success
+          click link ('split') and check
+            css 'body.split' should exist
+            css 'body.detail, body.list' should not exist
+          on failure (done) on success
+            click link ('detail') and check
+              css 'body.detail' should exist
+              css 'body.split, body.list' should not exist
+            on failure (done) on success (done)
 
   describe "not connected"
 
@@ -123,14 +154,16 @@ describe "ui"
     describe "an open request"
 
       before each @(ready)
-        open request (ready)
+        add request ({}) then (ready)
 
       it "renders the request details"
         browser.text ".method".should.equal "GET"
         browser.text ".host".should.equal "1.2.3.4"
-        browser.text ".path".should.equal "foo/bar"
+        browser.text '.path .trimmed'.should.equal 'foo/bar'
+        browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
         browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
 
+        return
         browser.text ".status".should.equal ""
         browser.text ".content-type".should.equal ""
 
@@ -142,15 +175,17 @@ describe "ui"
         it "updates the row with the response details"
           browser.text ".method".should.equal "GET"
           browser.text ".host".should.equal "1.2.3.4"
-          browser.text ".path".should.equal "foo/bar"
+          browser.text '.path .trimmed'.should.equal 'foo/bar'
+          browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
           browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
 
+          return
           browser.text ".status".should.equal "200"
           browser.text ".content-type".should.equal "text/plain"
 
         describe "clicking a row"
           before each
-            browser.evaluate '$(''#requests tr'').click();'
+            browser.evaluate '$(''#requests tbody tr'').click();'
 
           it "renders detailed request information"
             browser.text '#selected_request .method'.should.equal 'GET'
@@ -173,7 +208,10 @@ describe "ui"
         html.replace r/</g '&lt;'.replace r/>/g '&gt;'
 
       select latest request() =
-        browser.evaluate "$('#requests tr').eq(0).click();"
+        select request at index (0)
+
+      select request at index (index) =
+        browser.evaluate "$('#requests tbody tr').eq(#(index)).click();"
 
       response body () =
         browser.query '#response-body'.contentWindow.document.body.innerHTML
@@ -182,39 +220,70 @@ describe "ui"
         expected body = "<html><head></head><body><h1>Hi, this is HTML that wont be pretty</h1></body></html>"
         escaped expected body = escape html (expected body)
 
-        add request (
-          response body: expected body
-          content type: 'text/html'
-          path: '/ugly.html'
-        ) @{
+        request = {
+          response body = expected body
+          content type = 'text/html'
+          path = '/ugly.html'
+        }
+        add request (request) then
           select latest request()
           when (browser) is ready
             actual body = response body ()
             actual body.should.include (escaped expected body)
           then (finished)
-        }
 
-      it 'renders pretty response body when pretty checkbox is checked' @(finished) =>
-        raw response body = "<html><head></head><body><h1>Hi, this is HTML that will be pretty</h1></body></html>" 
+      describe 'when pretty is checked'
 
-        expected body = "<html>
-                           <head></head>
-                           <body>
-                             <h1>Hi, this is HTML that will be pretty</h1>
-                           </body>
-                         </html>"
+        before each @(ready)
+          raw response body = "<html><head></head><body><h1>Hi, this is HTML that will be pretty</h1></body></html>"
+          request = {
+            response body = raw response body
+            content type = 'text/html'
+            path= '/pretty.html'
+          }
+          add request (request) then
+            select latest request()
+            browser.wait
+              browser.check '.pretty-response-body'
+              ready()
 
-        escaped expected body = escape html (expected body)
+        it 'renders pretty response body' @(finished)
 
-        add request (
-          response body: raw response body
-          content type: 'text/html'
-          path: '/pretty.html'
-        ) @{
-          select latest request()
-          browser.check '.pretty-response-body'
+          expected body = "<html>
+                             <head></head>
+                             <body>
+                               <h1>Hi, this is HTML that will be pretty</h1>
+                             </body>
+                           </html>"
+
+          escaped expected body = escape html (expected body)
+
           when (browser) is ready
             actual body = response body ()
             actual body.should.include (escaped expected body)
           then (finished)
-        }
+
+
+        it 'stays in pretty view when the next response is loaded' @(finished)
+
+          expected body = "<html>
+                             <head></head>
+                             <body>
+                               <h1>Hi, this is another response HTML that will also be pretty</h1>
+                             </body>
+                           </html>"
+
+          escaped expected body = escape html (expected body)
+
+          raw response body = "<html><head></head><body><h1>Hi, this is another response HTML that will also be pretty</h1></body></html>"
+          request = {
+            response body = raw response body
+            content type = 'text/html'
+            path = '/pretty.html'
+          }
+          add request (request) then
+            select latest request()
+            when (browser) is ready
+              actual body = response body ()
+              actual body.should.include (escaped expected body)
+            then (finished)

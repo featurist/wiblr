@@ -9,7 +9,7 @@ trim middle of (string, length) =
 sorted pairs in (object) =
   pairs = _.map (object) @(value, name)
     { name = name, value = value }
-  
+
   _.sort by (pairs) @(pair)
     pair.name
 
@@ -39,6 +39,8 @@ Page = class {
     self.connection status = ko.observable('connecting')
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
+    self.layout = ko.observable ('split')
+    self.pretty = ko.observable (false)
 
     self.layout = ko.observable ('exchange-list-layout')
 
@@ -47,7 +49,14 @@ Page = class {
 
     $("#load").click
       self.reload historical data()
-      
+
+    $(".layout.button").click @(e)
+      self.change_layout(e)
+
+  change_layout(e) =
+    self.layout($(e.currentTarget).attr('data-layout'))
+    false
+
   connected () =
     self.connection status("connected")
 
@@ -61,7 +70,7 @@ Page = class {
     self.scale = $("#scale").val()
     max x = self.round (new(Date()).get time()) to nearest second
     min x = max x - (self.scale * (60 * 1000))
-    
+
     $.get("/requests/summary?over=#(self.scale)").done @(captures)
       self.requests([])
       for each @(capture) in (captures)
@@ -71,16 +80,16 @@ Page = class {
 
     open request = _.find(self.requests()) @(request)
       request.uuid == data.uuid
-    
+
     if (open request)
       open request.update(data)
-    else      
+    else
       self.requests.unshift (new (Request (self, data)))
 
   deselect request () =
     r = self.selected request()
     if (r) @{ r.selected (false) }
-    
+
 }
 
 content types = {
@@ -95,16 +104,16 @@ content types = {
 }
 
 Request = $class {
-  
+
   constructor (page, fields) =
     self.page = page
     self.make observable(fields)
-  
+
   update(fields) =
     self.content type (fields.content type)
     self.status (fields.status)
     self.response headers (fields.response headers)
-   
+
   make observable(fields) =
     self.uuid              = fields.uuid
     self.time              = fields.time
@@ -115,21 +124,28 @@ Request = $class {
     self.content type      = ko.observable(fields.content type)
     self.status            = ko.observable(fields.status)
     self.response headers  = ko.observable(fields.response headers)
-    
+    self.scheme = 'http'
+
     self.selected = ko.observable(false)
-    
+    self.over = ko.observable(false)
+    self.toggle over() = 
+      self.over(!self.over())
+
     self.sorted request headers = ko.computed
       sorted pairs in (self.request headers)
-      
+
     self.sorted response headers = ko.computed
       sorted pairs in (self.response headers())
-    
+
     self.trimmed path = ko.computed
       trim middle of (self.path || "", 50)
-    
+
     self.simplified content type = ko.computed
       if (self.content type())
         self.content type().split ";".0
+
+    self.status classes =
+      'status-' + (self.status() + '').[0] + 'xx status-' + self.status()
 
     self.kind = ko.computed
       kind = "unknown"
@@ -142,15 +158,19 @@ Request = $class {
             kind = type
 
       kind
-    
-    self.pretty = ko.observable (false)
-    
+
+    self.colspan = ko.computed
+      if (self.over())
+        5
+      else
+        1
+
     self.response url = ko.computed
-      '/requests/' + self.uuid + '/' + if (self.pretty ())
+      '/requests/' + self.uuid + '/' + if (self.page.pretty ())
         'pretty'
       else
         'html'
-        
+
   select() =
     self.page.deselect request ()
     self.page.selected request (self)
@@ -166,9 +186,9 @@ $
 
   socket = io.connect()
 
-  socket.on 'connect' 
+  socket.on 'connect'
     window.the page.connected()
-    
+
   socket.on 'disconnect'
     window.the page.disconnected()
 

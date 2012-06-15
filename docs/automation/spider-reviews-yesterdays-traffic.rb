@@ -23,7 +23,6 @@ end
 
 feature "Review historical traffic" do
   background do
-        
     @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
     @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
 
@@ -105,7 +104,7 @@ He sees no recent traffic in the last 5 minutes")
 
     step("Spider loads the last 24 hrs traffic")
     
-    @watcher_browser.should have_no_css("#requests tr")
+    @watcher_browser.should have_no_css("#requests tbody tr")
 
     @watcher_browser.select('24 hrs', :from => 'scale')
     @watcher_browser.click_button('load')
@@ -114,7 +113,7 @@ He sees no recent traffic in the last 5 minutes")
 
 He emails his US clients to point out that they had voocher not voucher.")
 
-    fourOhFour = @watcher_browser.find("#requests tr.status-404")
+    fourOhFour = @watcher_browser.find("#requests tbody tr.status-404")
     fourOhFour.should have_content('voocher')
 
   end

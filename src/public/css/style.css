@@ -20,11 +20,20 @@ h2 {
 }
 iframe {
   width: 99%;
-  height: 150px;
+  height: 20%;
   border: 2px solid #cccccc;
+  -webkit-transition: height 0.5s;
+}
+.large-body iframe {
+  height: 80%;
+  width: 99%;
 }
 table {
   border-spacing: 0;
+}
+#layout_controls {
+  float: right;
+  margin: 1em;
 }
 #top_panel {
   width: 100%;
@@ -49,15 +58,14 @@ table {
   overflow: scroll;
   top: 45px;
   bottom: 0;
+  -webkit-transition: width 0.5s, left 0.5s;
 }
 #left_panel {
   left: 0px;
-  width: 750px;
 }
 #right_panel {
   top: 50px;
   right: 0px;
-  left: 750px;
   border-left: 2px solid #E0EAF1;
   font-size: 1.1em;
 }
@@ -67,6 +75,12 @@ table {
 }
 #response_panel {
   margin-bottom: 30px;
+}
+.large-body h1,
+.large-body h2,
+.large-body table,
+.large-body .message-details {
+  display: none;
 }
 #request_panel h1,
 #response_panel h1,
@@ -97,31 +111,38 @@ table {
 #requests {
   table-layout: fixed;
   width: 100%;
-  margin-top: 40px;
+  margin-top: 23px;
 }
 #requests tr.selected {
   background-color: #5588AA;
+}
+#requests tr.selected,
+#requests tr.selected .cell.path {
   color: #ffffff;
+}
+#requests thead tr:nth-child(1) {
+  visibility: hidden;
 }
 #request_headers,
 #response_headers {
   width: 100%;
   border-spacing: 0;
   table-layout: fixed;
+  -webkit-transition: height 0.5s;
 }
 .header .name {
   width: 120px;
 }
-#requests tbody tr:hover {
+#requests tbody tr:not(.selected):hover {
   background-color: #E0EAF1;
   color: #336699;
   cursor: pointer;
 }
-#requests td.cell {
+#requests .cell {
   white-space: nowrap;
   overflow: hidden;
 }
-#requests td.cell,
+#requests .cell,
 #selected_request td,
 #request_headers td,
 #response_headers td {
@@ -130,43 +151,63 @@ table {
   text-align: left;
   border: 1px solid #efefef;
 }
-#requests td.cell,
+#requests .cell,
 #selected_request td {
   font-size: 0.8em;
 }
-#requests td.cell {
+#requests .cell {
   overflow: hidden;
 }
-#requests td.cell.icon {
+#requests .cell.icon {
   border-right: none;
   width: 26px;
 }
-#requests td.cell.icon {
+#requests .cell.icon {
   width: 21px;
 }
-#requests td.cell.icon img {
+#requests .cell.icon img {
   margin-top: 2px;
   max-height: 14px;
 }
-#requests td.cell.method {
+#requests .cell.method {
   border-left: none;
   border-right: none;
-  width: 35px;
+  width: 45px;
 }
-#requests td.cell.path {
+#requests tr:hover td.cell:nth-child(n+3) {
+  display: none;
+}
+#requests tr:hover td.cell.path {
+  display: table-cell;
+}
+#requests .cell.path {
   border-left: none;
   color: #58A;
 }
-#requests td.cell.host {
+#requests .cell.path .trimmed {
+  width: auto;
+  overflow: visible;
+  display: block ;
+}
+#requests .cell.path .full {
+  display: none;
+}
+#requests .cell.path:hover .full {
+  display: block;
+}
+#requests .cell.path:hover .trimmed {
+  display: none;
+}
+#requests .cell.host {
   width: 170px;
 }
 #requests td.content-type {
   width: 160px;
 }
-#requests td.cell.status {
+#requests .cell.status {
   width: 35px;
 }
-#requests td.cell.time {
+#requests .cell.time {
   width: 150px;
 }
 #historical-controls,
@@ -189,26 +230,17 @@ table {
   background-position: 5px center;
   padding: 6px 10px 6px 35px;
   margin: 0px 0 0;
-  position: fixed;
+  position: ;
   display: inline-block;
   z-index: 1;
   background-color: white;
-  top: 50px;
-  -webkit-transition: top 0.5s;
+  top: 79px;
 }
-.connecting-message,
 .connecting .connecting-message {
   top: 79px;
+  -webkit-transition: top 0.5s;
 }
 .connected .connecting-message {
   top: 50px;
-}
-.exchange-detail-layout #left_panel {
-  width: 300px;
-}
-.exchange-detail-layout #right_panel {
-  left: 300px;
-}
-select#scale {
-  width: 77px;
+  -webkit-transition: top 0.5s;
 }

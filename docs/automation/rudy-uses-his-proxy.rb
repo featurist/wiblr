@@ -43,10 +43,10 @@ feature "Rudy uses his proxy" do
 
   scenario "and spies on another browser" do
     @watcher_browser.visit "http://127.0.0.1:8080"
-    @watcher_browser.should have_css("#requests.connected")
+    @watcher_browser.should have_css("body.connected")
     proxied_response = visit_through_proxy "http://127.0.0.1:1337"
 
-    @watcher_browser.find(:css, "#requests tbody tr").click  
+    @watcher_browser.find(:css, "#requests tbody tr").click
     proxied_response.should include "Hello World"
 
     @watcher_browser.within_frame "response-body" do
@@ -57,7 +57,7 @@ feature "Rudy uses his proxy" do
   
   scenario "and spies on a long-running request, seeing first the request then the response" do
     @watcher_browser.visit "http://127.0.0.1:8080"
-    @watcher_browser.should have_css("#requests.connected")
+    @watcher_browser.should have_css("body.connected")
     
     proxy_request_thread = Thread.new do
       visit_through_proxy "http://127.0.0.1:5100"
