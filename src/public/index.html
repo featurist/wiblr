@@ -66,14 +66,14 @@
       <div id="selected_request" data-bind="with: selectedRequest, visible: selectedRequest" style="display:none">
         <div id="everything_but_the_body">
           <div id="request_panel">
-            <h1>Request</h1>
+            <h2>Request</h2>
             <p class="message-details">
               <span data-bind="text: method" class="method"></span>
               <span class="url">
                 <span class="protocol">http://</span><span data-bind="text: host" class="host"></span><span data-bind="text: path" class="path"></span>
               </span>
             </p>
-            <h2>Request Headers</h2>
+            <h3>Request Headers</h3>
             <table id="request_headers">
               <tbody id='request_headers_rows' data-bind="foreach: sortedRequestHeaders">
                 <tr class="header">
@@ -84,13 +84,13 @@
             </table>
           </div>
           <div id="response_panel" >
-            <h1>Response</h1>
+            <h2>Response</h2>
             <p class="message-details">
               HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedContentType" class="content-type"></span>
               <br />
               <span data-bind="text: time" class="time"></span>
             </p>
-            <h2>Response Headers</h2>
+            <h3>Response Headers</h3>
             <table id="response_headers">
               <tbody id='response_headers_rows' data-bind="foreach: sortedResponseHeaders">
                 <tr class="header">

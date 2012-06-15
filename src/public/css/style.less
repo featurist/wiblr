@@ -4,6 +4,9 @@
 html body {
   line-height: inherit;
 }
+.preload * {
+  -webkit-transition: all 0s linear ! important;
+}
 body {
   margin: 0;
   overflow: hidden;
@@ -239,6 +242,19 @@ table {
 
 #requests .cell.time {
   width: 150px;
+}
+
+#historical-controls {
+  width:151px;
+  line-height:1.65;
+  overflow:hidden;
+  height:20px;
+  -webkit-transition: width 0.2s;
+  white-space:nowrap;
+}
+#historical-controls:hover {
+  width:250px;
+  -webkit-transition: width 0.2s;
 }
 
 #historical-controls, .connecting-message {
