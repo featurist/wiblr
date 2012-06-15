@@ -227,15 +227,52 @@
             });
         },
         select: function() {
-            var self;
+            var self, wasSelected;
             self = this;
+            wasSelected = self.selected();
             self.page.deselectRequest();
             self.page.selectedRequest(self);
             self.selected(true);
-            if (self.page.layout() === "split") {
-                return self.page.layout("list");
+            if (self.recentlySelected) {
+                var action;
+                clearTimeout(self.clickTimeout);
+                action = function() {
+                    return self.doubleClick(wasSelected);
+                };
             } else {
+                action = function() {
+                    return self.singleClick(wasSelected);
+                };
+            }
+            self.recentlySelected = true;
+            return self.clickTimeout = setTimeout(function() {
+                self.recentlySelected = false;
+                return action();
+            }, 250);
+        },
+        singleClick: function(wasSelected) {
+            var self;
+            self = this;
+            if (self.page.layout() === "split" && wasSelected) {
+                self.page.layout("list");
+                return;
+            }
+            if (self.page.layout() === "detail" && wasSelected) {
+                self.page.layout("split");
+                return;
+            }
+            if (self.page.layout() === "list") {
+                self.page.layout("split");
+                return;
+            }
+        },
+        doubleClick: function(wasSelected) {
+            var self;
+            self = this;
+            if (self.page.layout() === "detail" && wasSelected) {
                 return self.page.layout("split");
+            } else {
+                return self.page.layout("detail");
             }
         }
     });

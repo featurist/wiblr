@@ -180,10 +180,10 @@ describe "ui"
           browser.text ".status".should.equal "200"
           browser.text ".content-type".should.equal "text/plain"
 
-        describe "clicking a row"
+        click the first row() =
+          browser.evaluate '$(''#requests tbody tr'').click();'
 
-          click the first row() =
-            browser.evaluate '$(''#requests tbody tr'').click();'
+        describe "clicking a row"
 
           before each
             click the first row()
@@ -204,27 +204,92 @@ describe "ui"
             browser.text '#response_headers .name:first'.should.equal 'c'
             browser.text '#response_headers .value:first'.should.equal 's'
 
+        describe "clicking a row when in list layout"
+
+          before each @(ready)
+            browser.press button 'button:contains(list)' @(err)
+              click the first row()
+              browser.wait
+                ready (err)
+
+          it "switches to split layout"
+              css 'body.split' should exist
+              css 'body.list' should not exist
+
+        describe "clicking a row when in split layout"
+
+          before each @(ready)
+            browser.press button ('button:contains(split)', ready)
+
+          it "switches to list layout"
+            click the first row()
+            browser.wait
+              css 'body.list' should exist
+              css 'body.split' should not exist
+
+          describe "switching to another row"
+
+            it "stays in split layout" @(done)
+              add request ({}) then
+                css 'body.split' should exist
+                done()
+
+        describe "clicking a row when in detail layout"
+
+          before each @(ready)
+            browser.press button ('button:contains(detail)') @(err)
+              click the first row()
+              browser.wait
+                ready(err)
+
+          it "stays in detail layout"
+            css 'body.detail' should exist
+
+        describe "double-clicking a row"
+
+          click the first row() =
+            browser.evaluate '$(''#requests tbody tr'').click();'
+
+          double click the first row() =
+            click the first row()
+            click the first row()
+
           describe "in list layout"
 
             before each @(ready)
-              browser.press button 'button:contains(list)' @(err)
-                click the first row()
-                ready (err)
+              browser.press button ('button:contains(list)') @(err)
+                double click the first row()
+                browser.wait
+                  ready(err)
 
-            it "switches to split layout"
-              css 'body.split' should exist
+            it "switches to detail layout"
+              css 'body.detail' should exist
               css 'body.list' should not exist
 
           describe "in split layout"
 
             before each @(ready)
               browser.press button ('button:contains(split)') @(err)
-                click the first row()
-                ready (err)
+                double click the first row()
+                browser.wait
+                  ready (err)
 
-            it "switches to list layout"
-              css 'body.list' should exist
+            it "switches to detail layout"
+              css 'body.detail' should exist
               css 'body.split' should not exist
+
+          describe "in detail layout"
+
+            before each @(ready)
+              browser.press button ('button:contains(detail)') @(err)
+                double click the first row()
+                browser.wait
+                  ready()
+
+            it "switches to split layout"
+              css 'body.split' should exist
+              css 'body.list' should not exist
+
 
 
     describe 'examining the response body'

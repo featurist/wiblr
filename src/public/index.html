@@ -47,7 +47,7 @@
           </tr>
         </thead>
         <tbody data-bind="foreach: requests">
-          <tr data-bind="event: { mouseover: toggleOver, mouseout: toggleOver }, attr: { 'data-uuid': uuid, class: statusClasses}, click: select, css: { selected: selected()}">
+          <tr data-bind="event: { mouseover: toggleOver, mouseout: toggleOver, click: select}, attr: { 'data-uuid': uuid, class: statusClasses}, css: { selected: selected()}">
             <td class="cell icon"><img data-bind="attr: { src: '/images/icons/' + kind() + '.gif' }" /> </td>
             <td class="cell method" data-bind="text: method"> </td>
             <td class="cell path" data-bind="attr: {colspan: colspan()}" >
