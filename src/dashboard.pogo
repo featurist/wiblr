@@ -42,7 +42,7 @@ exports.mount (app) =
     model.Capture.find one { uuid = req.params.uuid } @(err, capture)
       if (capture.has response body())
         res.header 'cache-control' 'max-age=31536000 private'
-        if (capture.has text content type())
+        if (capture.should render as text())
           render text body (res, capture, pretty)
         else
           render image body (res, capture)

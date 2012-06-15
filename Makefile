@@ -11,5 +11,8 @@ scenarios : js
 serve :
 	pogo src/serve.pogo
 
+tea :
+	curl -x http://127.0.0.1:8081 http://www.httpbin.org/status/418 -v
+
 all : spec scenarios
   
