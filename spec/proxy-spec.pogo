@@ -106,17 +106,17 @@ describe "proxy"
         done()
 
       it "saves captures" @(done)
-          model.Capture.find one { uuid = messages.1.data.uuid } @(err, capture)
-            if (err) @{ throw (err) }
-            capture.status.should.equal 418
-            capture.content type.should.equal "earl/grey"
-            capture.response headers.'content-type'.should.equal "earl/grey"
-            done()
+        model.Capture.find one { uuid = messages.1.data.uuid } @(err, capture)
+          if (err) @{ throw (err) }
+          capture.status.should.equal 418
+          capture.content type.should.equal "earl/grey"
+          capture.response headers.'content-type'.should.equal "earl/grey"
+          done()
 
   it "stays alive when accessed directly" @(done)
     request { method = "GET", url = "http://127.0.0.1:9838/" } @(err, response, body)
       if (err) @{ throw ("Failed to GET " + err.to string()) }
-      body.should.equal("This URL hosts an HTTP proxy")
+      body.should.equal("Coming soon!")
       request via proxy @(response, body)
         body.should.equal "I'm a teapot\n"
         done()

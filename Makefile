@@ -1,8 +1,18 @@
-test : spec/*.pogo
-	pogo -c src/public/js/*.pogo && mogo spec/*.pogo && bundle exec rspec -c docs/automation/*.rb
+test : spec
+spec : js
+	mogo spec/*.pogo
 
-spec : spec/*.pogo
-	pogo -c src/public/js/*.pogo && mogo spec/*.pogo
+js :
+	pogo -c src/public/js/*.pogo
 
-scenarios : docs/automation/*.rb
-	pogo -c src/public/js/*.pogo && bundle exec rspec -c docs/automation/*.rb
+scenarios : js
+	bundle exec rspec -c docs/automation/*.rb
+
+serve :
+	pogo src/serve.pogo
+
+tea :
+	curl -x http://127.0.0.1:8081 http://www.httpbin.org/status/418 -v
+
+all : spec scenarios
+  

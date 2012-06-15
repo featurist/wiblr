@@ -33,6 +33,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   save capture()
   
   proxy = http.create client (port, host)
+  // console.log (method, path, headers)
   proxy request = proxy.request (method, path, headers)
 
   request.on 'data' @(chunk)
@@ -41,12 +42,20 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   request.on 'end'
     proxy request.end ()
  
+  proxy.on 'error' @(error)
+    true // proxy _request_ error doesn't fire without this
+        
+  proxy request.on 'error' @(error)
+    capture.status = -1
+    save capture()
+    response.end()
+ 
   proxy request.on 'response' @(proxy response)
 
     request complete() =
       response.end()
       save capture()
-
+      
     proxy response.on 'data' @(chunk)
       response.write (chunk, 'binary')
       
@@ -78,6 +87,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
 exports.create server(io) =
  
   http.create server @(request, response)
+
     if (request.url.match (r/^http/))
       forward request (
         io
@@ -88,4 +98,4 @@ exports.create server(io) =
         headers: request.headers
       )
     else
-      response.end "This URL hosts an HTTP proxy"
+      response.end "Coming soon!"

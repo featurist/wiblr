@@ -62,10 +62,8 @@
         </tbody>
       </table>
     </div>
-    
     <div id="right_panel">
-      
-      <div id="selected_request" data-bind="with: selectedRequest">
+      <div id="selected_request" data-bind="with: selectedRequest, visible: selectedRequest" style="display:none">
         <div>
           <div id="request_panel">
             <h1>Request</h1>
@@ -109,7 +107,6 @@
           </div>
         </div>
       </div>
-      
     </div>
 
     <script type="text/javascript" src='/socket.io/socket.io.js'></script>
