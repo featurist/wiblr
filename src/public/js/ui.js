@@ -232,11 +232,17 @@
             self = this;
             self.page.deselectRequest();
             self.page.selectedRequest(self);
-            return self.selected(true);
+            self.selected(true);
+            if (self.page.layout() === "split") {
+                return self.page.layout("list");
+            } else {
+                return self.page.layout("split");
+            }
         }
     });
     $(function() {
         var socket;
+        $("html").removeClass("preload");
         window.capturesReceived = 0;
         window.thePage = new Page;
         ko.applyBindings(window.thePage);

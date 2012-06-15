@@ -8,11 +8,13 @@
 .detail #everything_but_the_body {
   width:29%;
   float:left;
+  height:100%;
+  overflow:auto;
 }
 .detail #response_body_panel {
   width:69%;
   float:right;
 }
 .detail #response-body {
-  height:95%;
+  height:93%;
 }

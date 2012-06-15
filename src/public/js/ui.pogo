@@ -170,9 +170,14 @@ Request = $class {
     self.page.deselect request ()
     self.page.selected request (self)
     self.selected (true)
+    if (self.page.layout() == 'split')
+      self.page.layout('list')
+    else
+      self.page.layout('split')
 }
 
 $
+  $('html').removeClass('preload')
   window.capturesReceived = 0
   window.the page = new (Page ())
   ko.apply bindings (window.the page)

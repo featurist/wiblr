@@ -163,7 +163,6 @@ describe "ui"
         browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
         browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
 
-        return
         browser.text ".status".should.equal ""
         browser.text ".content-type".should.equal ""
 
@@ -179,13 +178,16 @@ describe "ui"
           browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
           browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
 
-          return
           browser.text ".status".should.equal "200"
           browser.text ".content-type".should.equal "text/plain"
 
         describe "clicking a row"
-          before each
+
+          click the first row() =
             browser.evaluate '$(''#requests tbody tr'').click();'
+
+          before each
+            click the first row()
 
           it "renders detailed request information"
             browser.text '#selected_request .method'.should.equal 'GET'
@@ -202,6 +204,27 @@ describe "ui"
           it "renders response headers"
             browser.text '#response_headers .name:first'.should.equal 'c'
             browser.text '#response_headers .value:first'.should.equal 's'
+
+          describe "in list layout"
+
+            before each @(ready)
+              browser.click link ('list', ready)
+              click the first row()
+
+            it "switches to split layout"
+              css 'body.split' should exist
+              css 'body.list' should not exist
+
+          describe "in split layout"
+
+            before each @(ready)
+              browser.click link ('split', ready)
+              click the first row()
+
+            it "switches to list layout"
+              css 'body.list' should exist
+              css 'body.split' should not exist
+
 
     describe 'examining the response body'
       escape html (html) =
