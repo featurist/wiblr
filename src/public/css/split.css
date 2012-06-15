@@ -1,7 +1,7 @@
-.split #left_panel, 
-.split #right_panel {
-  width: 49%;
+.split #left_panel {
+  width: 65%;
 }
 .split #right_panel {
-  left: 50%;
+  width: 34%;
+  left: 65%;
 }

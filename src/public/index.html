@@ -64,7 +64,7 @@
     </div>
     <div id="right_panel">
       <div id="selected_request" data-bind="with: selectedRequest, visible: selectedRequest" style="display:none">
-        <div>
+        <div id="everything_but_the_body">
           <div id="request_panel">
             <h1>Request</h1>
             <p class="message-details">
@@ -99,12 +99,11 @@
                 </tr>
               </tbody>
             </table>
-            <p>
-              <input class='pretty-response-body' type="checkbox" data-bind='checked: $parent.pretty'>pretty<br/>
-              <iframe data-bind="attr: { 'src' : responseUrl}" id="response-body"></iframe>
-            </p>
-
           </div>
+        </div>
+        <div id="response_body_panel">
+          <input class='pretty-response-body' type="checkbox" data-bind='checked: $parent.pretty'>pretty<br/>
+          <iframe data-bind="attr: { 'src' : responseUrl}" id="response-body"></iframe>
         </div>
       </div>
     </div>

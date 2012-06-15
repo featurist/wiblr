@@ -1,8 +1,18 @@
 .detail #left_panel {
-  width:5%;
+  width:15%;
 }
 .detail #right_panel {
-  width:95%;
-  left:5%;
+  width:85%;
+  left:15%;
 }
-
+.detail #everything_but_the_body {
+  width:29%;
+  float:left;
+}
+.detail #response_body_panel {
+  width:69%;
+  float:right;
+}
+.detail #response-body {
+  height:95%;
+}
