@@ -20,12 +20,30 @@ ko.binding handlers.time = {
     $(element).text(moment(value).format(pattern))
 }
 
-Page = $class {
+ko.binding handlers.radio click = {
+  init (element, value accessor) =
+    console.log 'init'
+    cycle = ['stuff', 'boats']
+    $(element).find '.btn'.click =>
+      value = $(self).val ()
+      (value accessor ()) (value)
+
+  update (element, value accessor) =
+    value = ko.utils.unwrap observable (value accessor ())
+    $(element).find ".btn[value=#(value)]".add class 'active'
+}
+
+Page = class {
   
   constructor() =
     self.connection status = ko.observable('connecting')
     self.requests = ko.observable array ()
     self.selected request = ko.observable ()
+
+    self.layout = ko.observable ('exchange-list-layout')
+
+    self.body class = ko.computed
+      self.connection status () + ' ' + self.layout ()
 
     $("#load").click
       self.reload historical data()
@@ -143,6 +161,8 @@ $
   window.capturesReceived = 0
   window.the page = new (Page ())
   ko.apply bindings (window.the page)
+  
+  $'.btn-group'.button()
 
   socket = io.connect()
 

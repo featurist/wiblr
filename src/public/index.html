@@ -1,9 +1,11 @@
 <html>
   <head>
     <link rel="stylesheet" href="css/boilerplate.css" type="text/css" media="screen" title="no title" charset="utf-8">
-    <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
   </head>
-  <body data-bind="attr: { class: connectionStatus }">
+  <body data-bind="attr: { class: bodyClass }">
     <div id="top_panel">
       <div id="logo">
         Wiblr
@@ -41,7 +43,11 @@
     </div>
     
     <div id="right_panel">
-      
+      <div class="btn-group" data-toggle="buttons-radio" data-bind="radioClick: layout">
+        <button class="btn" value="exchange-list-layout">Small</button>
+        <button class="btn" value="exchange-detail-layout">Large</button>
+      </div>
+
       <div id="selected_request" data-bind="with: selectedRequest, visible: selectedRequest" style="display:none">
         <div id="request_panel">
           <h1>Request</h1>
@@ -89,6 +95,7 @@
     <script type="text/javascript" src='/socket.io/socket.io.js'></script>
     <script type="text/javascript" src="/js/jquery-1.7.2.min.js"></script>
     <script type="text/javascript" src='/js/knockout-2.1.0.js'></script>
+    <script type="text/javascript" src='bootstrap/js/bootstrap.min.js'></script>
     <script type="text/javascript" src='/js/class.js'></script>
     <script type="text/javascript" src='/js/moment.js'></script>
     <script type="text/javascript" src='/js/underscore.js'></script>

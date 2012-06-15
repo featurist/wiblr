@@ -32,6 +32,26 @@
             return $(element).text(moment(value).format(pattern));
         }
     };
+    ko.bindingHandlers.radioClick = {
+        init: function(element, valueAccessor) {
+            var self, cycle;
+            self = this;
+            console.log("init");
+            cycle = [ "stuff", "boats" ];
+            return $(element).find(".btn").click(function() {
+                var self, value;
+                self = this;
+                value = $(self).val();
+                return valueAccessor()(value);
+            });
+        },
+        update: function(element, valueAccessor) {
+            var self, value;
+            self = this;
+            value = ko.utils.unwrapObservable(valueAccessor());
+            return $(element).find(".btn[value=" + value + "]").addClass("active");
+        }
+    };
     Page = $class({
         constructor: function() {
             var self;
@@ -39,6 +59,10 @@
             self.connectionStatus = ko.observable("connecting");
             self.requests = ko.observableArray();
             self.selectedRequest = ko.observable();
+            self.layout = ko.observable("exchange-list-layout");
+            self.bodyClass = ko.computed(function() {
+                return self.connectionStatus() + " " + self.layout();
+            });
             return $("#load").click(function() {
                 return self.reloadHistoricalData();
             });
@@ -195,6 +219,7 @@
         window.capturesReceived = 0;
         window.thePage = new Page;
         ko.applyBindings(window.thePage);
+        $(".btn-group").button();
         socket = io.connect();
         socket.on("connect", function() {
             return window.thePage.connected();
