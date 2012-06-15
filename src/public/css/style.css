@@ -5,6 +5,10 @@ body {
   margin: 0;
   overflow: hidden;
 }
+
+.preload * {
+  -webkit-transition:all 0s linear ! important;
+}
 h1 {
   color: #5588AA;
   font-size: 1.1em;
@@ -243,6 +247,7 @@ table {
   overflow:hidden;
   height:20px;
   -webkit-transition: width 0.2s;
+  -webkit-transition-delay:0.6s;
   white-space:nowrap;
 }
 #historical-controls:hover {
