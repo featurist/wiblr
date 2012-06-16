@@ -153,6 +153,7 @@
             var self;
             self = this;
             self.contentType(fields.contentType);
+            self.contentLength(fields.contentLength);
             self.status(fields.status);
             return self.responseHeaders(fields.responseHeaders);
         },
@@ -165,6 +166,7 @@
             self.host = fields.host;
             self.path = fields.path;
             self.requestHeaders = fields.requestHeaders;
+            self.contentLength = ko.observable(fields.contentLength);
             self.contentType = ko.observable(fields.contentType);
             self.status = ko.observable(fields.status);
             self.responseHeaders = ko.observable(fields.responseHeaders);

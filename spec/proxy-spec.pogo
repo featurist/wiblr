@@ -112,6 +112,7 @@ describe "proxy"
           capture.status.should.equal 418
           capture.content type.should.equal "earl/grey"
           capture.response headers.'content-type'.should.equal "earl/grey"
+          capture.content length.should.equal(13)
           done()
 
   it "stays alive when accessed directly" @(done)

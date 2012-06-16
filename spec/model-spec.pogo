@@ -20,4 +20,7 @@ describe "Capture"
         capture.uuid.should.equal uuid
         done()
 
-  
+  it "increments content length when a chunk is appended"
+    capture = new (model.Capture)
+    capture.append response body (new (Buffer "golly"))
+    capture.content length.should.equal(5)

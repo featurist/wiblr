@@ -105,6 +105,7 @@ Request = $class {
 
   update(fields) =
     self.content type (fields.content type)
+    self.content length (fields.content length)
     self.status (fields.status)
     self.response headers (fields.response headers)
 
@@ -115,6 +116,8 @@ Request = $class {
     self.host              = fields.host
     self.path              = fields.path
     self.request headers   = fields.request headers
+    
+    self.content length    = ko.observable(fields.content length)
     self.content type      = ko.observable(fields.content type)
     self.status            = ko.observable(fields.status)
     self.response headers  = ko.observable(fields.response headers)

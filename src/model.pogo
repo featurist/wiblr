@@ -14,6 +14,7 @@ CaptureSchema = new (mongoose.Schema {
   uuid             = String
   response body    = Buffer
   content type     = String
+  content length   = Number
   time             = Date
   method           = String
   host             = String
@@ -27,7 +28,8 @@ CaptureSchema.statics.since (from date) (callback) =
   this.find().where('time').gte(from date).sort('time', -1).exclude('responseBody').run (callback)
 
 CaptureSchema.methods.append response body (chunk) =
-  self.response body = buffertools.concat(self.response body, chunk)
+  self.response body = buffertools.concat(self.response body || (new (Buffer [])), chunk)
+  self.content length = (self.content length || 0) + chunk.length
 
 CaptureSchema.methods.has response body () =
   (self.status != -1) && (self.response body != nil)
@@ -45,19 +47,20 @@ CaptureSchema.methods.should render as text() =
 CaptureSchema.pre 'save' @(next)
   if (!this.uuid)
     this.uuid = uuid.v4()
-    
+  
   next()
 
 CaptureSchema.methods.wire object() =
   {
-    content type = self.content type
-    uuid         = self.uuid
-    time         = self.time
-    method       = self.method
-    host         = self.host
-    path         = self.path
-    status       = self.status
-    request headers = self.request headers
+    content type     = self.content type
+    content length   = self.content length
+    uuid             = self.uuid
+    time             = self.time
+    method           = self.method
+    host             = self.host
+    path             = self.path
+    status           = self.status
+    request headers  = self.request headers
     response headers = self.response headers
   }
 

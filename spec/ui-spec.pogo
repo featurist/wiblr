@@ -38,7 +38,7 @@ describe "ui"
       io.sockets.emit 'capture' (capture.wire object())
       set timeout
         carry on()
-      100
+      10
 
   add request (capture properties) then (carry on) =
     capture = new (model.Capture)
@@ -47,7 +47,7 @@ describe "ui"
     capture.path = 'foo/bar'
     capture.time = '2012-01-01T01:02:03'
     capture.request headers = { a  = 'x', b = 'y' }
-
+    
     update (capture) with (capture properties)
     save and emit (capture) then (carry on)
 
@@ -55,6 +55,8 @@ describe "ui"
     capture.status = 200
     capture.content type = 'text/plain; charset=utf-8'
     capture.response headers = { c = 's', d = 't' }
+    capture.append response body (new (Buffer "howdy"))
+    capture.append response body (new (Buffer "doody"))
 
     update (capture) with (capture properties)
     save and emit (capture) then (added)
@@ -161,7 +163,6 @@ describe "ui"
         browser.text '.path .trimmed'.should.equal 'foo/bar'
         browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
         browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
-
         browser.text ".status".should.equal ""
         browser.text ".content-type".should.equal ""
 
@@ -176,7 +177,6 @@ describe "ui"
           browser.text '.path .trimmed'.should.equal 'foo/bar'
           browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
           browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
-
           browser.text ".status".should.equal "200"
           browser.text ".content-type".should.equal "text/plain"
 
@@ -187,7 +187,7 @@ describe "ui"
 
           before each
             click the first row()
-
+            
           it "renders detailed request information"
             browser.text '#selected_request .method'.should.equal 'GET'
             browser.text '#selected_request .status'.should.equal '200'
@@ -195,6 +195,7 @@ describe "ui"
             browser.text '#selected_request .path'.should.equal 'foo/bar'
             browser.text '#selected_request .content-type'.should.equal 'text/plain'
             browser.text '#selected_request .time'.should.equal '2012-01-01T01:02:03.000Z'
+            browser.text '#selected_request .content-length'.should.equal '10'
 
           it "renders request headers"
             browser.text '#request_headers .name:first'.should.equal 'a'
