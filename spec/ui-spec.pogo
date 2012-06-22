@@ -206,6 +206,9 @@ describe "ui"
             browser.text '#response_headers .name:first'.should.equal 'c'
             browser.text '#response_headers .value:first'.should.equal 's'
 
+          it "contains link to original request"
+            browser.text 'a.url[href=http://1.2.3.4/foo/bar]'.should.equal 'http://1.2.3.4/foo/bar'
+
         describe "clicking a row when in list layout"
 
           before each @(ready)
