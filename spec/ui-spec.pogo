@@ -3,6 +3,7 @@ request = require "request"
 Browser = require "zombie"
 model = require "../src/model"
 dashboard = require '../src/dashboard'
+should = require 'should'
 
 describe "ui"
 
@@ -17,7 +18,7 @@ describe "ui"
     app.listen (7532)
     app.on "listening" (listening)
 
-  visit app (done) =
+  visit app (done, wait til connected: true) =
     browser.visit ("http://127.0.0.1:7532") @(errors, browser, status)
       if (status != 200)
         console.log("Status: #(status)")
@@ -26,7 +27,10 @@ describe "ui"
         console.log(errors)
 
       io.on 'connection'
-        done()
+        if (wait til connected)
+          set timeout (done, 100)
+        else
+          done()
 
   update (capture) with (capture properties) =
     for @(property) in (capture properties)
@@ -37,7 +41,7 @@ describe "ui"
     capture.save
       io.sockets.emit 'capture' (capture.wire object())
       set timeout
-        carry on()
+        carry on (nil, capture)
       10
 
   add request (capture properties) then (carry on) =
@@ -61,6 +65,12 @@ describe "ui"
 
     update (capture) with (capture properties)
     save and emit (capture) then (added)
+
+  show detail for request (request properties, done) =
+    add request (request properties) then @(error, exchange)
+      complete request (exchange)
+        click the first row ()
+        done ()
 
   capture = null
 
@@ -98,10 +108,13 @@ describe "ui"
   css (selector) should not exist =
     (browser.query(selector) == undefined).should.equal(true, "Expected NOT to find CSS selector: #(selector)")
 
+  click the first row() =
+    browser.evaluate '$(''#requests tbody tr'').click();'
+
   describe 'layout'
 
     before each @(ready)
-      visit app (ready)
+      visit app (ready, wait til connected: false)
 
     it 'defaults to split layout'
       css 'body.split' should exist
@@ -127,7 +140,7 @@ describe "ui"
   describe "not connected"
 
     before each @(ready)
-      visit app (ready)
+      visit app (ready, wait til connected: false)
 
     it "shows connecting status"
       //TODO: What is the right way to do this assertion? Cannot get .exists() to work.
@@ -137,7 +150,7 @@ describe "ui"
   describe "disconnected"
 
     before each @(ready)
-      visit app (ready)
+      visit app (ready, wait til connected: false)
 
     it "shows connecting status"
       css ('body.connected') should not exist
@@ -146,8 +159,7 @@ describe "ui"
   describe "connected"
 
     before each @(ready)
-      visit app
-        set timeout (ready,100)
+      visit app (ready)
 
     it "shows connected status"
       css ('body.connected') should exist
@@ -180,9 +192,6 @@ describe "ui"
           browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
           browser.text ".status".should.equal "200"
           browser.text ".content-type".should.equal "text/plain"
-
-        click the first row() =
-          browser.evaluate '$(''#requests tbody tr'').click();'
 
         describe "clicking a row"
 
@@ -251,9 +260,6 @@ describe "ui"
             css 'body.detail' should exist
 
         describe "double-clicking a row"
-
-          click the first row() =
-            browser.evaluate '$(''#requests tbody tr'').click();'
 
           double click the first row() =
             click the first row()
@@ -381,3 +387,25 @@ describe "ui"
               actual body = response body ()
               actual body.should.include (escaped expected body)
             then (finished)
+
+  describe 'original request link'
+    before each @(done)
+      visit app (done)
+
+    it 'when method is GET then original request link should be clickable' @(done)
+      show detail for {method = 'GET'} request
+        try
+          browser.text 'a.url'.should.equal 'http://1.2.3.4/foo/bar'
+          browser.query 'a.url'.get attribute 'href'.should.equal 'http://1.2.3.4/foo/bar'
+          done ()
+        catch @(ex)
+          done (ex)
+
+    it 'when method is POST then original request link should not be clickable' @(done)
+      show detail for {method = 'POST'} request
+        try
+          browser.text 'a.url'.should.equal 'http://1.2.3.4/foo/bar'
+          browser.query 'a.url'.get attribute 'href'.should.equal ''
+          done ()
+        catch @(ex)
+          done (ex)
