@@ -44,7 +44,8 @@ describe "ui"
     capture = new (model.Capture)
     capture.method = 'GET'
     capture.host = '1.2.3.4'
-    capture.path = 'foo/bar'
+    capture.path = '/foo/bar'
+    capture.url = 'http://1.2.3.4/foo/bar'
     capture.time = '2012-01-01T01:02:03'
     capture.request headers = { a  = 'x', b = 'y' }
     
@@ -160,8 +161,8 @@ describe "ui"
       it "renders the request details"
         browser.text ".method".should.equal "GET"
         browser.text ".host".should.equal "1.2.3.4"
-        browser.text '.path .trimmed'.should.equal 'foo/bar'
-        browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
+        browser.text '.path .trimmed'.should.equal '/foo/bar'
+        browser.text '.path .full'.should.equal 'http://1.2.3.4/foo/bar'
         browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
         browser.text ".status".should.equal ""
         browser.text ".content-type".should.equal ""
@@ -174,8 +175,8 @@ describe "ui"
         it "updates the row with the response details"
           browser.text ".method".should.equal "GET"
           browser.text ".host".should.equal "1.2.3.4"
-          browser.text '.path .trimmed'.should.equal 'foo/bar'
-          browser.text '.path .full'.should.equal 'http://1.2.3.4foo/bar'
+          browser.text '.path .trimmed'.should.equal '/foo/bar'
+          browser.text '.path .full'.should.equal 'http://1.2.3.4/foo/bar'
           browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
           browser.text ".status".should.equal "200"
           browser.text ".content-type".should.equal "text/plain"
@@ -192,7 +193,7 @@ describe "ui"
             browser.text '#selected_request .method'.should.equal 'GET'
             browser.text '#selected_request .status'.should.equal '200'
             browser.text '#selected_request .host'.should.equal '1.2.3.4'
-            browser.text '#selected_request .path'.should.equal 'foo/bar'
+            browser.text '#selected_request .path'.should.equal '/foo/bar'
             browser.text '#selected_request .content-type'.should.equal 'text/plain'
             browser.text '#selected_request .time'.should.equal '2012-01-01T01:02:03.000Z'
             browser.text '#selected_request .content-length'.should.equal '10'
