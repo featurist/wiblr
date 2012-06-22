@@ -97,11 +97,9 @@ exports.create server(io) =
     password = parts.1
     
     if ((username == 'featurist') || (password == 'cats'))    
-      response.cooki
       respond()
     else
-      response.header 'Proxy-Authenticate' 'Basic realm="Please enter your Wiblr account details to continue"'
-      response.write head 407
+      response.write head (407, 'Proxy-Authenticate': 'Basic realm="Please enter your Wiblr account details to continue"')
       response.end "Please enter your Wiblr account details to continue"
   
   http.create server @(request, response)
