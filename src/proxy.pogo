@@ -3,6 +3,25 @@ url utils = require 'url'
 zlib = require 'zlib'
 buffertools = require "buffertools"
 model = require './model'
+Memory Stream = require 'memorystream'
+
+create memory stream () = new (Memory Stream (null, readable: false))
+
+(request) is compressed =
+  r/gzip|deflate/.test (request.headers.'content-encoding')
+
+(req res) body stream =
+  stream = create memory stream ()
+
+  if ((req res) is compressed)
+    unzip = zlib.create unzip ()
+    req res.pipe (unzip)
+    unzip.pipe (stream)
+  else
+    req res.pipe (stream)
+
+  stream
+  
 
 forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   
@@ -10,8 +29,6 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   port = parsed url.port
   host = parsed url.hostname
   path = parsed url.path || '/'
-  
-  //console.log "forwarding #(method) request to http://#(host):#(port)#(path)"
   
   capture = new (model.Capture)
   capture.time = new (Date)
@@ -21,6 +38,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   capture.host = host
   capture.path = path
   capture.request headers = request.headers
+  capture.request body = new (Buffer [])
   capture.response body = new (Buffer [])
   
   emit capture() = 
@@ -35,15 +53,11 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   save capture()
   
   proxy = http.create client (port, host)
-  // console.log (method, path, headers)
   proxy request = proxy.request (method, path, headers)
 
-  request.on 'data' @(chunk)
-    proxy request.write (chunk, 'binary')
-    
-  request.on 'end'
-    proxy request.end ()
- 
+  request body stream = (request) body stream
+  request.pipe (proxy request)
+
   proxy.on 'error' @(error)
     true // proxy _request_ error doesn't fire without this
         
@@ -53,36 +67,18 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     response.end()
  
   proxy request.on 'response' @(proxy response)
+    proxy response.pipe (response)
+    response body stream = (proxy response) body stream
 
-    request complete() =
-      response.end()
-      save capture()
-      
-    proxy response.on 'data' @(chunk)
-      response.write (chunk, 'binary')
-      
     capture.content type = proxy response.headers.'content-type'
     capture.response headers = proxy response.headers
     capture.status = proxy response.status code
 
-    copy response data (chunk) =
-      capture.append response body (chunk)
-
-    unzip () =
-      gzip data = ''
-      gunzip = zlib.create unzip ()
-      proxy response.pipe (gunzip)
-      gunzip.on 'data' (copy response data)
-      gunzip.on 'end' (request complete)
-
-    plain () =
-      proxy response.on 'data' (copy response data)
-      proxy response.on 'end' (request complete)
-
-    if (proxy response.headers.'content-encoding' == 'gzip')
-      unzip ()  
-    else
-      plain ()
+    response body stream.on 'end'
+      capture.set response body (response body stream.to buffer ())
+      capture.request body = request body stream.to buffer ()
+      response.end()
+      save capture()
 
     response.write head (proxy response.status code, proxy response.headers)
 

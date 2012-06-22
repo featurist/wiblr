@@ -13,6 +13,7 @@ mongoose.connect (mongo db) @(err)
 CaptureSchema = new (mongoose.Schema {
   uuid             = String
   response body    = Buffer
+  request body    = Buffer
   content type     = String
   content length   = Number
   time             = Date
@@ -29,9 +30,9 @@ CaptureSchema = new (mongoose.Schema {
 CaptureSchema.statics.since (from date) (callback) =
   this.find().where('time').gte(from date).sort('time', -1).exclude('responseBody').run (callback)
 
-CaptureSchema.methods.append response body (chunk) =
-  self.response body = buffertools.concat(self.response body || (new (Buffer [])), chunk)
-  self.content length = (self.content length || 0) + chunk.length
+CaptureSchema.methods.set response body (body buffer) =
+  self.response body = body buffer
+  self.content length = body buffer.length
 
 CaptureSchema.methods.has response body () =
   (self.status != -1) && (self.response body != nil)

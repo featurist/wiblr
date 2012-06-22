@@ -28,7 +28,8 @@
         "should": "0.6.3",
         "zombie":"1.0.0",
         "jsdom": "0.2.14",
-        "cucumber": "latest"
+        "cucumber": "latest",
+        "connect-gzip": "latest"
     },
     "dependencies": {
         "express": "2.5.9",
@@ -39,6 +40,7 @@
         "mongoose": "2.6.3",
         "buffertools": "1.0.9",
         "request": "2.9.202",
-        "stache" : "0.1.0"
+        "stache" : "0.1.0",
+        "memorystream" : "git+https://github.com/refractalize/node-memorystream.git"
     }
 }

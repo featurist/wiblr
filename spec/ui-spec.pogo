@@ -60,8 +60,7 @@ describe "ui"
     capture.status = 200
     capture.content type = 'text/plain; charset=utf-8'
     capture.response headers = { c = 's', d = 't' }
-    capture.append response body (new (Buffer "howdy"))
-    capture.append response body (new (Buffer "doody"))
+    capture.set response body (new (Buffer "howdydoody"))
 
     update (capture) with (capture properties)
     save and emit (capture) then (added)
