@@ -6,24 +6,26 @@ _ = require 'underscore'
 
 describe "dashboard"
 
-  before
+  root = nil
 
+  before
     app = require '../src/app'.create app ()
     app.listen 9586
+    root = 'http://localhost:9586'
 
   before each @(ready)
     model.Capture.find().remove()
       ready()
 
-  describe "/requests/:id"
+  describe "/exchanges/:id/responsebody"
 
     it "renders the response body" @(done)
 
       capture = new (model.Capture)
       capture.response body = new (Buffer "happy days")
-      capture.content type = "text/plain"
+      capture.response headers = {'content-type' = "text/plain"}
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)" @(err, res, body)
+        request "#(root)/exchanges/#(capture.uuid)/responsebody" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/plain'
           body.should.equal("happy days")
           done()
@@ -31,13 +33,29 @@ describe "dashboard"
   escape (html) =
     html.replace r/</g '&lt;'.replace r/>/g '&gt;'
 
-  describe '/requests/:id/pretty, when the content is html'
+  describe "/exchanges/:id/requestbody"
+
+    it "renders the request body" @(done)
+
+      capture = new (model.Capture)
+      capture.request body = new (Buffer "happy days")
+      capture.request headers = {'content-type' = "text/plain"}
+      capture.save
+        request "#(root)/exchanges/#(capture.uuid)/requestbody" @(err, res, body)
+          res.headers.'content-type'.should.equal 'text/plain'
+          body.should.equal("happy days")
+          done()
+
+  escape (html) =
+    html.replace r/</g '&lt;'.replace r/>/g '&gt;'
+
+  describe '/exchanges/:id/responsebody/pretty, when the content is html'
     it 'renders a textarea, with the html indented' @(done)
       capture = new (model.Capture)
       capture.response body = new (Buffer "<html><head></head><body><h1>hi</h1></body></html>")
-      capture.content type = "text/html"
+      capture.response headers = {'content-type' = "text/html"}
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)/pretty" @(err, res, body)
+        request "#(root)/exchanges/#(capture.uuid)/responsebody/pretty" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
           res.headers.'cache-control'.should.equal 'max-age=31536000 private'
 
@@ -49,61 +67,106 @@ describe "dashboard"
                                        </html>")
           done()
 
-  describe "/requests/:id/html, when the content is text"
+  describe '/exchanges/:id/requestbody/pretty, when the content is html'
+    it 'renders a textarea, with the html indented' @(done)
+      capture = new (model.Capture)
+      capture.request body = new (Buffer "<html><head></head><body><h1>hi</h1></body></html>")
+      capture.request headers = {'content-type' = "text/html"}
+      capture.save
+        request "#(root)/exchanges/#(capture.uuid)/requestbody/pretty" @(err, res, body)
+          res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
+          res.headers.'cache-control'.should.equal 'max-age=31536000 private'
+
+          body.should.include (escape "<html>
+                                         <head></head>
+                                         <body>
+                                           <h1>hi</h1>
+                                         </body>
+                                       </html>")
+          done()
+
+  describe "/exchanges/:id/responsebody/html, when the content is text"
 
     it "renders a textarea" @(done)
     
       capture = new (model.Capture)
-      capture.response body = new (Buffer "<html><body><h1>hi</h1></body></html>")
-      capture.content type = "text/html"
+      capture.response body = new (Buffer "this is text")
+      capture.response headers = {'content-type' = "text/html"}
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+        request "#(root)/exchanges/#(capture.uuid)/responsebody/html" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
           res.headers.'cache-control'.should.equal 'max-age=31536000 private'
 
-          body.should.include (escape "<html><body><h1>hi</h1></body></html>")
+          body.should.include (escape "this is text")
           done()
 
-  describe "/requests/:id/html, when the content is an image"
+  describe "/exchanges/:id/requestbody/html, when the content is text"
+
+    it "renders a textarea" @(done)
+    
+      capture = new (model.Capture)
+      capture.request body = new (Buffer "this is text")
+      capture.request headers = {'content-type' = "text/html"}
+      capture.save
+        request "#(root)/exchanges/#(capture.uuid)/requestbody/html" @(err, res, body)
+          debugger
+          res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
+          res.headers.'cache-control'.should.equal 'max-age=31536000 private'
+
+          body.should.include (escape "this is text")
+          done()
+
+  describe "/exchanges/:id/responsebody/html, when the content is an image"
 
     it "renders an img" @(done)
       capture = new (model.Capture)
       capture.response body = new (Buffer (0))
-      capture.content type = "image/png"
+      capture.response headers = {'content-type' = "image/png"}
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+        request "#(root)/exchanges/#(capture.uuid)/responsebody/html" @(err, res, body)
+          res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
+          res.headers.'cache-control'.should.equal 'max-age=31536000 private'
+
+          body.should.include("<img")
+          done()
+
+  describe "/exchanges/:id/requestbody/html, when the content is an image"
+
+    it "renders an img" @(done)
+      capture = new (model.Capture)
+      capture.request body = new (Buffer (0))
+      capture.request headers = {'content-type' = "image/png"}
+      capture.save
+        request "#(root)/exchanges/#(capture.uuid)/requestbody/html" @(err, res, body)
           res.headers.'content-type'.should.equal 'text/html; charset=utf-8'
           res.headers.'cache-control'.should.equal 'max-age=31536000 private'
 
           body.should.include("<img")
           done()
   
-  describe "/requests/:id/html, when the response resulted in an error"
+  describe "/exchanges/:id/responsebody/html, when the response resulted in an error"
     
     it "renders a generic [no response] message" @(done)
       capture = new (model.Capture)
-      capture.content type = "text/html"
       capture.status = -1
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+        request "#(root)/exchanges/#(capture.uuid)/responsebody/html" @(err, res, body)
           body.should.equal('<html><body><p>[no response]</p></body></html>')
           done()
   
-  describe "/requests/:id/html, when no response has yet been recorded"
+  describe "/exchanges/:id/responsebody/html, when no response has yet been recorded"
     
     it "renders a generic [no response] message" @(done)
       capture = new (model.Capture)
-      capture.content type = "text/html"
       capture.save
-        request "http://127.0.0.1:9586/requests/#(capture.uuid)/html" @(err, res, body)
+        request "#(root)/exchanges/#(capture.uuid)/responsebody/html" @(err, res, body)
           body.should.include("[no response]")
           done()
 
-  describe "/requests/summary?over=:minutes, when there is a spread of historical data"
+  describe "/exchanges/summary?over=:minutes, when there is a spread of historical data"
 
     save a capture timed (n) seconds in the past (then carry on) =
       capture = new (model.Capture)
-      capture.content type = "text/plain"
       capture.time = new(Date())
       capture.time = capture.time.set time(test start time - (n * 1000))
       captures.push (capture)
@@ -140,7 +203,7 @@ describe "dashboard"
         ready()
 
     it "returns all captures over the supplied minutes by time descending" @(done)
-      request "http://127.0.0.1:9586/requests/summary?over=4&now=#(test start time)" @(err, res, body)
+      request "#(root)/exchanges/summary?over=4&now=#(test start time)" @(err, res, body)
         captures over range = JSON.parse(body)
         captures over range.length.should.equal (34)
         JSON.stringify(captures over range).should.equal(JSON.stringify(_.first(captures,34)))

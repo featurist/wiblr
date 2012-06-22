@@ -65,7 +65,7 @@ Page = class {
     max x = self.round (new(Date()).get time()) to nearest second
     min x = max x - (self.scale * (60 * 1000))
 
-    $.get("/requests/summary?over=#(self.scale)").done @(captures)
+    $.get("/exchanges/summary?over=#(self.scale)").done @(captures)
       self.requests([])
       for each @(capture) in (captures)
         self.requests.push (new (Request (self, capture)))
@@ -104,7 +104,6 @@ Request = $class {
     self.make observable(fields)
 
   update(fields) =
-    self.content type (fields.content type)
     self.content length (fields.content length)
     self.status (fields.status)
     self.response headers (fields.response headers)
@@ -120,7 +119,6 @@ Request = $class {
     self.request headers   = fields.request headers
     
     self.content length    = ko.observable(fields.content length)
-    self.content type      = ko.observable(fields.content type)
     self.status            = ko.observable(fields.status)
     self.response headers  = ko.observable(fields.response headers)
     self.scheme = 'http'
@@ -139,9 +137,15 @@ Request = $class {
     self.trimmed path = ko.computed
       trim middle of (self.path || "", 50)
 
-    self.simplified content type = ko.computed
-      if (self.content type())
-        self.content type().split ";".0
+    self.response content type = ko.computed
+      headers = self.response headers ()
+
+      if (headers)
+        headers.'content-type'
+
+    self.simplified response content type = ko.computed
+      if (self.response content type())
+        self.response content type().split ";".0
 
     self.status classes =
       'status-' + (self.status() + '').[0] + 'xx status-' + self.status()
@@ -151,9 +155,9 @@ Request = $class {
       if (!self.status())
         kind = "pending"
 
-      if (self.content type())
+      if (self.response content type())
         for @(type) in (content types)
-          if (self.content type().match(content types.(type)))
+          if (self.response content type().match(content types.(type)))
             kind = type
 
       kind
@@ -165,7 +169,7 @@ Request = $class {
         1
 
     self.response url = ko.computed
-      '/requests/' + self.uuid + '/' + if (self.page.pretty ())
+      '/exchanges/' + self.uuid + '/responsebody/' + if (self.page.pretty ())
         'pretty'
       else
         'html'

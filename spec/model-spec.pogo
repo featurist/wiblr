@@ -24,3 +24,17 @@ describe "Capture"
     capture = new (model.Capture)
     capture.set response body (new (Buffer "golly"))
     capture.content length.should.equal(5)
+
+  it 'reads request body' @(done)
+    capture = new (model.Capture)
+    capture.request body = new (Buffer "golly")
+    capture.save
+      capture.read request body ().should.equal "golly"
+      done ()
+
+  it 'reads response body' @(done)
+    capture = new (model.Capture)
+    capture.set response body (new (Buffer "golly"))
+    capture.save
+      capture.read response body ().should.equal "golly"
+      done ()

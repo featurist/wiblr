@@ -70,7 +70,6 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     proxy response.pipe (response)
     response body stream = (proxy response) body stream
 
-    capture.content type = proxy response.headers.'content-type'
     capture.response headers = proxy response.headers
     capture.status = proxy response.status code
 

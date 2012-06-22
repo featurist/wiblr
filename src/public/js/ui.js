@@ -94,7 +94,7 @@
             self.scale = $("#scale").val();
             maxX = self.roundToNearestSecond((new Date).getTime());
             minX = maxX - self.scale * 60 * 1e3;
-            return $.get("/requests/summary?over=" + self.scale).done(function(captures) {
+            return $.get("/exchanges/summary?over=" + self.scale).done(function(captures) {
                 var gen1_items, gen2_i, capture;
                 self.requests([]);
                 gen1_items = captures;
@@ -145,7 +145,6 @@
         update: function(fields) {
             var self;
             self = this;
-            self.contentType(fields.contentType);
             self.contentLength(fields.contentLength);
             self.status(fields.status);
             return self.responseHeaders(fields.responseHeaders);
@@ -162,7 +161,6 @@
             self.url = fields.url;
             self.requestHeaders = fields.requestHeaders;
             self.contentLength = ko.observable(fields.contentLength);
-            self.contentType = ko.observable(fields.contentType);
             self.status = ko.observable(fields.status);
             self.responseHeaders = ko.observable(fields.responseHeaders);
             self.scheme = "http";
@@ -182,9 +180,16 @@
             self.trimmedPath = ko.computed(function() {
                 return trimMiddleOf(self.path || "", 50);
             });
-            self.simplifiedContentType = ko.computed(function() {
-                if (self.contentType()) {
-                    return self.contentType().split(";")[0];
+            self.responseContentType = ko.computed(function() {
+                var headers;
+                headers = self.responseHeaders();
+                if (headers) {
+                    return headers["content-type"];
+                }
+            });
+            self.simplifiedResponseContentType = ko.computed(function() {
+                if (self.responseContentType()) {
+                    return self.responseContentType().split(";")[0];
                 }
             });
             self.statusClasses = "status-" + (self.status() + "")[[ 0 ]] + "xx status-" + self.status();
@@ -194,10 +199,10 @@
                 if (!self.status()) {
                     kind = "pending";
                 }
-                if (self.contentType()) {
+                if (self.responseContentType()) {
                     for (type in contentTypes) {
                         (function(type) {
-                            if (self.contentType().match(contentTypes[type])) {
+                            if (self.responseContentType().match(contentTypes[type])) {
                                 kind = type;
                             }
                         })(type);
@@ -213,7 +218,7 @@
                 }
             });
             self.responseUrl = ko.computed(function() {
-                return "/requests/" + self.uuid + "/" + function() {
+                return "/exchanges/" + self.uuid + "/responsebody/" + function() {
                     if (self.page.pretty()) {
                         return "pretty";
                     } else {

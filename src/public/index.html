@@ -42,7 +42,7 @@
             <th class="cell path" > </td>
             <th class="cell host"> </td>
             <th class="cell status"> </td>
-            <th class="cell content-type" > </td>
+            <th class="cell response-content-type" > </td>
             <th class="cell time"> </td>
           </tr>
         </thead>
@@ -56,7 +56,7 @@
             </td>
             <td class="cell host" data-bind="text: host"> </td>
             <td class="cell status" data-bind="text: status()"> </td>
-            <td class="cell content-type" data-bind="text: simplifiedContentType()"> </td>
+            <td class="cell response-content-type" data-bind="text: simplifiedResponseContentType()"> </td>
             <td class="cell time" data-bind="text: time"> </td>
           </tr>
         </tbody>
@@ -86,7 +86,7 @@
           <div id="response_panel" >
             <h2>Response</h2>
             <p class="message-details">
-              HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedContentType" class="content-type"></span>
+              HTTP <span data-bind="text: status" class="status"></span> <span data-bind="text: simplifiedResponseContentType" class="response-content-type"></span>
               <br />
               <span data-bind="text: time" class="time"></span>
               <br />

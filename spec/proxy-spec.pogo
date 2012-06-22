@@ -138,7 +138,6 @@ describe "proxy"
       load saved exchange @(err, exchange)
         if (err) @{ done (err) }
         exchange.status.should.equal 418
-        exchange.content type.should.equal "earl/grey"
         exchange.response headers.'content-type'.should.equal "earl/grey"
         exchange.response body.to string ().should.equal "I'm a teapot\n"
         exchange.content length.should.equal(13)

@@ -58,8 +58,7 @@ describe "ui"
 
   complete request (capture, added, capture properties) =
     capture.status = 200
-    capture.content type = 'text/plain; charset=utf-8'
-    capture.response headers = { c = 's', d = 't' }
+    capture.response headers = { c = 's', d = 't', 'content-type' = 'text/plain; charset=utf-8' }
     capture.set response body (new (Buffer "howdydoody"))
 
     update (capture) with (capture properties)
@@ -176,7 +175,7 @@ describe "ui"
         browser.text '.path .full'.should.equal 'http://1.2.3.4/foo/bar'
         browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
         browser.text ".status".should.equal ""
-        browser.text ".content-type".should.equal ""
+        browser.text ".response-content-type".should.equal ""
 
       describe "a complete request"
 
@@ -190,7 +189,7 @@ describe "ui"
           browser.text '.path .full'.should.equal 'http://1.2.3.4/foo/bar'
           browser.text ".time".should.equal "2012-01-01T01:02:03.000Z"
           browser.text ".status".should.equal "200"
-          browser.text ".content-type".should.equal "text/plain"
+          browser.text ".response-content-type".should.equal "text/plain"
 
         describe "clicking a row"
 
@@ -202,7 +201,7 @@ describe "ui"
             browser.text '#selected_request .status'.should.equal '200'
             browser.text '#selected_request .host'.should.equal '1.2.3.4'
             browser.text '#selected_request .path'.should.equal '/foo/bar'
-            browser.text '#selected_request .content-type'.should.equal 'text/plain'
+            browser.text '#selected_request .response-content-type'.should.equal 'text/plain'
             browser.text '#selected_request .time'.should.equal '2012-01-01T01:02:03.000Z'
             browser.text '#selected_request .content-length'.should.equal '10'
 
@@ -321,7 +320,7 @@ describe "ui"
 
         request = {
           response body = expected body
-          content type = 'text/html'
+          response headers = {'content-type' = "text/html"}
           path = '/ugly.html'
         }
         add request (request) then
@@ -337,7 +336,7 @@ describe "ui"
           raw response body = "<html><head></head><body><h1>Hi, this is HTML that will be pretty</h1></body></html>"
           request = {
             response body = raw response body
-            content type = 'text/html'
+            response headers = {'content-type' = 'text/html'}
             path= '/pretty.html'
           }
           add request (request) then
@@ -377,7 +376,7 @@ describe "ui"
           raw response body = "<html><head></head><body><h1>Hi, this is another response HTML that will also be pretty</h1></body></html>"
           request = {
             response body = raw response body
-            content type = 'text/html'
+            response headers = {'content-type' = 'text/html'}
             path = '/pretty.html'
           }
           add request (request) then

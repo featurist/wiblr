@@ -14,7 +14,6 @@ CaptureSchema = new (mongoose.Schema {
   uuid             = String
   response body    = Buffer
   request body    = Buffer
-  content type     = String
   content length   = Number
   time             = Date
   method           = String
@@ -37,15 +36,24 @@ CaptureSchema.methods.set response body (body buffer) =
 CaptureSchema.methods.has response body () =
   (self.status != -1) && (self.response body != nil)
 
-CaptureSchema.methods.read response body () =
-  decode base64 as utf8 (base64) =
-    buffer = new (Buffer (base64, 'base64'))
-    buffer.to string('utf-8')
+decode base64 as utf8 (base64) =
+  buffer = new (Buffer (base64, 'base64'))
+  buffer.to string('utf-8')
 
+CaptureSchema.methods.read response body () =
   decode base64 as utf8 (self.response body)
 
-CaptureSchema.methods.should render as text() =
-  (!self.content type) || (self.content type.match (r/(text|css|javascript|json|xml)/))
+CaptureSchema.methods.read request body () =
+  decode base64 as utf8 (self.request body)
+
+CaptureSchema.methods.can render response body as text() =
+  content type (self.response headers.'content-type') is considered text
+
+content type (content type) is considered text =
+  !content type || content type.match (r/(text|css|javascript|json|xml)/)
+
+CaptureSchema.methods.can render request body as text() =
+  content type (self.request headers.'content-type') is considered text
 
 CaptureSchema.pre 'save' @(next)
   if (!this.uuid)
@@ -55,7 +63,6 @@ CaptureSchema.pre 'save' @(next)
 
 CaptureSchema.methods.wire object() =
   {
-    content type     = self.content type
     content length   = self.content length
     uuid             = self.uuid
     time             = self.time
