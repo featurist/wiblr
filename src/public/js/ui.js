@@ -2,8 +2,8 @@
     var self, trimMiddleOf, sortedPairsIn, Page, contentTypes, Request;
     self = this;
     trimMiddleOf = function(string, length) {
+        var start, end;
         if (string.length > length) {
-            var start, end;
             start = string.substring(0, length / 2);
             end = string.substring(string.length - length / 2, string.length);
             return start + " ... " + end;
@@ -95,19 +95,12 @@
             maxX = self.roundToNearestSecond((new Date).getTime());
             minX = maxX - self.scale * 60 * 1e3;
             return $.get("/requests/summary?over=" + self.scale).done(function(captures) {
-                var gen1_items, gen2_i;
+                var gen1_items, gen2_i, capture;
                 self.requests([]);
                 gen1_items = captures;
                 for (gen2_i = 0; gen2_i < gen1_items.length; gen2_i++) {
-                    var gen3_forResult;
-                    gen3_forResult = void 0;
-                    if (function(gen2_i) {
-                        var capture;
-                        capture = gen1_items[gen2_i];
-                        self.requests.push(new Request(self, capture));
-                    }(gen2_i)) {
-                        return gen3_forResult;
-                    }
+                    capture = gen1_items[gen2_i];
+                    self.requests.push(new Request(self, capture));
                 }
             });
         },
@@ -194,14 +187,13 @@
             });
             self.statusClasses = "status-" + (self.status() + "")[[ 0 ]] + "xx status-" + self.status();
             self.kind = ko.computed(function() {
-                var kind;
+                var kind, type;
                 kind = "unknown";
                 if (!self.status()) {
                     kind = "pending";
                 }
                 if (self.contentType()) {
-                    var type;
-                    for (var type in contentTypes) {
+                    for (type in contentTypes) {
                         (function(type) {
                             if (self.contentType().match(contentTypes[type])) {
                                 kind = type;
@@ -229,14 +221,13 @@
             });
         },
         select: function() {
-            var self, wasSelected;
+            var self, wasSelected, action;
             self = this;
             wasSelected = self.selected();
             self.page.deselectRequest();
             self.page.selectedRequest(self);
             self.selected(true);
             if (self.recentlySelected) {
-                var action;
                 clearTimeout(self.clickTimeout);
                 action = function() {
                     return self.doubleClick(wasSelected);
