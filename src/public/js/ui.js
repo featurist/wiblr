@@ -156,8 +156,10 @@
             self.uuid = fields.uuid;
             self.time = fields.time;
             self.method = fields.method;
+            self.protocol = fields.protocol;
             self.host = fields.host;
             self.path = fields.path;
+            self.url = fields.url;
             self.requestHeaders = fields.requestHeaders;
             self.contentLength = ko.observable(fields.contentLength);
             self.contentType = ko.observable(fields.contentType);
@@ -210,7 +212,7 @@
                     return 1;
                 }
             });
-            return self.responseUrl = ko.computed(function() {
+            self.responseUrl = ko.computed(function() {
                 return "/requests/" + self.uuid + "/" + function() {
                     if (self.page.pretty()) {
                         return "pretty";
@@ -218,6 +220,11 @@
                         return "html";
                     }
                 }();
+            });
+            return self.requestHref = ko.computed(function() {
+                if (/get/i.test(self.method)) {
+                    return self.url;
+                }
             });
         },
         select: function() {

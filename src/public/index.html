@@ -69,9 +69,9 @@
             <h2>Request</h2>
             <p class="message-details">
               <span data-bind="text: method" class="method"></span>
-              <span class="url">
+              <a data-bind="attr: {href: requestHref}" class="url" target=proxied_url>
                 <span class="protocol">http://</span><span data-bind="text: host" class="host"></span><span data-bind="text: path" class="path"></span>
-              </span>
+              </a>
             </p>
             <h3>Request Headers</h3>
             <table id="request_headers">

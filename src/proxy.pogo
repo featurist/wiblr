@@ -16,6 +16,8 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   capture = new (model.Capture)
   capture.time = new (Date)
   capture.method = method
+  capture.protocol = parsed url.protocol.replace r/:$/ ''
+  capture.url = url
   capture.host = host
   capture.path = path
   capture.request headers = request.headers
@@ -95,6 +97,7 @@ exports.create server(io) =
     password = parts.1
     
     if ((username == 'featurist') || (password == 'cats'))    
+      response.cooki
       respond()
     else
       response.header 'Proxy-Authenticate' 'Basic realm="Please enter your Wiblr account details to continue"'

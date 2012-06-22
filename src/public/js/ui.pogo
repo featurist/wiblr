@@ -113,8 +113,10 @@ Request = $class {
     self.uuid              = fields.uuid
     self.time              = fields.time
     self.method            = fields.method
+    self.protocol          = fields.protocol 
     self.host              = fields.host
     self.path              = fields.path
+    self.url               = fields.url
     self.request headers   = fields.request headers
     
     self.content length    = ko.observable(fields.content length)
@@ -167,6 +169,10 @@ Request = $class {
         'pretty'
       else
         'html'
+
+    self.request href = ko.computed
+      if (r/get/i.test (self.method))
+          self.url
 
   select() =
     was selected = self.selected()

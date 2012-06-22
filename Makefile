@@ -14,5 +14,8 @@ serve :
 tea :
 	curl -x http://127.0.0.1:8081 http://www.httpbin.org/status/418 -v -U featurist:cats
 
+post :
+	curl -X POST http://www.httpbin.org/post -d 'field=stuff' -x http://localhost:8081/ -v -U featurist:cats
+
 all : spec scenarios
   
