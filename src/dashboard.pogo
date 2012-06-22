@@ -54,7 +54,7 @@ exports.mount (app) =
     if (pretty)
       body = prettify (body, content type: capture.content type)
 
-    res.render ('responseBody.html', body: body, pretty: pretty, layout: false)
+    res.render ('responseBody.html', body: body, pretty: pretty, ugly: !pretty, layout: false)
 
   render image body (res, capture) =
     res.send ("<img src='/requests/#(capture.uuid)' />", 'content-type': 'text/html')
