@@ -6,11 +6,15 @@ require 'mongo'
 require 'date'
 require 'UUID'
 
+require File.join(File.dirname(__FILE__), "db")
+
 include DB
 
 Capybara.register_driver :chrome do |app|
   Capybara::Selenium::Driver.new(app, :browser => :chrome)
 end
+
+Capybara.ignore_hidden_elements = true
 
 def step(text)
   puts text
@@ -107,7 +111,8 @@ He sees no recent traffic in the last 5 minutes")
     @watcher_browser.should have_no_css("#requests tbody tr")
 
     @watcher_browser.select('24 hrs', :from => 'scale')
-    @watcher_browser.click_button('load')
+    
+    @watcher_browser.find('#load').click()
 
     step("Spider scans through the traffic and spots the some 404s to /basket/applyvoocher
 
