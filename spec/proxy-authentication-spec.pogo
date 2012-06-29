@@ -1,7 +1,7 @@
 proxy = require "../src/proxy"
 model = require "../src/model"
 
-request = require "request"
+request = require 'request'
 http = require 'http'
 should = require 'should'
 

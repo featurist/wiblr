@@ -4,6 +4,7 @@ model = require "../src/model"
 request = require "request"
 http = require 'http'
 should = require 'should'
+freeport = require 'freeport'
 
 describe "proxy"
 
@@ -36,6 +37,7 @@ describe "proxy"
   describe "proxying requests to bogus domains"
     
     it "stays alive" @(done)
-      request "http://this-test-will-eventually-fail.com" via proxy @(response, body)
-        should.not.exist(body)
-        done()
+      freeport @(error, port)
+        request "http://localhost:#(port)" via proxy @(response, body)
+          should.not.exist(body)
+          done()

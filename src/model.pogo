@@ -13,7 +13,7 @@ mongoose.connect (mongo db) @(err)
 CaptureSchema = new (mongoose.Schema {
   uuid             = String
   response body    = Buffer
-  request body    = Buffer
+  request body     = Buffer
   content length   = Number
   time             = Date
   method           = String
