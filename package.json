@@ -29,7 +29,8 @@
         "zombie":"1.0.0",
         "jsdom": "0.2.14",
         "cucumber": "latest",
-        "connect-gzip": "latest"
+        "connect-gzip": "latest",
+		"freeport" : "latest"
     },
     "dependencies": {
 		"connect": "1.x",
