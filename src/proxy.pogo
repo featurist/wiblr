@@ -52,21 +52,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   
   save capture()
   
-  proxy = http.create client (port, host)
-  proxy request = proxy.request (method, path, headers)
-
-  request body stream = (request) body stream
-  request.pipe (proxy request)
-
-  proxy.on 'error' @(error)
-    true // proxy _request_ error doesn't fire without this
-        
-  proxy request.on 'error' @(error)
-    capture.status = -1
-    save capture()
-    response.end()
- 
-  proxy request.on 'response' @(proxy response)
+  proxy request = http.request {port = port, host = host, method = method, path = path, headers = headers} @(proxy response)
     proxy response.pipe (response)
     response body stream = (proxy response) body stream
 
@@ -81,7 +67,15 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
 
     response.write head (proxy response.status code, proxy response.headers)
 
-exports.create server(io) =
+  request body stream = (request) body stream
+  request.pipe (proxy request)
+
+  proxy request.on 'error' @(error)
+    capture.status = -1
+    save capture()
+    response.end()
+
+exports.create server(io, ssl options) =
   
   authenticate request (request, response) then (respond) =
     header = request.headers.'proxy-authorization' || ''
