@@ -1,29 +1,6 @@
-require 'capybara/rspec'
-require 'selenium-webdriver'
-require 'childprocess'
-require 'rest-client'
-require 'mongo'
-require 'date'
-require 'UUID'
-
-require File.join(File.dirname(__FILE__), "db")
+require_relative "support/scenario_helper"
 
 include DB
-
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, :browser => :chrome)
-end
-
-Capybara.ignore_hidden_elements = true
-
-def step(text)
-  puts text
-end
-
-
-def setup_historical_capture(options)
-  captures_collection.insert({"UUID" => UUID.new.to_s, "content-type" => 'text/json', "time" => @test_start_time - options[:seconds_ago], "host" => "api.ihazmuzik.com", "path" => options[:path], "status" => options[:status]})
-end
 
 feature "Review historical traffic" do
   background do

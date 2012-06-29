@@ -1,17 +1,4 @@
-require 'capybara/rspec'
-require 'selenium-webdriver'
-require 'childprocess'
-require 'rest-client'
-require File.join(File.dirname(__FILE__), "db")
-
-Capybara.register_driver :chrome do |app|
-  Capybara::Selenium::Driver.new(app, :browser => :chrome)
-end
-
-def visit_through_proxy (url)
-  RestClient.proxy = "http://featurist:cats@127.0.0.1:8081"
-  RestClient.get url
-end 
+require_relative "support/scenario_helper"
 
 include DB
 
@@ -27,7 +14,7 @@ feature "Rudy uses his proxy" do
     @rudys_slow_app_process.start.io.inherit!
     @proxy_app_process.start.io.inherit!
     
-    @watcher_browser = Capybara::Session.new(:chrome)
+    @dashboard_browser = Capybara::Session.new(:chrome)
   end
   
   before :each do
@@ -43,22 +30,22 @@ feature "Rudy uses his proxy" do
   end
 
   scenario "and spies on another browser" do
-    @watcher_browser.visit "http://127.0.0.1:8080"
-    @watcher_browser.should have_css("body.connected")
+    @dashboard_browser.visit "http://127.0.0.1:8080"
+    @dashboard_browser.should have_css("body.connected")
     proxied_response = visit_through_proxy "http://127.0.0.1:1337"
 
-    @watcher_browser.find(:css, "#requests tbody tr").click
+    @dashboard_browser.find(:css, "#requests tbody tr").click
     proxied_response.should include "Hello World"
 
-    @watcher_browser.within_frame "response-body" do
-      @watcher_browser.should have_css("pre code", :text => "Hello World")
+    @dashboard_browser.within_frame "response-body" do
+      @dashboard_browser.should have_css("pre code", :text => "Hello World")
     end
     
   end
   
   scenario "and spies on a long-running request, seeing first the request then the response" do
-    @watcher_browser.visit "http://127.0.0.1:8080"
-    @watcher_browser.should have_css("body.connected")
+    @dashboard_browser.visit "http://127.0.0.1:8080"
+    @dashboard_browser.should have_css("body.connected")
     
     proxy_request_thread = Thread.new do
       visit_through_proxy "http://127.0.0.1:5100"
@@ -66,12 +53,12 @@ feature "Rudy uses his proxy" do
     
     original_wait_time = Capybara.default_wait_time
     begin
-      @watcher_browser.find('.host').should have_content('127.0.0.1')
+      @dashboard_browser.find('.host').should have_content('127.0.0.1')
       Capybara.default_wait_time = 0
-      @watcher_browser.all('.status').first.should_not have_content('200')
+      @dashboard_browser.all('.status').first.should_not have_content('200')
     
       Capybara.default_wait_time = 0.5
-      @watcher_browser.find('.status').should have_content('200')
+      @dashboard_browser.find('.status').should have_content('200')
     ensure
       Capybara.default_wait_time = original_wait_time
     end
