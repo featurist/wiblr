@@ -1,0 +1,8 @@
+
+describe 'dashboard authentication'
+  
+  describe 'when no authorization header is set'
+  
+    it 'responds with a 401 status' @(done)
+    
+      

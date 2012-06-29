@@ -9,7 +9,7 @@ feature "Review historical traffic" do
 
     @proxy_app_process.start.io.inherit!
 
-    @watcher_browser = Capybara::Session.new(:chrome)
+    @dashboard_browser = Capybara::Session.new(:chrome)
 
     @test_start_time = Time.now
   end
@@ -41,7 +41,7 @@ while he is in bed but they are all working.")
     setup_historical_capture(:seconds_ago => (60 * 60 * 12) + 5, :status => 200)
 
     #First client session
-    session_start = (60 * 60 * 8) + (60 * 5)
+    session_start = @test_start_time - (60 * 60 * 8) + (60 * 5)
     setup_historical_capture(:seconds_ago => session_start + 1,
                              :status => 200, :method => "GET", :path => '/catalogue/release/12345')
 
@@ -78,24 +78,24 @@ while he is in bed but they are all working.")
 
     step("The following morning, he browses to http://spider.wiblr.com, logs in, ")
 
-    @watcher_browser.visit "http://127.0.0.1:8080"
+    @dashboard_browser.visit "http://127.0.0.1:8080"
 
     step("and browses to the usclient proxy logs.
 He sees no recent traffic in the last 5 minutes")
 
     step("Spider loads the last 24 hrs traffic")
     
-    @watcher_browser.should have_no_css("#requests tbody tr")
+    @dashboard_browser.should have_no_css("#requests tbody tr")
 
-    @watcher_browser.select('24 hrs', :from => 'scale')
+    @dashboard_browser.select('24 hrs', :from => 'scale')
     
-    @watcher_browser.find('#load').click()
+    @dashboard_browser.find('#load').click()
 
     step("Spider scans through the traffic and spots the some 404s to /basket/applyvoocher
 
 He emails his US clients to point out that they had voocher not voucher.")
 
-    fourOhFour = @watcher_browser.find("#requests tbody tr.status-404")
+    fourOhFour = @dashboard_browser.find("#requests tbody tr.status-404")
     fourOhFour.should have_content('voocher')
 
   end

@@ -21,6 +21,29 @@ def step(text)
   puts text
 end
 
-def setup_historical_capture(options)
-  captures_collection.insert({"UUID" => UUID.new.to_s, "content-type" => 'text/json', "time" => @test_start_time - options[:seconds_ago], "host" => "api.ihazmuzik.com", "path" => options[:path], "status" => options[:status]})
+def setup_historical_capture(options = {})
+  captures_collection.insert({
+    "UUID" => UUID.new.to_s,
+    "content-type" => 'text/json', 
+    "time" => (options[:seconds_ago] || Time.now.to_i - 2), 
+    "host" => "api.ihazmuzik.com", 
+    "path" => (options[:path] || '/some/path'), 
+    "status" => (options[:status] || 200)
+  })
+end
+
+def dashboard_browser
+  @dashboard_browser ||= Capybara::Session.new(:chrome)
+end
+
+def visit_dashboard
+  dashboard_browser.visit "http://127.0.0.1:8080"
+end
+
+def load_captures
+  dashboard_browser.click_button 'Load'
+end
+
+def clean_database
+  captures_collection.remove
 end
