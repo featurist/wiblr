@@ -116,11 +116,11 @@ Request = $class {
     self.host              = fields.host
     self.path              = fields.path
     self.url               = fields.url
-    self.request headers   = fields.request headers
+    self.request headers   = ko.observable (fields.request headers)
     
-    self.content length    = ko.observable(fields.content length)
-    self.status            = ko.observable(fields.status)
-    self.response headers  = ko.observable(fields.response headers)
+    self.content length    = ko.observable (fields.content length)
+    self.status            = ko.observable (fields.status)
+    self.response headers  = ko.observable (fields.response headers)
     self.scheme = 'http'
 
     self.selected = ko.observable(false)
@@ -129,13 +129,19 @@ Request = $class {
       self.over(!self.over())
 
     self.sorted request headers = ko.computed
-      sorted pairs in (self.request headers)
+      sorted pairs in (self.request headers ())
 
     self.sorted response headers = ko.computed
       sorted pairs in (self.response headers())
 
     self.trimmed path = ko.computed
       trim middle of (self.path || "", 50)
+
+    self.request content type = ko.computed
+      headers = self.request headers ()
+
+      if (headers)
+        headers.'content-type'
 
     self.response content type = ko.computed
       headers = self.response headers ()

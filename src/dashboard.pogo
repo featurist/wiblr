@@ -30,14 +30,14 @@ exports.mount (app) =
       if (err)
         res.send (err.to string())
       else
-        res.send (exchange.response body, 'content-type': exchange.response headers.'content-type')
+        res.send (exchange.response body, 'content-type': exchange.response content type ())
 
   app.get "/exchanges/:uuid/requestbody" @(req, res)
     find exchange (req.params.uuid) @(err, exchange)
       if (err)
         res.send (err.to string())
       else
-        res.send (exchange.request body, 'content-type': exchange.request headers.'content-type')
+        res.send (exchange.request body, 'content-type': exchange.request content type ())
 
   app.get "/exchanges/:uuid/requestbody/html" @(req, res)
     render request body (req, res)
@@ -59,7 +59,7 @@ exports.mount (app) =
       if (exchange.has response body())
         res.header 'cache-control' 'max-age=31536000 private'
         if (exchange.can render response body as text ())
-          render text body (exchange.read response body (), exchange.response headers.'content-type', res, pretty)
+          render text body (exchange.read response body (), exchange.response content type (), res, pretty)
         else
           render image body (res, exchange)
       else
@@ -69,7 +69,7 @@ exports.mount (app) =
     find exchange (req.params.uuid) @(err, exchange)
       res.header 'cache-control' 'max-age=31536000 private'
       if (exchange.can render request body as text ())
-        render text body (exchange.read request body (), exchange.request headers.'content-type', res, pretty)
+        render text body (exchange.read request body (), exchange.request content type (), res, pretty)
       else
         render image body (res, exchange)
 

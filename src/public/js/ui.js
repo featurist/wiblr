@@ -159,7 +159,7 @@
             self.host = fields.host;
             self.path = fields.path;
             self.url = fields.url;
-            self.requestHeaders = fields.requestHeaders;
+            self.requestHeaders = ko.observable(fields.requestHeaders);
             self.contentLength = ko.observable(fields.contentLength);
             self.status = ko.observable(fields.status);
             self.responseHeaders = ko.observable(fields.responseHeaders);
@@ -172,13 +172,20 @@
                 return self.over(!self.over());
             };
             self.sortedRequestHeaders = ko.computed(function() {
-                return sortedPairsIn(self.requestHeaders);
+                return sortedPairsIn(self.requestHeaders());
             });
             self.sortedResponseHeaders = ko.computed(function() {
                 return sortedPairsIn(self.responseHeaders());
             });
             self.trimmedPath = ko.computed(function() {
                 return trimMiddleOf(self.path || "", 50);
+            });
+            self.requestContentType = ko.computed(function() {
+                var headers;
+                headers = self.requestHeaders();
+                if (headers) {
+                    return headers["content-type"];
+                }
             });
             self.responseContentType = ko.computed(function() {
                 var headers;

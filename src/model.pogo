@@ -47,13 +47,19 @@ CaptureSchema.methods.read request body () =
   decode base64 as utf8 (self.request body)
 
 CaptureSchema.methods.can render response body as text() =
-  content type (self.response headers.'content-type') is considered text
+  content type (self.response content type ()) is considered text
+
+CaptureSchema.methods.response content type () =
+  self.response headers.'content-type'
+
+CaptureSchema.methods.request content type () =
+  self.request headers.'content-type'
 
 content type (content type) is considered text =
   !content type || content type.match (r/(text|css|javascript|json|xml)/)
 
 CaptureSchema.methods.can render request body as text() =
-  content type (self.request headers.'content-type') is considered text
+  content type (self.request content type ()) is considered text
 
 CaptureSchema.pre 'save' @(next)
   if (!this.uuid)
