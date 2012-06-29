@@ -43,6 +43,8 @@
         "buffertools": "1.0.9",
         "request": "2.9.202",
         "stache" : "0.1.0",
-        "memorystream" : "git+https://github.com/refractalize/node-memorystream.git"
+        "memorystream" : "git+https://github.com/refractalize/node-memorystream.git",
+		"connect-compiler" : "latest",
+		"less" : "latest"
     }
 }
