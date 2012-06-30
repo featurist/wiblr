@@ -7,11 +7,8 @@ feature "Rudy uses his proxy" do
     @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
     @rudys_slow_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-slow-app.pogo")
     @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
-    
-    @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
       
     @rudys_app_process.start.io.inherit!
-    @rudys_slow_app_process.start.io.inherit!
     @proxy_app_process.start.io.inherit!
     
     @dashboard_browser = Capybara::Session.new(:chrome)
@@ -24,8 +21,6 @@ feature "Rudy uses his proxy" do
   after :each do
     @proxy_app_process.stop
     @rudys_app_process.stop
-    @rudys_slow_app_process.stop
-    
     Capybara.reset_sessions!
   end
 
@@ -48,7 +43,7 @@ feature "Rudy uses his proxy" do
     @dashboard_browser.should have_css("body.connected")
     
     proxy_request_thread = Thread.new do
-      visit_through_proxy "http://127.0.0.1:5100"
+      visit_through_proxy "http://127.0.0.1:1337/slow"
     end
     
     original_wait_time = Capybara.default_wait_time

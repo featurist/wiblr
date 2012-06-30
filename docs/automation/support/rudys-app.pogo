@@ -1,10 +1,19 @@
-http = require 'http'
+express = require 'express'
 
-http.create server @(req, res)
-  headers = {}
-  headers.'content-type' = "text/plain"
-  res.write head (200, headers) 
-  res.end "Hello World\n"
-.listen 1337 "127.0.0.1"
+app = express.create server ()
+
+hello world (response) =
+  response.write head (200, 'content-type': "text/plain") 
+  response.end "Hello World\n"
+
+app.get "/slow" @(req, res)
+  set
+    hello world (res)
+  timeout (500)
+
+app.get "/" @(req, res)
+  hello world (res)
+
+app.listen 1337 "127.0.0.1"
 
 console.log 'Server running at http://127.0.0.1:1337/'

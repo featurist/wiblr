@@ -15,7 +15,7 @@ feature "Review historical traffic" do
   end
 
   before :each do
-     clear_captures
+    clear_captures
   end
 
   after :each do

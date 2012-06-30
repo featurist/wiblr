@@ -17,7 +17,7 @@ feature "Rudy sees only his captures" do
     visit_dashboard
     load_captures
     
-    dashboard_browser.all("#requests tbody tr").size.should == 2    
+    dashboard_browser.all("#requests tbody tr").should have(2).items  
   end
     
 end
