@@ -1,8 +1,8 @@
 require_relative "support/scenario_helper"
 
-include DB
-
 feature "Rudy sees only his captures" do
+  include DB
+  include ScenarioHelpers
   
   background do
     clean_database
