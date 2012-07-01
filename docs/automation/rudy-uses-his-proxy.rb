@@ -7,7 +7,7 @@ feature "Rudy uses his proxy" do
     clear_captures
     start_rudys_app
     start_wiblr
-    visit_dashboard_and_wait_for_socket_connection
+    visit_dashboard
   end
   
   after :each do

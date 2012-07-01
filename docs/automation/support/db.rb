@@ -22,7 +22,7 @@ module DB
     clear_captures
   end
   
-  def setup_historical_capture(options = {})
+  def record_capture(options = {})
     captures_collection.insert({
       "UUID" => UUID.new.to_s,
       "content-type" => 'text/json', 

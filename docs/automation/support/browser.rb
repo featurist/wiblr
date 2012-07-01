@@ -9,15 +9,11 @@ Capybara.ignore_hidden_elements = true
 
 module Browser
   def dashboard_browser
-    @dashboard_browser ||= Capybara::Session.new(:chrome)
+    @@dashboard_browser ||= Capybara::Session.new(:chrome)
   end
 
   def visit_dashboard
     dashboard_browser.visit "http://127.0.0.1:8080"
-  end
-
-  def visit_dashboard_and_wait_for_socket_connection
-    visit_dashboard
     dashboard_browser.should have_css("body.connected")
   end
   

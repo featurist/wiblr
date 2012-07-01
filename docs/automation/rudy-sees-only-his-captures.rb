@@ -6,12 +6,12 @@ feature "Rudy sees only his captures" do
   scenario "after they have been stored in the database" do
     clean_database
     
-    setup_historical_capture(user: 'rudy')
-    setup_historical_capture(user: 'rudy')
-    setup_historical_capture(user: 'woody')
-    setup_historical_capture(user: 'woody')
+    record_capture(user: 'rudy')
+    record_capture(user: 'rudy')
+    record_capture(user: 'woody')
+    record_capture(user: 'woody')
     
-    visit_dashboard_and_wait_for_socket_connection
+    visit_dashboard
     load_captures
     
     dashboard_browser.all("#requests tbody tr").should have(2).items  
