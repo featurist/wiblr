@@ -17,7 +17,7 @@ feature "Rudy uses his proxy" do
   end
 
   scenario "and spies on another browser" do
-    proxied_response = visit_through_proxy "http://127.0.0.1:1337"
+    proxied_response = visit_through_proxy "http://127.0.0.1:1337/hello"
 
     dashboard_browser.find(:css, "#requests tbody tr").click
     proxied_response.should include "Hello World"
@@ -30,7 +30,7 @@ feature "Rudy uses his proxy" do
   
   scenario "and spies on a long-running request, seeing first the request then the response" do
     proxy_request_thread = Thread.new do
-      visit_through_proxy "http://127.0.0.1:1337/slow"
+      visit_through_proxy "http://127.0.0.1:1337/hello/slow"
     end
     
     original_wait_time = Capybara.default_wait_time

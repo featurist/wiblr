@@ -6,13 +6,13 @@ hello world (response) =
   response.write head (200, 'content-type': "text/plain") 
   response.end "Hello World\n"
 
-app.get "/slow" @(req, res)
+app.get "/hello" @(req, res)
+  hello world (res)
+
+app.get "/hello/slow" @(req, res)
   set
     hello world (res)
   timeout (500)
-
-app.get "/" @(req, res)
-  hello world (res)
 
 app.listen 1337 "127.0.0.1"
 
