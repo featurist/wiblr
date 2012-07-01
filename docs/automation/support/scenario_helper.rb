@@ -1,6 +1,5 @@
 require 'capybara/rspec'
 
-
 require_relative "db"
 require_relative "browser"
 require_relative "apps"
