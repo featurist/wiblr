@@ -5,7 +5,6 @@ include DB
 feature "Rudy uses his proxy" do
   background do
     @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
-    @rudys_slow_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-slow-app.pogo")
     @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
       
     @rudys_app_process.start.io.inherit!
