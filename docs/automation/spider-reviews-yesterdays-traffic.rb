@@ -5,13 +5,11 @@ feature "Review historical traffic" do
   
   before :each do
     clear_captures
-    start_rudys_app
     start_wiblr
     visit_dashboard
   end
   
   after :each do
-    stop_rudys_app
     stop_wiblr
     Capybara.reset_sessions!
   end
