@@ -26,7 +26,7 @@ module DB
     captures_collection.insert({
       "UUID" => UUID.new.to_s,
       "content-type" => 'text/json', 
-      "time" => (options[:seconds_ago] || Time.now.to_i - 2), 
+      "time" => Time.now - (options[:seconds_ago] || 0), 
       "host" => "api.ihazmuzik.com", 
       "path" => (options[:path] || '/some/path'), 
       "status" => (options[:status] || 200)
