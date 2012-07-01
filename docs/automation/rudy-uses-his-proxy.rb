@@ -1,24 +1,17 @@
 require_relative "support/scenario_helper"
 
 feature "Rudy uses his proxy" do
-  include DB
   include ScenarioHelpers
-  
-  background do
-    @rudys_app_process = ChildProcess.build("pogo", "docs/automation/support/rudys-app.pogo")
-    @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
-      
-    @rudys_app_process.start.io.inherit!
-    @proxy_app_process.start.io.inherit!
-  end
-  
+
   before :each do
     clear_captures
+    start_rudys_app
+    start_wiblr
   end
   
   after :each do
-    @proxy_app_process.stop
-    @rudys_app_process.stop
+    stop_rudys_app
+    stop_wiblr
     Capybara.reset_sessions!
   end
 

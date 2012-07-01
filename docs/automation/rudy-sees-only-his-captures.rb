@@ -1,7 +1,6 @@
 require_relative "support/scenario_helper"
 
 feature "Rudy sees only his captures" do
-  include DB
   include ScenarioHelpers
   
   background do

@@ -1,16 +1,11 @@
 require_relative "support/scenario_helper"
 
 feature "Review historical traffic" do
-  include DB
   include ScenarioHelpers
   
   background do
     @proxy_app_process = ChildProcess.build("pogo", "src/serve.pogo")
-    @proxy_app_process.io.inherit! if ENV["INHERIT_IO"] == "true"
-
     @proxy_app_process.start.io.inherit!
-
-    @dashboard_browser = Capybara::Session.new(:chrome)
 
     @test_start_time = Time.now
   end
@@ -79,24 +74,23 @@ while he is in bed but they are all working.")
 
     step("The following morning, he browses to http://spider.wiblr.com, logs in, ")
 
-    @dashboard_browser.visit "http://127.0.0.1:8080"
+    dashboard_browser.visit "http://127.0.0.1:8080"
 
-    step("and browses to the usclient proxy logs.
-He sees no recent traffic in the last 5 minutes")
+    step("and browses to the usclient proxy logs.\nHe sees no recent traffic in the last 5 minutes")
 
     step("Spider loads the last 24 hrs traffic")
     
-    @dashboard_browser.should have_no_css("#requests tbody tr")
+    dashboard_browser.should have_no_css("#requests tbody tr")
 
-    @dashboard_browser.select('24 hrs', :from => 'scale')
+    dashboard_browser.select('24 hrs', :from => 'scale')
     
-    @dashboard_browser.find('#load').click()
+    dashboard_browser.find('#load').click()
 
     step("Spider scans through the traffic and spots the some 404s to /basket/applyvoocher
 
 He emails his US clients to point out that they had voocher not voucher.")
 
-    fourOhFour = @dashboard_browser.find("#requests tbody tr.status-404")
+    fourOhFour = dashboard_browser.find("#requests tbody tr.status-404")
     fourOhFour.should have_content('voocher')
 
   end
