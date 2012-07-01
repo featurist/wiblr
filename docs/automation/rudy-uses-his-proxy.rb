@@ -7,6 +7,7 @@ feature "Rudy uses his proxy" do
     clear_captures
     start_rudys_app
     start_wiblr
+    visit_dashboard_and_wait_for_socket_connection
   end
   
   after :each do
@@ -16,8 +17,6 @@ feature "Rudy uses his proxy" do
   end
 
   scenario "and spies on another browser" do
-    dashboard_browser.visit "http://127.0.0.1:8080"
-    dashboard_browser.should have_css("body.connected")
     proxied_response = visit_through_proxy "http://127.0.0.1:1337"
 
     dashboard_browser.find(:css, "#requests tbody tr").click
@@ -30,9 +29,6 @@ feature "Rudy uses his proxy" do
   end
   
   scenario "and spies on a long-running request, seeing first the request then the response" do
-    dashboard_browser.visit "http://127.0.0.1:8080"
-    dashboard_browser.should have_css("body.connected")
-    
     proxy_request_thread = Thread.new do
       visit_through_proxy "http://127.0.0.1:1337/slow"
     end

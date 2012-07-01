@@ -15,12 +15,17 @@ module Browser
   def visit_dashboard
     dashboard_browser.visit "http://127.0.0.1:8080"
   end
+
+  def visit_dashboard_and_wait_for_socket_connection
+    visit_dashboard
+    dashboard_browser.should have_css("body.connected")
+  end
   
   def visit_through_proxy (url)
     RestClient.proxy = "http://featurist:cats@127.0.0.1:8081"
     RestClient.get url
   end
-
+  
   def load_captures
     dashboard_browser.click_button 'Load'
   end
