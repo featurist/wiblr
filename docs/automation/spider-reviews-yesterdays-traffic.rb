@@ -10,7 +10,6 @@ feature "Review historical traffic" do
   end
   
   after :each do
-    stop_wiblr
     Capybara.reset_sessions!
   end
 

@@ -11,8 +11,6 @@ feature "Rudy uses his proxy" do
   end
   
   after :each do
-    stop_rudys_app
-    stop_wiblr
     Capybara.reset_sessions!
   end
 
