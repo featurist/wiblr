@@ -4,7 +4,7 @@ module DB
   
   def database
     @db ||= begin
-      db = Mongo::Connection.new("localhost", 27017).db("wiblr")
+      db = Mongo::Connection.new("localhost", 27017, safe: true).db("wiblr")
       db.authenticate("test", "password")
       db
     end
@@ -15,7 +15,7 @@ module DB
   end
   
   def clear_captures
-    captures_collection.remove
+    captures_collection.remove({})
   end
   
   def clean_database

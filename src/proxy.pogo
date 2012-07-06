@@ -81,22 +81,21 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
 
     response.write head (proxy response.status code, proxy response.headers)
 
+authenticate request (request, response) then (respond) =
+  header = request.headers.'proxy-authorization' || ''
+  token = header.split(r/\s+/).pop() || ''
+  auth = new (Buffer(token, 'base64')).to string()
+  parts = auth.split(r/:/)
+  username = parts.0
+  password = parts.1
+  
+  if ((username == 'featurist') || (password == 'cats'))    
+    respond()
+  else
+    response.write head (407, 'Proxy-Authenticate': 'Basic realm="Please enter your Wiblr account details to continue"')
+    response.end "Please enter your Wiblr account details to continue"
+      
 exports.create server(io) =
-  
-  authenticate request (request, response) then (respond) =
-    header = request.headers.'proxy-authorization' || ''
-    token = header.split(r/\s+/).pop() || ''
-    auth = new (Buffer(token, 'base64')).to string()
-    parts = auth.split(r/:/)
-    username = parts.0
-    password = parts.1
-    
-    if ((username == 'featurist') || (password == 'cats'))    
-      respond()
-    else
-      response.write head (407, 'Proxy-Authenticate': 'Basic realm="Please enter your Wiblr account details to continue"')
-      response.end "Please enter your Wiblr account details to continue"
-  
   http.create server @(request, response)
     authenticate request (request, response) then
       if (request.url.match (r/^http/))

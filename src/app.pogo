@@ -1,5 +1,4 @@
 express = require 'express'
-proxy = require './proxy'
 dashboard = require "./dashboard"
 stache = require 'stache'
 compiler = require 'connect-compiler'

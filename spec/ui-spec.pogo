@@ -25,10 +25,10 @@ describe "ui"
 
       if (errors && (errors != []))
         console.log(errors)
-
+      
       io.on 'connection'
         if (wait til connected)
-          set timeout (done, 100)
+          set timeout (done, 1)
         else
           done()
 

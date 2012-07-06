@@ -4,39 +4,16 @@ should = require "should"
 express = require 'express'
 connect = require 'connect'
 zlib = require 'zlib'
+teapot = require './support/teapot'
 
 request = require "request"
 http = require 'http'
 
+(n)ms = n
+after (milliseconds, action) =
+  set timeout (action, milliseconds)
+
 describe "proxy"
-
-  after (milliseconds, action) =
-    set timeout (action, milliseconds)
-
-  (n)ms = n
-
-  create teapot app () =
-    teapot app = express.create server ()
-    
-    pour tea (req, res) =
-      after (10ms)
-        res.header 'content-type' 'earl/grey'
-        res.send "I'm a teapot\n" 418
-    
-    pour gzipped tea (req, res) =
-      after (10ms)
-        res.header 'content-type' 'earl/grey'
-        res.gzip = true
-        res.send "I'm a teapot\n" 418
-
-    teapot app.use (connect.compress (filter (req, res): res.gzip))
-    teapot app.get ('/teapot', pour tea)
-    teapot app.post ('/teapot', pour tea)
-
-    teapot app.get ('/teapot_gzip', pour gzipped tea)
-    teapot app.post ('/teapot_gzip', pour gzipped tea)
-
-    teapot app
 
   request via proxy (respond, body: nil, method: 'GET', headers: {}, url: "http://127.0.0.1:9837/teapot") =
     options = {
@@ -62,7 +39,7 @@ describe "proxy"
     proxy server = proxy.create server(fake io)
     
     proxy server.listen 9838
-    teapot app = create teapot app ()
+    teapot app = teapot.create teapot app ()
     teapot app.listen 9837
     
     messages = []
