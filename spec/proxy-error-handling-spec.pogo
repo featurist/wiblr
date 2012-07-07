@@ -1,5 +1,5 @@
 proxy = require "../src/proxy"
-model = require "../src/model"
+Exchange = require "../src/models/exchange"
 
 request = require "request"
 http = require 'http'

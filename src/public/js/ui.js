@@ -94,13 +94,13 @@
             self.scale = $("#scale").val();
             maxX = self.roundToNearestSecond((new Date).getTime());
             minX = maxX - self.scale * 60 * 1e3;
-            return $.get("/exchanges/summary?over=" + self.scale).done(function(captures) {
-                var gen1_items, gen2_i, capture;
+            return $.get("/exchanges/summary?over=" + self.scale).done(function(exchanges) {
+                var gen1_items, gen2_i, exchange;
                 self.requests([]);
-                gen1_items = captures;
+                gen1_items = exchanges;
                 for (gen2_i = 0; gen2_i < gen1_items.length; gen2_i++) {
-                    capture = gen1_items[gen2_i];
-                    self.requests.push(new Request(self, capture));
+                    exchange = gen1_items[gen2_i];
+                    self.requests.push(new Request(self, exchange));
                 }
             });
         },
@@ -284,7 +284,7 @@
     $(function() {
         var socket;
         $("html").removeClass("preload");
-        window.capturesReceived = 0;
+        window.exchangesReceived = 0;
         window.thePage = new Page;
         ko.applyBindings(window.thePage);
         $(".btn-group").button();
@@ -295,8 +295,8 @@
         socket.on("disconnect", function() {
             return window.thePage.disconnected();
         });
-        return socket.on("capture", function(request) {
-            window.capturesReceived = window.capturesReceived + 1;
+        return socket.on("exchange", function(request) {
+            window.exchangesReceived = window.exchangesReceived + 1;
             return window.thePage.addRequest(request);
         });
     });

@@ -2,7 +2,7 @@ http = require 'http'
 url utils = require 'url'
 zlib = require 'zlib'
 buffertools = require "buffertools"
-model = require './model'
+Exchange = require './models/exchange'
 Memory Stream = require 'memorystream'
 
 create memory stream () = new (Memory Stream (null, readable: false))
@@ -30,27 +30,27 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   host = parsed url.hostname
   path = parsed url.path || '/'
   
-  capture = new (model.Capture)
-  capture.time = new (Date)
-  capture.method = method
-  capture.protocol = parsed url.protocol.replace r/:$/ ''
-  capture.url = url
-  capture.host = host
-  capture.path = path
-  capture.request headers = request.headers
-  capture.request body = new (Buffer [])
-  capture.response body = new (Buffer [])
+  exchange = new (Exchange)
+  exchange.time = new (Date)
+  exchange.method = method
+  exchange.protocol = parsed url.protocol.replace r/:$/ ''
+  exchange.url = url
+  exchange.host = host
+  exchange.path = path
+  exchange.request headers = request.headers
+  exchange.request body = new (Buffer [])
+  exchange.response body = new (Buffer [])
   
-  emit capture() = 
-    io.sockets.emit 'capture' (capture.wire object())
+  emit exchange() = 
+    io.sockets.emit 'exchange' (exchange.wire object())
   
-  save capture() =
-    capture.save @(error)
+  save exchange() =
+    exchange.save @(error)
       if (error) @{ console.log (error) }
-      emit capture()   
-      delete (capture)
+      emit exchange()   
+      delete (exchange)
   
-  save capture()
+  save exchange()
   
   proxy = http.create client (port, host)
   proxy request = proxy.request (method, path, headers)
@@ -62,22 +62,22 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
     true // proxy _request_ error doesn't fire without this
         
   proxy request.on 'error' @(error)
-    capture.status = -1
-    save capture()
+    exchange.status = -1
+    save exchange()
     response.end()
  
   proxy request.on 'response' @(proxy response)
     proxy response.pipe (response)
     response body stream = (proxy response) body stream
 
-    capture.response headers = proxy response.headers
-    capture.status = proxy response.status code
+    exchange.response headers = proxy response.headers
+    exchange.status = proxy response.status code
 
     response body stream.on 'end'
-      capture.set response body (response body stream.to buffer ())
-      capture.request body = request body stream.to buffer ()
+      exchange.set response body (response body stream.to buffer ())
+      exchange.request body = request body stream.to buffer ()
       response.end()
-      save capture()
+      save exchange()
 
     response.write head (proxy response.status code, proxy response.headers)
 

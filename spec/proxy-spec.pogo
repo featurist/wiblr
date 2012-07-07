@@ -1,5 +1,5 @@
 proxy = require "../src/proxy"
-model = require "../src/model"
+Exchange = require "../src/models/exchange"
 should = require "should"
 express = require 'express'
 connect = require 'connect'
@@ -70,7 +70,7 @@ describe "proxy"
         wait until (predicate) then (callback) or timeout at (time)
 
   load saved exchange (done) =
-    model.Capture.find one { uuid = messages.1.data.uuid } (done)
+    Exchange.find one { uuid = messages.1.data.uuid } (done)
 
   describe "proxying requests"
     
@@ -96,7 +96,7 @@ describe "proxy"
     describe "socket messages"
 
       the (message) should have request data = 
-        message.name.should.equal("capture")
+        message.name.should.equal("exchange")
         message.data.path.should.equal('/teapot')
         message.data.method.should.equal('GET')
 
@@ -120,7 +120,7 @@ describe "proxy"
         exchange.content length.should.equal(13)
         done()
 
-  describe 'saving captures'
+  describe 'saving exchanges'
     make request (done, options) =
       request via proxy
         wait for 2 messages then (done) or timeout after (200ms)

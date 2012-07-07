@@ -1,10 +1,10 @@
-mongo = require "./mongo"
+require "./mongo"
 mongoose = require "mongoose"
 async = require "async"
 uuid = require "node-uuid"
 buffertools = require "buffertools"
 
-CaptureSchema = new (mongoose.Schema {
+ExchangeSchema = new (mongoose.Schema {
   uuid             = String
   response body    = Buffer
   request body     = Buffer
@@ -20,42 +20,42 @@ CaptureSchema = new (mongoose.Schema {
   response headers = {}
 } (strict: true))
 
-CaptureSchema.statics.since (from date) (callback) =
+ExchangeSchema.statics.since (from date) (callback) =
   this.find().where('time').gte(from date).sort('time', -1).exclude('responseBody').run (callback)
 
-CaptureSchema.methods.set response body (body buffer) =
+ExchangeSchema.methods.set response body (body buffer) =
   self.response body = body buffer
   self.content length = body buffer.length
 
-CaptureSchema.methods.has response body () =
+ExchangeSchema.methods.has response body () =
   (self.status != -1) && (self.response body != nil)
 
 decode base64 as utf8 (base64) =
   buffer = new (Buffer (base64, 'base64'))
   buffer.to string('utf-8')
 
-CaptureSchema.methods.read response body () =
+ExchangeSchema.methods.read response body () =
   decode base64 as utf8 (self.response body)
 
-CaptureSchema.methods.read request body () =
+ExchangeSchema.methods.read request body () =
   decode base64 as utf8 (self.request body)
 
-CaptureSchema.methods.can render response body as text() =
+ExchangeSchema.methods.can render response body as text() =
   content type (self.response headers.'content-type') is considered text
 
 content type (content type) is considered text =
   !content type || content type.match (r/(text|css|javascript|json|xml)/)
 
-CaptureSchema.methods.can render request body as text() =
+ExchangeSchema.methods.can render request body as text() =
   content type (self.request headers.'content-type') is considered text
 
-CaptureSchema.pre 'save' @(next)
+ExchangeSchema.pre 'save' @(next)
   if (!this.uuid)
     this.uuid = uuid.v4()
   
   next()
 
-CaptureSchema.methods.wire object() =
+ExchangeSchema.methods.wire object() =
   {
     content length   = self.content length
     uuid             = self.uuid
@@ -70,6 +70,6 @@ CaptureSchema.methods.wire object() =
     response headers = self.response headers
   }
 
-Capture = mongoose.model ('captures', CaptureSchema)
+Exchange = mongoose.model ('exchanges', ExchangeSchema)
 
-exports.Capture = Capture
+module.exports = Exchange

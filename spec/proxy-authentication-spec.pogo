@@ -1,11 +1,12 @@
 proxy = require "../src/proxy"
-model = require "../src/model"
+Exchange = require '../src/models/exchange'
+User = require '../src/models/user'
 
 request = require 'request'
 http = require 'http'
 should = require 'should'
 teapot = require './support/teapot'
-user model = require '../src/models/user'
+
 
 describe "proxy"
   
@@ -29,7 +30,7 @@ describe "proxy"
   teapot app = null
     
   create user (created) =
-    user model.create {username = 'rudy', password = 'secret'} @(err, user)
+    User.create {username = 'rudy', password = 'secret'} @(err, user)
       created (user)
   
   user = null

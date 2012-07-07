@@ -65,10 +65,10 @@ Page = class {
     max x = self.round (new(Date()).get time()) to nearest second
     min x = max x - (self.scale * (60 * 1000))
 
-    $.get("/exchanges/summary?over=#(self.scale)").done @(captures)
+    $.get("/exchanges/summary?over=#(self.scale)").done @(exchanges)
       self.requests([])
-      for each @(capture) in (captures)
-        self.requests.push (new (Request (self, capture)))
+      for each @(exchange) in (exchanges)
+        self.requests.push (new (Request (self, exchange)))
 
   add request (data) =
 
@@ -222,7 +222,7 @@ Request = $class {
 
 $
   $('html').removeClass('preload')
-  window.capturesReceived = 0
+  window.exchangesReceived = 0
   window.the page = new (Page ())
   ko.apply bindings (window.the page)
 
@@ -236,7 +236,7 @@ $
   socket.on 'disconnect'
     window.the page.disconnected()
 
-  socket.on 'capture' @(request)
-    window.capturesReceived = window.capturesReceived + 1
+  socket.on 'exchange' @(request)
+    window.exchangesReceived = window.exchangesReceived + 1
     window.the page.add request (request)
 

@@ -1,7 +1,7 @@
 express = require "express"
 request = require "request"
 Browser = require "zombie"
-model = require "../src/model"
+Exchange = require "../src/models/exchange"
 dashboard = require '../src/dashboard'
 should = require 'should'
 
@@ -10,7 +10,7 @@ describe "ui"
   app = null
   browser = null
   io = null
-  capture = null
+  exchange = null
 
   host ui server (listening) =
     app = require '../src/app'.create app ()
@@ -33,37 +33,37 @@ describe "ui"
         else
           done()
 
-  update (capture) with (capture properties) =
-    for @(property) in (capture properties)
-      if (capture properties.has own property (property))
-        capture.(property) = capture properties.(property)
+  update (exchange) with (exchange properties) =
+    for @(property) in (exchange properties)
+      if (exchange properties.has own property (property))
+        exchange.(property) = exchange properties.(property)
 
-  save and emit (capture) then (carry on) =
-    capture.save
-      io.sockets.emit 'capture' (capture.wire object())
+  save and emit (exchange) then (carry on) =
+    exchange.save
+      io.sockets.emit 'exchange' (exchange.wire object())
       set timeout
-        carry on (nil, capture)
+        carry on (nil, exchange)
       10
 
-  add request (capture properties) then (carry on) =
-    capture = new (model.Capture)
-    capture.method = 'GET'
-    capture.host = '1.2.3.4'
-    capture.path = '/foo/bar'
-    capture.url = 'http://1.2.3.4/foo/bar'
-    capture.time = '2012-01-01T01:02:03'
-    capture.request headers = { a  = 'x', b = 'y' }
+  add request (exchange properties) then (carry on) =
+    exchange = new (Exchange)
+    exchange.method = 'GET'
+    exchange.host = '1.2.3.4'
+    exchange.path = '/foo/bar'
+    exchange.url = 'http://1.2.3.4/foo/bar'
+    exchange.time = '2012-01-01T01:02:03'
+    exchange.request headers = { a  = 'x', b = 'y' }
     
-    update (capture) with (capture properties)
-    save and emit (capture) then (carry on)
+    update (exchange) with (exchange properties)
+    save and emit (exchange) then (carry on)
 
-  complete request (capture, added, capture properties) =
-    capture.status = 200
-    capture.response headers = { c = 's', d = 't', 'content-type' = 'text/plain; charset=utf-8' }
-    capture.set response body (new (Buffer "howdydoody"))
+  complete request (exchange, added, exchange properties) =
+    exchange.status = 200
+    exchange.response headers = { c = 's', d = 't', 'content-type' = 'text/plain; charset=utf-8' }
+    exchange.set response body (new (Buffer "howdydoody"))
 
-    update (capture) with (capture properties)
-    save and emit (capture) then (added)
+    update (exchange) with (exchange properties)
+    save and emit (exchange) then (added)
 
   show detail for request (request properties, done) =
     add request (request properties) then @(error, exchange)
@@ -179,7 +179,7 @@ describe "ui"
       describe "a complete request"
 
         before each @(ready)
-          complete request(capture,ready)
+          complete request(exchange,ready)
 
         it "updates the row with the response details"
           browser.text ".method".should.equal "GET"

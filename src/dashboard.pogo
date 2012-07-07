@@ -1,4 +1,4 @@
-model = require './model'
+Exchange = require './models/exchange'
 prettify = require './pretty'.prettify
 
 exports.mount (app) =
@@ -21,9 +21,9 @@ exports.mount (app) =
 
     summary = {}
 
-    model.Capture.since (from) @(err, captures)
+    Exchange.since (from) @(err, exchanges)
       res.content type ('application/json')
-      res.send (captures)
+      res.send (exchanges)
 
   app.get "/exchanges/:uuid/responsebody" @(req, res)
     find exchange (req.params.uuid) @(err, exchange)
@@ -52,7 +52,7 @@ exports.mount (app) =
     render response body (req, res, pretty: true)
 
   find exchange (uuid, done) =
-    model.Capture.find one { uuid = uuid } (done)
+    Exchange.find one { uuid = uuid } (done)
   
   render response body (req, res, pretty: false) =
     find exchange (req.params.uuid) @(err, exchange)
