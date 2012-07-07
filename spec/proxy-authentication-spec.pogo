@@ -45,7 +45,7 @@ describe "proxy"
       ready()
 
   after each
-    proxy server.close ()
+    proxy server.close()
     teapot app.close()
 
   describe "a request with valid auth"

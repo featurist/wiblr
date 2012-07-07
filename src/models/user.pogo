@@ -1,9 +1,5 @@
 mongoose = require "mongoose"
-
-mongo db = process.env.WIBLR_MONGO || 'mongodb://test:password@localhost:27017/wiblr'
-mongoose.connect (mongo db) @(err)
-  if (err)
-    throw (new (Error("failed to connect to #(mongo db)\n#(err.to string())")))
+require '../mongo'
 
 UserSchema = new (mongoose.Schema {
   username         = String

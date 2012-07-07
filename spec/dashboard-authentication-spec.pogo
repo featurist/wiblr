@@ -5,4 +5,7 @@ teapot = require './support/teapot'
 
 describe "dashboard authentication"
 
+  it "is coming soon"
+    true
+
   

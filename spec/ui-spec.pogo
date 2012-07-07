@@ -10,6 +10,7 @@ describe "ui"
   app = null
   browser = null
   io = null
+  capture = null
 
   host ui server (listening) =
     app = require '../src/app'.create app ()
@@ -69,8 +70,6 @@ describe "ui"
       complete request (exchange)
         click the first row ()
         done ()
-
-  capture = null
 
   when (browser) is ready (do this) then (carry on) =
     browser.wait

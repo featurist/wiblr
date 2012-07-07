@@ -1,14 +1,8 @@
+mongo = require "./mongo"
 mongoose = require "mongoose"
 async = require "async"
 uuid = require "node-uuid"
 buffertools = require "buffertools"
-
-host = process.env.WIBLR_HOST || "http://localhost:8080"
-
-mongo db = process.env.WIBLR_MONGO || 'mongodb://test:password@localhost:27017/wiblr'
-mongoose.connect (mongo db) @(err)
-  if (err)
-    throw (new (Error("failed to connect to #(mongo db)\n#(err.to string())")))
 
 CaptureSchema = new (mongoose.Schema {
   uuid             = String
