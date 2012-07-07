@@ -4,7 +4,7 @@ feature "Review historical traffic" do
   include ScenarioHelpers
   
   before :each do
-    clear_captures
+    clear_exchanges
     start_wiblr
     visit_dashboard
   end
@@ -29,28 +29,28 @@ feature "Review historical traffic" do
     #Insert historical data
 
     #Spider testing proxy is up beore going home
-    record_capture(:seconds_ago => (60 * 60 * 12), :status => 200)
-    record_capture(:seconds_ago => (60 * 60 * 12) + 5, :status => 200)
+    record_exchange(:seconds_ago => (60 * 60 * 12), :status => 200)
+    record_exchange(:seconds_ago => (60 * 60 * 12) + 5, :status => 200)
 
     #First client session
     session_start = (60 * 60 * 8) + (60 * 5)
 
-    record_capture(:seconds_ago => session_start + 1,
+    record_exchange(:seconds_ago => session_start + 1,
                    :status => 200, :method => "GET",  :path => '/catalogue/release/12348')
 
-    record_capture(:seconds_ago => session_start + 2,
+    record_exchange(:seconds_ago => session_start + 2,
                    :status => 200, :method => "GET",  :path => '/catalogue/release/12348/track/67890')
 
-    record_capture(:seconds_ago => session_start + 2,
+    record_exchange(:seconds_ago => session_start + 2,
                    :status => 200, :method => "POST", :path => '/basket/addtrack')
 
-    record_capture(:seconds_ago => session_start + 4,
+    record_exchange(:seconds_ago => session_start + 4,
                    :status => 404, :method => "POST", :path => '/basket/applyvoocher')
 
-    record_capture(:seconds_ago => session_start + 4,
+    record_exchange(:seconds_ago => session_start + 4,
                    :status => 404, :method => "POST", :path => '/basket/applyvoocher')
 
-    record_capture(:seconds_ago => session_start + 5,
+    record_exchange(:seconds_ago => session_start + 5,
                    :status => 200, :method => "GET",  :path => '/catalogue/release/555')
 
     step %{ The following morning, he browses to http://spider.wiblr.com, logs in, }

@@ -4,7 +4,7 @@ feature "Rudy uses his proxy" do
   include ScenarioHelpers
 
   before :each do
-    clear_captures
+    clear_exchanges
     start_rudys_app
     start_wiblr
     visit_dashboard
@@ -14,7 +14,7 @@ feature "Rudy uses his proxy" do
     Capybara.reset_sessions!
   end
 
-  scenario "and spies on another browser" do
+  scenario "and sees exchanges in another browser" do
     proxied_response = visit_through_proxy "http://127.0.0.1:1337/hello"
 
     dashboard_browser.find(:css, "#requests tbody tr").click

@@ -10,20 +10,20 @@ module DB
     end
   end
 
-  def captures_collection
-    database.collection("captures")
+  def exchanges_collection
+    database.collection("exchanges")
   end
   
-  def clear_captures
-    captures_collection.remove({})
+  def clear_exchanges
+    exchanges_collection.remove({})
   end
   
   def clean_database
-    clear_captures
+    clear_exchanges
   end
   
-  def record_capture(options = {})
-    captures_collection.insert({
+  def record_exchange(options = {})
+    exchanges_collection.insert({
       "UUID" => UUID.new.to_s,
       "content-type" => 'text/json', 
       "time" => Time.now - (options[:seconds_ago] || 0), 

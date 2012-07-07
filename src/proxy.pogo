@@ -52,21 +52,7 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
   
   save exchange()
   
-  proxy = http.create client (port, host)
-  proxy request = proxy.request (method, path, headers)
-
-  request body stream = (request) body stream
-  request.pipe (proxy request)
-
-  proxy.on 'error' @(error)
-    true // proxy _request_ error doesn't fire without this
-        
-  proxy request.on 'error' @(error)
-    exchange.status = -1
-    save exchange()
-    response.end()
- 
-  proxy request.on 'response' @(proxy response)
+  proxy request = http.request {port = port, host = host, method = method, path = path, headers = headers} @(proxy response)
     proxy response.pipe (response)
     response body stream = (proxy response) body stream
 
@@ -81,21 +67,30 @@ forward request (io, request, response, url: nil, method: 'GET', headers: {}) =
 
     response.write head (proxy response.status code, proxy response.headers)
 
-authenticate request (request, response) then (respond) =
-  header = request.headers.'proxy-authorization' || ''
-  token = header.split(r/\s+/).pop() || ''
-  auth = new (Buffer(token, 'base64')).to string()
-  parts = auth.split(r/:/)
-  username = parts.0
-  password = parts.1
+  request body stream = (request) body stream
+  request.pipe (proxy request)
+
+  proxy request.on 'error' @(error)
+    exchange.status = -1
+    save exchange()
+    response.end()
+
+exports.create server(io, ssl options) =
   
-  if ((username == 'featurist') || (password == 'cats'))    
-    respond()
-  else
-    response.write head (407, 'Proxy-Authenticate': 'Basic realm="Please enter your Wiblr account details to continue"')
-    response.end "Please enter your Wiblr account details to continue"
-      
-exports.create server(io) =
+  authenticate request (request, response) then (respond) =
+    header = request.headers.'proxy-authorization' || ''
+    token = header.split(r/\s+/).pop() || ''
+    auth = new (Buffer(token, 'base64')).to string()
+    parts = auth.split(r/:/)
+    username = parts.0
+    password = parts.1
+    
+    if ((username == 'featurist') || (password == 'cats'))    
+      respond()
+    else
+      response.write head (407, 'Proxy-Authenticate': 'Basic realm="Please enter your Wiblr account details to continue"')
+      response.end "Please enter your Wiblr account details to continue"
+  
   http.create server @(request, response)
     authenticate request (request, response) then
       if (request.url.match (r/^http/))

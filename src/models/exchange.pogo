@@ -40,14 +40,20 @@ ExchangeSchema.methods.read response body () =
 ExchangeSchema.methods.read request body () =
   decode base64 as utf8 (self.request body)
 
-ExchangeSchema.methods.can render response body as text() =
-  content type (self.response headers.'content-type') is considered text
+ExchangeSchema.methods.response content type () =
+  self.response headers.'content-type'
+
+ExchangeSchema.methods.request content type () =
+  self.request headers.'content-type'
 
 content type (content type) is considered text =
   !content type || content type.match (r/(text|css|javascript|json|xml)/)
 
 ExchangeSchema.methods.can render request body as text() =
-  content type (self.request headers.'content-type') is considered text
+  content type (self.request content type ()) is considered text
+
+ExchangeSchema.methods.can render response body as text() =
+  content type (self.response content type ()) is considered text
 
 ExchangeSchema.pre 'save' @(next)
   if (!this.uuid)

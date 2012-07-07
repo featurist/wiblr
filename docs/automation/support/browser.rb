@@ -22,7 +22,7 @@ module Browser
     RestClient.get url
   end
   
-  def load_captures
+  def load_exchanges
     dashboard_browser.click_button 'Load'
   end
 end
