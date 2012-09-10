@@ -2,9 +2,11 @@ express = require 'express'
 dashboard = require "./dashboard"
 stache = require 'stache'
 compiler = require 'connect-compiler'
+engines = require 'consolidate'
+require 'hogan'
 
 exports.create app () =
-  app = express.create server ()
+  app = express()
   app.configure 'development'
     app.use (compiler {
       enabled = ['less']
@@ -15,6 +17,6 @@ exports.create app () =
   app.use (express.static (__dirname + '/public'))
   app.set('views', __dirname + '/views')
   app.set('view engine', 'html')
-  app.register('.html', stache)
+  app.engine('html', require('hogan-express'))
   dashboard.mount (app)
   app

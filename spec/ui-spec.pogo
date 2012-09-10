@@ -1,5 +1,6 @@
 express = require "express"
 request = require "request"
+http = require "http"
 Browser = require "zombie"
 Exchange = require "../src/models/exchange"
 dashboard = require '../src/dashboard'
@@ -14,7 +15,8 @@ describe "ui"
 
   host ui server (listening) =
     app = require '../src/app'.create app ()
-    io = require 'socket.io'.listen (app, {log = false})
+    server = http.create server()
+    io = require 'socket.io'.listen (server, {log = false})
 
     app.listen (7532)
     app.on "listening" (listening)

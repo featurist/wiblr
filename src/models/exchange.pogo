@@ -2,7 +2,6 @@ require "./mongo"
 mongoose = require "mongoose"
 async = require "async"
 uuid = require "node-uuid"
-buffertools = require "buffertools"
 
 ExchangeSchema = new (mongoose.Schema {
   uuid             = String

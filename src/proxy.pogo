@@ -1,7 +1,6 @@
 http = require 'http'
 url utils = require 'url'
 zlib = require 'zlib'
-buffertools = require "buffertools"
 Exchange = require './models/exchange'
 Memory Stream = require 'memorystream'
 

@@ -1,10 +1,12 @@
 express = require 'express'
+http = require 'http'
+
 proxy = require './proxy'
-dashboard = require "./dashboard"
-stache = require 'stache'
+dashboard = require './dashboard'
 
 app = require './app'.create app ()
-io = require 'socket.io'.listen (app)
+server = http.create server(app)
+io = require 'socket.io'.listen (server)
 
 proxy port = 8081
 dashboard port = 8080

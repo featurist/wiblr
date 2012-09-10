@@ -1,6 +1,6 @@
 express = require 'express'
 
-app = express.create server ()
+app = express()
 
 hello world (response) =
   response.write head (200, 'content-type': "text/plain") 

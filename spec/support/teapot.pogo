@@ -7,7 +7,7 @@ after (milliseconds, action) =
 (n)ms = n
 
 exports.create teapot app () =
-  teapot app = express.create server ()
+  teapot app = express()
   
   pour tea (req, res) =
     after (10ms)
